@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.jpg">
-    <img src="docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/banner-dark.jpg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
   </picture>
 </p>
 
@@ -33,8 +33,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/01-integration-dark.svg">
-    <img src="docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/01-integration-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
   </picture>
 </p>
 

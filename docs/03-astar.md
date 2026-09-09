@@ -10,8 +10,8 @@ Codigo / code: [`src/aisg/search/`](../src/aisg/search/)
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/04-astar-dark.svg">
-    <img src="assets/04-astar-light.svg" alt="On the left, the optimal path A* finds. On the right, the heuristic, its admissibility and consistency proofs, and the comparison table for five search strategies." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/04-astar-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/04-astar-light.svg" alt="On the left, the optimal path A* finds. On the right, the heuristic, its admissibility and consistency proofs, and the comparison table for five search strategies." width="100%">
   </picture>
 </p>
 
