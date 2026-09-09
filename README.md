@@ -91,7 +91,13 @@ Em ingles / in English: acrescente `--lang en` / add `--lang en`.
 
 Testes / tests: `python -m pytest` (108 testes / 108 tests).
 
-Apresentacao / presentation: [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb).
+Apresentacao / presentation:
+[`docs/presentation/ai-for-smartgrids-apresentacao.pptx`](docs/presentation/ai-for-smartgrids-apresentacao.pptx)
+(51 slides, 90 min, com notas do apresentador / 51 slides, 90 min, with speaker notes)
+· [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) (executavel / executable)
+
+Wiki com a teoria da disciplina / course theory wiki:
+[github.com/fsd-dantas/ai-for-smartgrids/wiki](https://github.com/fsd-dantas/ai-for-smartgrids/wiki)
 
 ---
 

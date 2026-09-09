@@ -26,3 +26,6 @@ desktop.ini
 
 # Local editor scaffolding
 *.code-workspace
+
+# Generated slide images (rebuilt by docs/presentation/build_deck.py)
+docs/presentation/img/
