@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
-    <img src="docs/assets/banner-light.svg" alt="ai-for-smartgrids — Symbolic AI for smart-grid communication networks: an expert system, automated planning, and A* search." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.jpg">
+    <img src="docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
   </picture>
 </p>
 
@@ -49,10 +49,13 @@ Each figure has a light and a dark variant, generated from a single source in [`
 | [Expert system](docs/assets/02-expert-system-light.svg) · [dark](docs/assets/02-expert-system-dark.svg) | The five rule layers and both chaining directions |
 | [Planning](docs/assets/03-planning-light.svg) · [dark](docs/assets/03-planning-dark.svg) | STRIPS operator anatomy and the GPS means-ends recursion |
 | [A* search](docs/assets/04-astar-light.svg) · [dark](docs/assets/04-astar-dark.svg) | f = g + h, the admissibility proof, and the strategy comparison |
-| [Banner](docs/assets/banner-light.svg) · [dark](docs/assets/banner-dark.svg) | Project banner |
+| [Banner](docs/assets/banner-light.jpg) · [dark](docs/assets/banner-dark.jpg) | Project banner (JPG, with SVG sources alongside) |
 
-> As figuras estao em ingles, para uma unica versao legivel em qualquer contexto. Regenere com `python docs/assets/src/build_diagrams.py`.
-> The figures are in English, so a single version reads in any context. Regenerate with `python docs/assets/src/build_diagrams.py`.
+> As figuras estao em ingles, para uma unica versao legivel em qualquer contexto.
+> Regenere com `python docs/assets/src/build_diagrams.py` (figuras) e `python docs/assets/src/build_banner.py` (banner).
+>
+> The figures are in English, so a single version reads in any context.
+> Regenerate with `python docs/assets/src/build_diagrams.py` (figures) and `python docs/assets/src/build_banner.py` (banner).
 
 ---
 

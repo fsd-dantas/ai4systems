@@ -594,58 +594,14 @@ def build_astar(t) -> str:
 # --------------------------------------------------------------------------
 # banner
 # --------------------------------------------------------------------------
-def build_banner(t) -> str:
-    b: List[str] = []
-    W, H = 1280, 300
-
-    # decorative network motif on the right
-    nodes = [(905, 90, 7, "n_core"), (985, 150, 6, "n_lte"), (1075, 96, 6, "n_ap"),
-             (1150, 160, 6, "n_rm"), (1040, 226, 6, "n_saf"), (1180, 240, 7, "n_field"),
-             (930, 196, 5, "n_rm"), (1108, 178, 5, "n_rm")]
-    edges = [(0, 1), (1, 2), (2, 3), (1, 6), (6, 4), (4, 5), (3, 7), (7, 4), (3, 5), (0, 2)]
-    for i, j in edges:
-        x1, y1, _, _ = nodes[i]
-        x2, y2, _, _ = nodes[j]
-        b.append(line(x1, y1, x2, y2, t, "border", 1.4))
-    # the highlighted route through the motif
-    b.append(f'<polyline points="905,90 985,150 1040,226 1180,240" fill="none" '
-             f'stroke="{t["red"]}" stroke-width="3.4" stroke-linejoin="round" '
-             f'stroke-linecap="round" opacity="0.9"/>')
-    for x, y, r, colour in nodes:
-        b.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{t[colour]}"/>')
-
-    b.append(txt(64, 108, "ai-for-smartgrids", 46, "ink", "700", t=t))
-    b.append(txt(66, 142, "Symbolic AI for smart-grid communication networks",
-                 17, "muted", t=t))
-
-    chips = [
-        (64, "blue", "blue_fill", "blue_text", "Expert system",
-         "production rules - certainty factors"),
-        (312, "green", "green_fill", "green_text", "Automated planning",
-         "STRIPS - GPS means-ends analysis"),
-        (560, "amber", "amber_fill", "amber_text", "A* search",
-         "admissible, consistent heuristic"),
-    ]
-    for x, stroke, fill, text_tone, title, subtitle in chips:
-        b.append(box(x, 174, 232, 62, t, fill, stroke, 1.4, 8))
-        b.append(txt(x + 16, 198, title, 14, text_tone, "700", t=t))
-        b.append(txt(x + 16, 220, subtitle, 11, "muted", t=t))
-
-    b.append(txt(64, 268, "17- and 30-node synthetic topologies  -  108 tests  -  "
-                          "zero third-party dependencies  -  MIT", 12, "faint", t=t))
-
-    return document(W, H, "ai-for-smartgrids",
-                    "Project banner: symbolic AI for smart-grid communication networks - an "
-                    "expert system, an automated planner, and A* search.", b, t)
-
-
 # --------------------------------------------------------------------------
+# The banner is not built here: it is thematic artwork rather than an
+# information figure, and lives in build_banner.py.
 BUILDERS = {
     "01-integration": build_integration,
     "02-expert-system": build_expert,
     "03-planning": build_planning,
     "04-astar": build_astar,
-    "banner": build_banner,
 }
 
 
