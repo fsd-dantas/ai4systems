@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+title: >-
+  ai-for-smartgrids: expert system, automated planning and A* search
+  for smart-grid communication networks
+message: If you use this software, please cite it using these metadata.
+type: software
+authors:
+  - family-names: Dantas
+    given-names: Fernando Sabino
+repository-code: https://github.com/fsd-dantas/ai-for-smartgrids
+license: MIT
+version: 0.9.0
+date-released: "2026-09-09"
+keywords:
+  - artificial intelligence
+  - expert system
+  - production rules
+  - certainty factors
+  - forward chaining
+  - backward chaining
+  - automated planning
+  - STRIPS
+  - general problem solver
+  - means-ends analysis
+  - A* search
+  - heuristic search
+  - smart grid
+  - communication networks
+abstract: >-
+  Three symbolic artificial intelligence systems applied to a single domain:
+  the communication backhaul of a smart electric grid. A rule-based expert
+  system diagnoses link degradation using 43 production rules in five layers,
+  with forward and backward chaining, MYCIN-style certainty factors, selectable
+  conflict-resolution policies, and why/how explanation. An automated planner
+  represents restoration actions in STRIPS and solves them both by GPS
+  means-ends analysis and by A* progression search. An A* implementation returns
+  least-cost routes over the network graph, with a straight-line heuristic that
+  is admissible and consistent by construction and verified exhaustively in
+  tests. The three integrate: a diagnosis becomes the planner's initial state,
+  and the reroute action is applicable only when A* confirms an alternative
+  route exists. The network topologies are synthetic and the diagnostic
+  thresholds are nominal and uncalibrated: no labelled fault dataset exists for
+  this domain, which is the stated reason for choosing knowledge-driven over
+  data-driven methods. Developed as the practical assignments of a doctoral
+  Introduction to Artificial Intelligence course.

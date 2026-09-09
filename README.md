@@ -1,5 +1,9 @@
 # ai-for-smartgrids
 
+[![tests](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-555555)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)](pyproject.toml)
+
 > **PT-BR** — Tres sistemas simbolicos de Inteligencia Artificial aplicados a um mesmo dominio: redes de comunicacao para sistemas eletricos inteligentes. Um sistema especialista de diagnostico, um gerador automatico de planos de acao (STRIPS / GPS) e uma implementacao de busca A*.
 >
 > **EN** — Three symbolic Artificial Intelligence systems applied to a single domain: communication networks for smart electric systems. A diagnostic expert system, an automated action-plan generator (STRIPS / GPS), and an A* search implementation.
@@ -147,6 +151,11 @@ notebooks/         roteiro executavel da apresentacao / executable presentation 
 - SHORTLIFFE, E. H.; BUCHANAN, B. G. A model of inexact reasoning in medicine. *Mathematical Biosciences*, v. 23, n. 3-4, p. 351-379, 1975.
 - TURING, A. M. Computing machinery and intelligence. *Mind*, v. LIX, n. 236, p. 433-460, 1950.
 - RUSSELL, S.; NORVIG, P. *Artificial intelligence*: a modern approach. 4. ed. Harlow: Pearson, 2021.
+
+## Como citar / How to cite
+
+Use [`CITATION.cff`](CITATION.cff). No GitHub, o botao **Cite this repository** gera BibTeX e APA a partir dele.
+Use [`CITATION.cff`](CITATION.cff). On GitHub, the **Cite this repository** button generates BibTeX and APA from it.
 
 ## Autor / Author
 

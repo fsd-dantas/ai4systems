@@ -14,6 +14,6 @@ EN:    Package for the Introduction to Artificial Intelligence course. It gather
 The core has no third-party dependencies: it runs on the Python standard library.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.9.0"
 
 __all__ = ["__version__"]
