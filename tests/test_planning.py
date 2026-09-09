@@ -1,0 +1,241 @@
+"""Tests for the STRIPS representation, the GPS solver, and the A* planner."""
+
+from __future__ import annotations
+
+import pytest
+
+from aisg.domain import load_default_topology
+from aisg.planning import (
+    DIAGNOSIS_TO_FAULT,
+    Operator,
+    Predicate,
+    Problem,
+    build_restoration_problem,
+    make_state,
+    plan_with_astar,
+    plan_with_gps,
+    problem_from_diagnosis,
+)
+
+
+@pytest.fixture
+def topology():
+    return load_default_topology()
+
+
+# --- STRIPS representation -------------------------------------------------
+def test_predicate_parsing_round_trips():
+    predicate = Predicate.parse("crew-at(BASE)")
+    assert predicate.name == "crew-at"
+    assert predicate.args == ("BASE",)
+    assert str(predicate) == "crew-at(BASE)"
+
+
+def test_predicate_parsing_rejects_malformed_text():
+    with pytest.raises(ValueError, match="malformed predicate"):
+        Predicate.parse("crew-at(BASE")
+
+
+def test_variables_are_detected_by_the_question_mark():
+    assert Predicate.parse("at(?crew, ?site)").variables == ("?crew", "?site")
+    assert Predicate.parse("at(CREW, SITE)").is_ground
+
+
+def test_operator_rejects_a_variable_not_declared_as_a_parameter():
+    with pytest.raises(ValueError, match="not declared as parameters"):
+        Operator.build("bad", parameters=("?a",), preconditions=("p(?b)",), add=("q(?a)",))
+
+
+def test_operator_rejects_a_literal_in_both_add_and_delete_lists():
+    with pytest.raises(ValueError, match="both the add and the delete list"):
+        Operator.build("bad", parameters=("?a",), preconditions=("p(?a)",),
+                       add=("q(?a)",), delete=("q(?a)",))
+
+
+def test_state_must_be_ground():
+    with pytest.raises(ValueError, match="only contain ground atoms"):
+        make_state(["at(?x)"])
+
+
+def test_applying_an_action_adds_and_deletes_correctly():
+    problem = build_restoration_problem("N1", ["interference"])
+    action = next(a for a in problem.ground_actions() if a.name == "request_authorization(N1)")
+    result = action.apply(problem.initial)
+    assert Predicate.parse("authorized(N1)") in result
+    assert Predicate.parse("diagnosed(N1)") in result  # not in the delete list
+
+
+def test_inapplicable_action_raises_with_the_missing_precondition():
+    problem = build_restoration_problem("N1", ["interference"])
+    action = next(a for a in problem.ground_actions() if a.name == "change_channel(N1)")
+    with pytest.raises(ValueError, match="authorized"):
+        action.apply(problem.initial)  # authorisation not yet requested
+
+
+def test_binding_filter_excludes_moving_the_crew_to_where_it_already_is():
+    problem = build_restoration_problem("N1", ["misaligned"])
+    names = {a.name for a in problem.ground_actions()}
+    assert "dispatch_crew(BASE, BASE)" not in names
+    assert "dispatch_crew(BASE, N1)" in names
+
+
+# --- both planners ---------------------------------------------------------
+@pytest.mark.parametrize("diagnosis", sorted(DIAGNOSIS_TO_FAULT))
+def test_both_planners_solve_every_diagnosis(diagnosis, topology):
+    problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+
+    gps_plan, _trace = plan_with_gps(problem, lang="en")
+    astar_plan, _result = plan_with_astar(problem)
+
+    assert gps_plan is not None, f"GPS failed on {diagnosis}"
+    assert astar_plan is not None, f"A* failed on {diagnosis}"
+    assert gps_plan.validate()[0], f"GPS plan invalid on {diagnosis}"
+    assert astar_plan.validate()[0], f"A* plan invalid on {diagnosis}"
+
+
+@pytest.mark.parametrize("diagnosis", sorted(DIAGNOSIS_TO_FAULT))
+def test_astar_plan_is_never_more_expensive_than_the_gps_plan(diagnosis, topology):
+    """A* is cost-optimal; GPS offers no such guarantee."""
+    problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+    gps_plan, _ = plan_with_gps(problem, lang="en")
+    astar_plan, _ = plan_with_astar(problem)
+    assert astar_plan.cost <= gps_plan.cost + 1e-9
+
+
+def test_plan_validation_catches_a_corrupted_plan(topology):
+    problem = problem_from_diagnosis("node_power_failure", "RM_A5", topology=topology)
+    plan, _ = plan_with_astar(problem)
+    plan.actions.pop(0)  # remove request_authorization
+    ok, reason = plan.validate()
+    assert not ok
+    assert "not applicable" in reason
+
+
+def test_plan_validation_catches_a_plan_that_stops_short(topology):
+    problem = problem_from_diagnosis("rf_interference", "RM_A5", topology=topology)
+    plan, _ = plan_with_astar(problem)
+    plan.actions.pop()  # remove close_work_order
+    ok, reason = plan.validate()
+    assert not ok
+    assert "does not satisfy the goal" in reason
+
+
+# --- governance invariants encoded as preconditions ------------------------
+@pytest.mark.parametrize("diagnosis", sorted(DIAGNOSIS_TO_FAULT))
+def test_no_plant_touching_action_precedes_authorisation(diagnosis, topology):
+    """
+    PT-BR: Invariante de governanca: nenhuma acao que alcanca a planta pode aparecer
+           antes da autorizacao. Nao e recomendacao, e precondicao.
+    """
+    exempt = {"request_authorization", "monitor_and_wait", "verify_link",
+              "record_logbook", "close_work_order"}
+    problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+    plan, _ = plan_with_astar(problem)
+
+    authorised = False
+    for action in plan.actions:
+        if action.operator.name == "request_authorization":
+            authorised = True
+            continue
+        if action.operator.name not in exempt:
+            assert authorised, f"{action.name} ran before authorisation"
+
+
+def test_transient_faults_are_resolved_without_touching_the_plant(topology):
+    """Rain fade must be monitored, never repaired — and needs no dispatch."""
+    problem = problem_from_diagnosis("rain_fade", "RM_A5", topology=topology)
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+    assert "monitor_and_wait" in names
+    assert "dispatch_crew" not in names
+
+
+def test_on_site_repairs_require_dispatching_the_crew_first(topology):
+    for diagnosis in ("path_obstruction", "node_power_failure"):
+        problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+        plan, _ = plan_with_astar(problem)
+        names = [a.operator.name for a in plan.actions]
+        assert "dispatch_crew" in names, diagnosis
+        repair = next(n for n in names if n in ("realign_antenna", "replace_power_unit"))
+        assert names.index("dispatch_crew") < names.index(repair)
+
+
+def test_every_plan_records_the_logbook_before_closing(topology):
+    for diagnosis in DIAGNOSIS_TO_FAULT:
+        problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+        plan, _ = plan_with_astar(problem)
+        names = [a.operator.name for a in plan.actions]
+        assert names.index("record_logbook") < names.index("close_work_order"), diagnosis
+
+
+# --- integration with A* routing ------------------------------------------
+def test_rerouting_is_only_planned_when_a_real_alternative_route_exists(topology):
+    """The planner's option depends on an actual A* result over the topology."""
+    with_alternative = problem_from_diagnosis("congestion", "SAF_A2", topology=topology)
+    assert Predicate.parse("alternate-route(SAF_A2)") in with_alternative.initial
+
+    plan, _ = plan_with_astar(with_alternative)
+    assert "reroute_traffic" in [a.operator.name for a in plan.actions]
+
+
+def test_without_an_alternative_route_the_reroute_action_is_unavailable():
+    """No alternate-route literal means the congestion cannot be planned away."""
+    problem = build_restoration_problem("N1", ["congested"], alternate_route=False)
+    gps_plan, _ = plan_with_gps(problem, lang="en")
+    astar_plan, _ = plan_with_astar(problem)
+    assert gps_plan is None
+    assert astar_plan is None
+
+
+# --- heuristic behaviour in the planner ------------------------------------
+def test_goal_count_heuristic_does_not_change_the_optimal_plan_cost(topology):
+    problem = problem_from_diagnosis("node_power_failure", "RM_A5", topology=topology)
+    informed, _ = plan_with_astar(problem, heuristic="goal_count")
+    blind, _ = plan_with_astar(problem, heuristic="zero")
+    assert informed.cost == pytest.approx(blind.cost)
+
+
+def test_unknown_heuristic_is_rejected(topology):
+    problem = problem_from_diagnosis("congestion", "RM_A5", topology=topology)
+    with pytest.raises(ValueError, match="unknown heuristic"):
+        plan_with_astar(problem, heuristic="magic")
+
+
+def test_unknown_diagnosis_is_rejected(topology):
+    with pytest.raises(ValueError, match="unknown diagnosis"):
+        problem_from_diagnosis("gremlins", "RM_A5", topology=topology)
+
+
+# --- GPS's documented weakness --------------------------------------------
+def test_gps_can_be_suboptimal_when_a_cheap_action_has_expensive_preconditions():
+    """
+    PT-BR: GPS escolhe o operador mais barato que reduz a diferenca, sem olhar o
+           custo das PRECONDICOES desse operador. Aqui o operador barato exige
+           deslocamento caro, e o A* encontra o plano melhor.
+    EN:    GPS picks the cheapest operator that reduces the difference, without
+           looking at the cost of that operator's PRECONDITIONS. Here the cheap
+           operator needs an expensive trip, and A* finds the better plan.
+    """
+    operators = [
+        Operator.build("cheap_but_needs_trip", parameters=("?n",),
+                       preconditions=("on-site(?n)",), add=("fixed(?n)",), cost=1.0),
+        Operator.build("travel", parameters=("?n",),
+                       preconditions=(), add=("on-site(?n)",), cost=10.0),
+        Operator.build("remote_fix", parameters=("?n",),
+                       preconditions=(), add=("fixed(?n)",), cost=3.0),
+    ]
+    problem = Problem(
+        name="gps-trap",
+        operators=operators,
+        initial=make_state(["broken(N1)"]),
+        goal=make_state(["fixed(N1)"]),
+        objects={"node": ["N1"]},
+        parameter_types={"?n": "node"},
+    )
+
+    gps_plan, _ = plan_with_gps(problem, lang="en")
+    astar_plan, _ = plan_with_astar(problem)
+
+    assert gps_plan.cost == 11.0  # travel (10) + cheap fix (1)
+    assert astar_plan.cost == 3.0  # remote fix
+    assert astar_plan.cost < gps_plan.cost
