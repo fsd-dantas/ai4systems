@@ -109,9 +109,13 @@ O dominio e a rede de comunicacao que liga ativos distribuidos de um sistema ele
 
 **A topologia e SINTETICA.** E um modelo didatico da *classe* de cenarios estudada em laboratorios de pesquisa em backhaul sem fio. Nao contem inventario real, enderecamento, identificacao de equipamento, configuracao de RF nem topologia de campo de qualquer laboratorio ou concessionaria. Ver [`docs/domain-model.md`](docs/domain-model.md).
 
-### Por que sistemas simbolicos, e nao aprendizado de maquina
+### Por que o DIAGNOSTICO nao e aprendido
 
 Nao existe, para este dominio, conjunto de dados rotulado de falhas. Rotular um enlace como *degradado* ou *em falha* exige um instrumento de degradacao controlada e uma linha de base de observabilidade autenticada; sem os dois, nao ha rotulo derivado de medicao. Um metodo indutivo treinado apenas em estado normal nao infere degradacao de modo confiavel.
+
+> **O escopo desta afirmacao e a tarefa de diagnostico** — nao o projeto inteiro. Aprender a *heuristica* da busca, por exemplo, e uma tarefa diferente e perfeitamente viavel: o alvo de regressao e o custo real restante `h*(n)`, calculavel exatamente com uma busca de custo uniforme a partir do objetivo. A supervisao e gratuita e exata, e nao depende de rotulo de falha nenhum. O que impede seu uso direto nao e a falta de dados, e sim a **admissibilidade**: uma heuristica aprendida por regressao pode superestimar, e entao o A* perde a otimalidade em silencio. Ver [`docs/03-astar.md`](docs/03-astar.md).
+>
+> **The scope of this claim is the diagnosis task**, not the whole project. Learning the search *heuristic* is a different and perfectly viable task: the regression target is the true remaining cost `h*(n)`, computable exactly by uniform-cost search from the goal. Supervision is free and exact, and needs no fault labels. What stands in the way is not data but **admissibility**.
 
 Quando nao ha dados rotulados, o caminho honesto e codificar **conhecimento de engenharia** em regras explicitas, auditaveis e questionaveis — que e exatamente o que um sistema especialista faz. O sistema declara essa limitacao na propria saida: os limiares sao **nominais e nao calibrados**, e reunidos num unico bloco (`THRESHOLDS`) para que a calibracao futura ajuste valores sem reescrever regras.
 

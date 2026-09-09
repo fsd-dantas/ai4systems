@@ -141,6 +141,50 @@ Nos dois cenarios a resposta e a mesma — o caminho otimo. O que muda e o traba
 
 O teste `test_the_heuristic_saves_more_work_as_the_graph_grows` verifica essa relacao somando **todos** os pares origem-objetivo de cada cenario, e nao apenas o par escolhido para a apresentacao.
 
+### Heuristicas aprendidas: onde o aprendizado de maquina entraria
+
+O repositorio nao usa aprendizado de maquina, e a razao declarada em
+[`01-expert-system.md`](01-expert-system.md) — a ausencia de dados rotulados de
+falha — vale para o **diagnostico**, nao para a heuristica.
+
+Aprender `h(n)` e uma tarefa de natureza diferente:
+
+| | Diagnosticar a causa | Aprender a heuristica |
+|---|---|---|
+| Alvo | Rotulo de falha | `h*(n)`, o custo real restante |
+| Origem do rotulo | Medicao em campo | **Calculavel**: custo uniforme a partir do objetivo |
+| Precisa de instrumento de degradacao | Sim | **Nao** |
+| Quantidade de exemplos | Zero hoje | Ilimitada — um por par no grafo |
+
+Ou seja: a supervisao e **gratuita e exata**. O obstaculo que impede aprender o
+diagnostico simplesmente nao existe aqui.
+
+**O que realmente impede o uso direto e a admissibilidade.** Uma heuristica
+obtida por regressao pode **superestimar** o custo restante, e nesse caso o A*
+continua funcionando e passa a devolver caminhos subotimos **sem avisar** — o
+mesmo modo de falha silenciosa discutido em [`02-planning.md`](02-planning.md).
+
+Tres formas de conviver com isso, em ordem de garantia:
+
+1. **Como criterio de desempate apenas.** A ordenacao principal continua sendo
+   `g + h_admissivel`; a heuristica aprendida so decide empates. A otimalidade e
+   preservada exatamente.
+2. **Busca limitadamente subotima** (A* ponderado, *focal search*). Mantem-se a
+   heuristica admissivel para o limite e usa-se a aprendida para ordenar dentro
+   da faixa. Perde-se a otimalidade, mas com **fator de garantia declarado**.
+3. **Regressao com perda assimetrica**, penalizando mais a superestimacao. Reduz
+   a violacao, mas **nao a elimina** — nao ha garantia, apenas tendencia.
+
+**Onde isso pagaria mais.** Nao no roteamento: a distancia em linha reta ja e
+quase perfeita e custa nada. O ganho estaria no **planejador**, onde a heuristica
+`goal_count` vale no maximo 2 e o espaco de estados nao tem geometria a explorar.
+
+**O repositorio ja tem o instrumento de medida.** Os testes de admissibilidade
+percorrem todos os pares origem-objetivo dos dois cenarios. Aplicados a uma
+heuristica aprendida, deixam de ser apenas uma protecao e passam a medir *quantas
+vezes* ela viola a admissibilidade e *em quanto* — que e precisamente o resultado
+que um experimento desses precisa reportar.
+
 ### Falhas e recalculo de rota
 
 Um enlace pode ser retirado de servico em tempo de execucao (`--disable-link A-B`) e um no pode ser excluido da rota (`--avoid`). E assim que a integracao com o planejador funciona: quando o plano inclui desviar trafego, a rota e recalculada evitando o no afetado.

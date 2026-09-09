@@ -63,17 +63,23 @@ vale mais do que responder depois.""",
     )
 
     d.statement(
-        "Por que sistemas simbólicos, e não aprendizado de máquina?",
+        "Por que o DIAGNÓSTICO não é aprendido?",
         "Não existe, para este domínio, conjunto de dados rotulado de falhas.",
-        """Este é o argumento mais forte da apresentação inteira. Não o apresse.
+        """Este é o argumento mais forte da apresentação — mas repare no escopo do
+título: DIAGNÓSTICO. Não diga "não usamos aprendizado de máquina" como se valesse
+para os três sistemas; a afirmação é sobre a tarefa de classificar a causa de uma
+falha, e só sobre ela.
 
 Para rotular um enlace como "degradado" ou "em falha" seriam precisas duas
 coisas: um instrumento de degradação controlada, capaz de produzir a falha de
 forma reprodutível, e uma linha de base de observabilidade autenticada contra a
-qual comparar. Sem as duas, nenhum rótulo vem de medição.
+qual comparar. Sem as duas, nenhum rótulo vem de medição. E um modelo treinado
+apenas em estado normal não infere degradação de modo confiável — ele nunca viu
+a classe que deveria reconhecer.
 
-E um modelo treinado apenas em estado normal não infere degradação de modo
-confiável — ele nunca viu a classe que deveria reconhecer.""",
+Se alguém perguntar "e aprender a heurística da busca?", a resposta é que essa é
+uma tarefa DIFERENTE, com supervisão gratuita — e temos um slide sobre ela no
+tema 3.""",
         accent=RED,
     )
 
@@ -926,6 +932,46 @@ isso: que o custo sobe e que o caminho muda.
 Este slide também responde a uma pergunta provável: o sistema lida com mudança?
 Lida — recalculando, não consultando uma tabela fixa.""",
         accent=AMBER,
+    )
+
+    d.two_up(
+        "Onde o aprendizado de máquina ENTRARIA: a heurística",
+        "Por que é uma tarefa diferente", [
+            "O alvo é h*(n), o custo real restante",
+            "Calculável exatamente: Dijkstra a partir do objetivo",
+            "Supervisão gratuita e exata — não é rótulo de falha",
+            "Não exige instrumento de degradação nem campo",
+            "Vale mais no PLANEJADOR: goal_count é fraca e o espaço não tem geometria",
+        ],
+        "Por que ainda não está aqui", [
+            "Uma heurística aprendida NÃO é admissível por construção",
+            "Regressão pode superestimar → A* perde a otimalidade em silêncio",
+            "Saídas: usá-la só como desempate (preserva o ótimo)...",
+            "...ou em busca limitadamente subótima, com fator de garantia",
+            "Nossos testes de admissibilidade seriam o instrumento de medida",
+        ],
+        """Este slide existe porque a pergunta é boa e vai ser feita.
+
+Aprender a heurística NÃO esbarra no obstáculo do diagnóstico. O alvo de
+regressão é o custo real restante, e esse custo é calculável exatamente rodando
+Dijkstra a partir do objetivo. A supervisão é gratuita, exata e ilimitada — nada
+a ver com rotular falhas em campo.
+
+O ponto onde isso realmente pagaria não é o roteamento: ali a distância em linha
+reta já é quase perfeita e custa nada. É o PLANEJADOR, onde goal_count vale no
+máximo 2 e o espaço de estados não tem geometria para explorar. É exatamente o
+caso em que a literatura usa heurísticas aprendidas.
+
+O preço é a admissibilidade. Uma rede treinada por regressão pode superestimar, e
+aí o A* continua rodando e devolve planos subótimos SEM AVISAR — o mesmo risco
+que discutimos no slide da heurística goal_count.
+
+E aqui está o que torna este repositório bem posicionado para o experimento: já
+temos testes que verificam admissibilidade exaustivamente. Eles nao seriam
+apenas uma proteção — seriam o instrumento para MEDIR quantas vezes a heurística
+aprendida viola a admissibilidade, e em quanto. Isso é um resultado publicável,
+não um detalhe de implementação.""",
+        accent=AMBER, left_colour=GREEN, right_colour=RED,
     )
 
     d.statement(
