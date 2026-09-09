@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" width="1120" height="700" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Expert system: rule layers and both chaining directions</title>
+  <desc>The 43 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it actually needs.</desc>
+  <rect width="1120" height="700" fill="#0d1117"/>
+  <text x="40" y="46" font-size="23" fill="#e6edf3" font-weight="600">Expert system - 43 rules in five layers</text>
+  <text x="40" y="72" font-size="14" fill="#9daab7">Diagnostic rules never read the raw measurement: they read the previous layer's conclusion. Replacing the sensor changes ONE layer.</text>
+  <rect x="230" y="100" width="470" height="66" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="248" y="124" font-size="14" fill="#e6edf3" font-weight="700">LAYER 1 - R01-R04</text>
+  <text x="248" y="145" font-size="12.5" fill="#9daab7">RSSI, SNR  -&gt;  signal quality  (good / marginal / poor)</text>
+  <text x="248" y="164" font-size="11.5" fill="#788593">R01: IF rssi &lt; -95 AND snr &lt; 8 THEN quality = poor   (CF +0.90)</text>
+  <rect x="230" y="182" width="470" height="66" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="248" y="206" font-size="14" fill="#e6edf3" font-weight="700">LAYER 2 - R05-R09</text>
+  <text x="248" y="227" font-size="12.5" fill="#9daab7">link state, loss, RTT  -&gt;  link symptom</text>
+  <text x="248" y="246" font-size="11.5" fill="#788593">none / degraded / unstable / outage</text>
+  <rect x="230" y="264" width="470" height="94" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="2.0"/>
+  <text x="248" y="288" font-size="14" fill="#58a6ff" font-weight="700">LAYER 3 - R10-R24  -&gt;  DIAGNOSIS</text>
+  <text x="248" y="309" font-size="12.5" fill="#9daab7">rf_interference - path_obstruction - rain_fade - congestion</text>
+  <text x="248" y="328" font-size="11.5" fill="#788593">node_power_failure - upstream_relay_failure - vlan_misconfiguration - healthy</text>
+  <text x="248" y="347" font-size="11.5" fill="#788593">eight competing hypotheses, each with its own certainty factor</text>
+  <rect x="230" y="374" width="470" height="60" rx="8" fill="#33190f" stroke="#f2794a" stroke-width="1.6"/>
+  <text x="248" y="396" font-size="13.5" fill="#ffa07a" font-weight="700">LAYER 3b - R25-R27 - COUNTER-EVIDENCE (negative CF)</text>
+  <text x="248" y="416" font-size="11.5" fill="#ffa07a">R25: IF weather = clear THEN rain_fade  (CF -0.80)  - evidence AGAINST the hypothesis</text>
+  <rect x="230" y="450" width="470" height="60" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="248" y="472" font-size="14" fill="#e6edf3" font-weight="700">LAYER 4 - R28-R35  -&gt;  RECOMMENDED ACTION</text>
+  <text x="248" y="494" font-size="11.5" fill="#788593">change_channel - realign_antenna - wait_and_monitor - reroute_traffic - ...</text>
+  <rect x="230" y="526" width="470" height="60" rx="8" fill="#0f2a22" stroke="#4ec9a0" stroke-width="1.6"/>
+  <text x="248" y="548" font-size="14" fill="#7fe0c0" font-weight="700">LAYER 5 - R36-R43  -&gt;  AUTHORISATION REQUIRED?</text>
+  <text x="248" y="570" font-size="11.5" fill="#7fe0c0">every action that reaches the plant: yes. observing: no.</text>
+  <line x1="200" y1="566" x2="200.0" y2="135.0" stroke="#58a6ff" stroke-width="2.6"/>
+  <polygon points="200,124 205.5,135.0 194.5,135.0" fill="#58a6ff"/>
+  <rect x="60" y="270" width="128" height="128" rx="8" fill="#122238" stroke="#58a6ff" stroke-width="1.0"/>
+  <text x="74" y="296" font-size="13" fill="#58a6ff" font-weight="700">FORWARD</text>
+  <text x="74" y="318" font-size="11" fill="#9daab7">data-driven</text>
+  <text x="74" y="344" font-size="10.5" fill="#788593">telemetry arrives,</text>
+  <text x="74" y="358" font-size="10.5" fill="#788593">the system concludes</text>
+  <text x="74" y="380" font-size="10.5" fill="#788593">the monitoring</text>
+  <text x="74" y="393" font-size="10.5" fill="#788593">alarm mode</text>
+  <line x1="732" y1="124" x2="732.0" y2="559.0" stroke="#e79ac4" stroke-width="2.6"/>
+  <polygon points="732,570 726.5,559.0 737.5,559.0" fill="#e79ac4"/>
+  <rect x="756" y="270" width="160" height="146" rx="8" fill="#2e1d27" stroke="#e79ac4" stroke-width="1.0"/>
+  <text x="770" y="296" font-size="13" fill="#f0b8d8" font-weight="700">BACKWARD</text>
+  <text x="770" y="318" font-size="11" fill="#9daab7">goal-driven</text>
+  <text x="770" y="344" font-size="10.5" fill="#788593">asks only what the</text>
+  <text x="770" y="358" font-size="10.5" fill="#788593">goal requires</text>
+  <text x="770" y="382" font-size="10.5" fill="#788593">the engineer at</text>
+  <text x="770" y="395" font-size="10.5" fill="#788593">2 a.m. mode</text>
+  <text x="770" y="412" font-size="11" fill="#f0b8d8" font-weight="700">6 of 13 questions</text>
+  <rect x="756" y="432" width="324" height="78" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="772" y="453" font-size="12.5" fill="#e6edf3" font-weight="700">what keeps the consultation short</text>
+  <text x="772" y="473" font-size="11.5" fill="#9daab7">1. short-circuit: a false condition abandons the rule -</text>
+  <text x="772" y="487" font-size="11.5" fill="#9daab7">    the remaining conditions are never asked</text>
+  <text x="772" y="503" font-size="11.5" fill="#9daab7">2. sufficiency cut-off: goal at CF &gt;= 0.9 ends the search</text>
+  <rect x="40" y="430" width="150" height="156" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="56" y="452" font-size="12.5" fill="#e6edf3" font-weight="700">CERTAINTY</text>
+  <text x="56" y="468" font-size="12.5" fill="#e6edf3" font-weight="700">FACTORS</text>
+  <text x="56" y="490" font-size="11" fill="#9daab7">premise = minimum</text>
+  <text x="56" y="504" font-size="11" fill="#9daab7">(weakest link)</text>
+  <text x="56" y="524" font-size="11" fill="#9daab7">conclusion =</text>
+  <text x="56" y="538" font-size="11" fill="#9daab7">premise x rule</text>
+  <text x="56" y="558" font-size="11" fill="#9daab7">fires only above</text>
+  <text x="56" y="572" font-size="11" fill="#9daab7">0.2</text>
+  <rect x="756" y="100" width="324" height="150" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="772" y="122" font-size="12.5" fill="#e6edf3" font-weight="700">CONFLICT RESOLUTION</text>
+  <text x="772" y="141" font-size="11.5" fill="#9daab7">several rules ready - which fires first?</text>
+  <text x="772" y="164" font-size="11.5" fill="#e6edf3">- first-match: rule base order</text>
+  <text x="772" y="182" font-size="11.5" fill="#e6edf3">- specificity: most conditions first (default)</text>
+  <text x="772" y="200" font-size="11.5" fill="#e6edf3">- recency: newest facts first</text>
+  <text x="772" y="224" font-size="11.5" fill="#788593" font-style="italic">changes the ORDER of reasoning,</text>
+  <text x="772" y="239" font-size="11.5" fill="#788593" font-style="italic">not the fixed point</text>
+  <rect x="40" y="100" width="150" height="150" rx="8" fill="#1c2430" stroke="#3a4552" stroke-width="1.0"/>
+  <text x="56" y="122" font-size="12.5" fill="#e6edf3" font-weight="700">EVIDENCE</text>
+  <text x="56" y="142" font-size="11" fill="#9daab7">13 askable</text>
+  <text x="56" y="156" font-size="11" fill="#9daab7">variables</text>
+  <text x="56" y="178" font-size="10.5" fill="#788593">rssi_dbm, snr_db,</text>
+  <text x="56" y="192" font-size="10.5" fill="#788593">packet_loss_pct,</text>
+  <text x="56" y="206" font-size="10.5" fill="#788593">rtt_ms, link_state,</text>
+  <text x="56" y="220" font-size="10.5" fill="#788593">node_power, weather,</text>
+  <text x="56" y="234" font-size="10.5" fill="#788593">spectrum_scan, ...</text>
+  <line x1="194" y1="150" x2="218.3" y2="137.1" stroke="#9daab7" stroke-width="1.6"/>
+  <polygon points="228,132 220.9,142.0 215.7,132.3" fill="#9daab7"/>
+  <rect x="40" y="608" width="1040" height="62" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.0"/>
+  <text x="60" y="630" font-size="13" fill="#e6edf3" font-weight="700">EXPLANATION</text>
+  <text x="170" y="630" font-size="12" fill="#9daab7">why  - during the consultation: the chain of rules that led to this question</text>
+  <text x="170" y="650" font-size="12" fill="#9daab7">how  - after concluding: walks the supporting rules down to the facts the user supplied</text>
+</svg>

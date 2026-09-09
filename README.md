@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
+    <img src="docs/assets/banner-light.svg" alt="ai-for-smartgrids — Symbolic AI for smart-grid communication networks: an expert system, automated planning, and A* search." width="100%">
+  </picture>
+</p>
+
 # ai-for-smartgrids
 
 [![tests](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml)
@@ -24,16 +31,28 @@
 
 **The three connect.** The expert system's diagnosis becomes the planner's initial state; the *reroute traffic* action is applicable only when A* search confirms an alternative route exists; and the progression planner uses **the same A\* function**, not a copy, that solves routing.
 
-![Integracao dos tres sistemas / Integration of the three systems](docs/assets/01-integration.svg)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/01-integration-dark.svg">
+    <img src="docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
+  </picture>
+</p>
 
 ### Diagramas / Diagrams
 
-| Diagrama | Conteudo / Contents |
+Cada figura tem uma variante clara e uma escura, geradas a partir de uma unica fonte em [`docs/assets/src/build_diagrams.py`](docs/assets/src/build_diagrams.py).
+Each figure has a light and a dark variant, generated from a single source in [`docs/assets/src/build_diagrams.py`](docs/assets/src/build_diagrams.py).
+
+| Diagrama / Diagram | Conteudo / Contents |
 |---|---|
-| [Integracao](docs/assets/01-integration.svg) | Como os tres sistemas trocam informacao / How the three systems exchange information |
-| [Sistema especialista](docs/assets/02-expert-system.svg) | As cinco camadas de regras e os dois encadeamentos / The five rule layers and both chainings |
-| [Planejamento](docs/assets/03-planning.svg) | Anatomia STRIPS e a recursao meios-fins do GPS / STRIPS anatomy and GPS means-ends recursion |
-| [Busca A*](docs/assets/04-astar.svg) | f = g + h, a prova de admissibilidade e a comparacao / f = g + h, the admissibility proof, and the comparison |
+| [Integration](docs/assets/01-integration-light.svg) · [dark](docs/assets/01-integration-dark.svg) | How the three systems exchange information |
+| [Expert system](docs/assets/02-expert-system-light.svg) · [dark](docs/assets/02-expert-system-dark.svg) | The five rule layers and both chaining directions |
+| [Planning](docs/assets/03-planning-light.svg) · [dark](docs/assets/03-planning-dark.svg) | STRIPS operator anatomy and the GPS means-ends recursion |
+| [A* search](docs/assets/04-astar-light.svg) · [dark](docs/assets/04-astar-dark.svg) | f = g + h, the admissibility proof, and the strategy comparison |
+| [Banner](docs/assets/banner-light.svg) · [dark](docs/assets/banner-dark.svg) | Project banner |
+
+> As figuras estao em ingles, para uma unica versao legivel em qualquer contexto. Regenere com `python docs/assets/src/build_diagrams.py`.
+> The figures are in English, so a single version reads in any context. Regenerate with `python docs/assets/src/build_diagrams.py`.
 
 ---
 

@@ -8,7 +8,12 @@
 
 Codigo / code: [`src/aisg/search/`](../src/aisg/search/)
 
-![f = g + h, a prova de admissibilidade e a comparacao entre estrategias](assets/04-astar.svg)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/04-astar-dark.svg">
+    <img src="assets/04-astar-light.svg" alt="On the left, the optimal path A* finds. On the right, the heuristic, its admissibility and consistency proofs, and the comparison table for five search strategies." width="100%">
+  </picture>
+</p>
 
 ---
 

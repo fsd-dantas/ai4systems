@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" width="1180" height="640" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Integration of the three systems</title>
+  <desc>The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing.</desc>
+  <rect width="1180" height="640" fill="#0d1117"/>
+  <text x="40" y="46" font-size="23" fill="#e6edf3" font-weight="600">How the three systems connect</text>
+  <text x="40" y="72" font-size="14" fill="#9daab7">One incident crosses all three. The arrows show what each system hands to the next.</text>
+  <rect x="40" y="108" width="260" height="62" rx="8" fill="#1c2430" stroke="#3a4552" stroke-width="1.0"/>
+  <text x="170" y="134" font-size="14" fill="#e6edf3" font-weight="600" text-anchor="middle">telemetry</text>
+  <text x="170" y="154" font-size="12" fill="#9daab7" font-weight="middle">RSSI, SNR, loss, RTT</text>
+  <line x1="170" y1="172" x2="170.0" y2="193.0" stroke="#9daab7" stroke-width="2.0"/>
+  <polygon points="170,204 164.5,193.0 175.5,193.0" fill="#9daab7"/>
+  <rect x="40" y="208" width="320" height="180" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+  <path d="M 50 208 H 350 A 10 10 0 0 1 360 218 V 244 H 40 V 218 A 10 10 0 0 1 50 208 Z" fill="#58a6ff"/>
+  <text x="58" y="233" font-size="15" fill="#0d1117" font-weight="700">1 - EXPERT SYSTEM</text>
+  <text x="58" y="270" font-size="13" fill="#e6edf3">43 production rules, 5 layers</text>
+  <text x="58" y="290" font-size="13" fill="#9daab7">forward and backward chaining</text>
+  <text x="58" y="310" font-size="13" fill="#9daab7">certainty factors (MYCIN)</text>
+  <text x="58" y="330" font-size="13" fill="#9daab7">explanation: why / how</text>
+  <rect x="58" y="344" width="284" height="32" rx="6" fill="#122238" stroke="#58a6ff" stroke-width="1.0"/>
+  <text x="200.0" y="365" font-size="12.5" fill="#8cc8ff" font-weight="600" text-anchor="middle">diagnosis + action + authorisation</text>
+  <rect x="440" y="208" width="320" height="180" rx="10" fill="#161b22" stroke="#4ec9a0" stroke-width="2"/>
+  <path d="M 450 208 H 750 A 10 10 0 0 1 760 218 V 244 H 440 V 218 A 10 10 0 0 1 450 208 Z" fill="#4ec9a0"/>
+  <text x="458" y="233" font-size="15" fill="#0d1117" font-weight="700">2 - STRIPS / GPS PLANNER</text>
+  <text x="458" y="270" font-size="13" fill="#e6edf3">12 STRIPS operators</text>
+  <text x="458" y="290" font-size="13" fill="#9daab7">GPS: means-ends analysis</text>
+  <text x="458" y="310" font-size="13" fill="#9daab7">A* progression planner</text>
+  <text x="458" y="330" font-size="13" fill="#9daab7">plan validation</text>
+  <rect x="458" y="344" width="284" height="32" rx="6" fill="#0f2a22" stroke="#4ec9a0" stroke-width="1.0"/>
+  <text x="600.0" y="365" font-size="12.5" fill="#7fe0c0" font-weight="600" text-anchor="middle">ordered, validated plan</text>
+  <rect x="840" y="208" width="300" height="180" rx="10" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+  <path d="M 850 208 H 1130 A 10 10 0 0 1 1140 218 V 244 H 840 V 218 A 10 10 0 0 1 850 208 Z" fill="#e3b341"/>
+  <text x="858" y="233" font-size="15" fill="#0d1117" font-weight="700">3 - A* SEARCH</text>
+  <text x="858" y="270" font-size="13" fill="#e6edf3">f(n) = g(n) + h(n)</text>
+  <text x="858" y="290" font-size="13" fill="#9daab7">admissible, consistent heuristic</text>
+  <text x="858" y="310" font-size="13" fill="#9daab7">breadth-first, depth-first, uniform cost</text>
+  <text x="858" y="330" font-size="13" fill="#9daab7">greedy - for comparison</text>
+  <rect x="858" y="344" width="264" height="32" rx="6" fill="#2e2410" stroke="#e3b341" stroke-width="1.0"/>
+  <text x="990.0" y="365" font-size="12.5" fill="#f0cc72" font-weight="600" text-anchor="middle">exact path + optimal cost</text>
+  <line x1="364" y1="298" x2="425.0" y2="298.0" stroke="#9daab7" stroke-width="2.4"/>
+  <polygon points="436,298 425.0,303.5 425.0,292.5" fill="#9daab7"/>
+  <text x="400" y="284" font-size="12" fill="#e6edf3" font-weight="600" text-anchor="middle">diagnosis</text>
+  <text x="400" y="318" font-size="11" fill="#9daab7" font-weight="middle">becomes the</text>
+  <text x="400" y="331" font-size="11" fill="#9daab7" font-weight="middle">initial state</text>
+  <line x1="764" y1="282" x2="825.0" y2="282.0" stroke="#f2794a" stroke-width="2.4"/>
+  <polygon points="836,282 825.0,287.5 825.0,276.5" fill="#f2794a"/>
+  <text x="800" y="258" font-size="11.5" fill="#f2794a" font-weight="600" text-anchor="middle">alternative</text>
+  <text x="800" y="271" font-size="11.5" fill="#f2794a" font-weight="600" text-anchor="middle">route?</text>
+  <line x1="836" y1="326" x2="775.0" y2="326.0" stroke="#f2794a" stroke-width="2.4"/>
+  <polygon points="764,326 775.0,320.5 775.0,331.5" fill="#f2794a"/>
+  <text x="800" y="346" font-size="11.5" fill="#f2794a" font-weight="600" text-anchor="middle">yes / no</text>
+  <path d="M 600 392 L 600 428 L 990 428 L 990 392" stroke="#b39ddb" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+  <rect x="636" y="412" width="318" height="32" rx="6" fill="#221b30" stroke="#b39ddb" stroke-width="1.0"/>
+  <text x="795" y="433" font-size="12.5" fill="#cbb8e8" font-weight="600" text-anchor="middle">the SAME astar() function, not a copy</text>
+  <rect x="40" y="474" width="1100" height="80" rx="10" fill="#161b22" stroke="#3d444d" stroke-width="1.6"/>
+  <text x="60" y="500" font-size="14" fill="#e6edf3" font-weight="700">SHARED DOMAIN - synthetic communication backhaul</text>
+  <text x="60" y="522" font-size="12.5" fill="#9daab7">17 nodes (base scenario) or 30 nodes (scale scenario) - fibre core - 900 MHz radio sectors - store-and-forward chain - private LTE overlay</text>
+  <text x="60" y="541" font-size="12.5" fill="#9daab7">link cost = overhead(type) + distance / (speed(type) x quality)     -     distances derived from the coordinates</text>
+  <line x1="200" y1="470" x2="200" y2="390" stroke="#3d444d" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <line x1="600" y1="470" x2="600" y2="446" stroke="#3d444d" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <line x1="990" y1="470" x2="990" y2="446" stroke="#3d444d" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <rect x="40" y="572" width="1100" height="46" rx="8" fill="#33190f" stroke="#f2794a" stroke-width="1.0"/>
+  <text x="60" y="592" font-size="12.5" fill="#ffa07a" font-weight="700">VALIDITY LIMIT</text>
+  <text x="60" y="609" font-size="12" fill="#ffa07a">Synthetic topology. Nominal, uncalibrated thresholds. No labelled fault dataset exists for this domain. The system RECOMMENDS, it does not act.</text>
+</svg>

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 720" width="1120" height="720" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>STRIPS and GPS: operator anatomy and means-ends analysis</title>
+  <desc>On the left, the three sets that define a STRIPS action. On the right, the GPS means-ends recursion for restoring service on a node.</desc>
+  <rect width="1120" height="720" fill="#fbfaf7"/>
+  <text x="40" y="46" font-size="23" fill="#1f2933" font-weight="600">Automated action planning - STRIPS and GPS</text>
+  <text x="40" y="72" font-size="14" fill="#52606d">STRIPS is the REPRESENTATION. GPS is the STRATEGY: every action exists to remove a concrete difference.</text>
+  <text x="40" y="112" font-size="15" fill="#1f2933" font-weight="700">1 - Anatomy of a STRIPS operator</text>
+  <rect x="40" y="126" width="420" height="212" rx="10" fill="#ffffff" stroke="#009E73" stroke-width="2"/>
+  <path d="M 50 126 H 450 A 10 10 0 0 1 460 136 V 158 H 40 V 136 A 10 10 0 0 1 50 126 Z" fill="#009E73"/>
+  <text x="58" y="151" font-size="15" fill="#ffffff" font-weight="700"></text>
+  <text x="58" y="148" font-size="14" font-weight="700" fill="#ffffff" font-family="Consolas, SFMono-Regular, Menlo, monospace">realign_antenna(?n)</text>
+  <text x="442" y="148" font-size="12.5" font-weight="600" fill="#ffffff" text-anchor="end">cost 3</text>
+  <text x="58" y="182" font-size="12.5" fill="#8a6100" font-weight="700">PRECONDITIONS - what must hold</text>
+  <text x="70" y="202" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">authorized(?n)</text>
+  <text x="70" y="219" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">crew-at(?n)</text>
+  <text x="70" y="236" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">misaligned(?n)</text>
+  <text x="58" y="264" font-size="12.5" fill="#046c50" font-weight="700">ADD LIST - what becomes true</text>
+  <text x="70" y="284" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">+ fault-cleared(?n)</text>
+  <text x="58" y="310" font-size="12.5" fill="#a8442a" font-weight="700">DELETE LIST - what stops being true</text>
+  <text x="70" y="330" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">- misaligned(?n)</text>
+  <rect x="40" y="352" width="420" height="66" rx="8" fill="#e6f5f0" stroke="#009E73" stroke-width="1.0"/>
+  <text x="58" y="374" font-size="12.5" fill="#046c50" font-weight="700">GOVERNANCE AS A PRECONDITION</text>
+  <text x="58" y="393" font-size="11.5" fill="#046c50">Every operator reaching the plant requires authorized(?n).</text>
+  <text x="58" y="409" font-size="11.5" fill="#046c50">Acting without authorisation is not discouraged: it is UNREACHABLE.</text>
+  <rect x="40" y="432" width="420" height="86" rx="8" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
+  <text x="58" y="453" font-size="12.5" fill="#1f2933" font-weight="700">CLOSED-WORLD ASSUMPTION</text>
+  <text x="58" y="472" font-size="11.5" fill="#52606d">A state is the set of TRUE literals.</text>
+  <text x="58" y="488" font-size="11.5" fill="#52606d">Anything absent from the set is taken to be false.</text>
+  <text x="58" y="508" font-size="11.5" fill="#8a94a0">state = { diagnosed(N), crew-at(BASE), misaligned(N) }</text>
+  <rect x="40" y="532" width="420" height="152" rx="8" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
+  <text x="58" y="554" font-size="13" fill="#1f2933" font-weight="700">TWO SOLVERS OVER ONE REPRESENTATION</text>
+  <text x="58" y="578" font-size="12" fill="#0072B2" font-weight="700">GPS - means-ends analysis</text>
+  <text x="58" y="596" font-size="11.5" fill="#52606d">explainable - NOT complete - NOT optimal</text>
+  <text x="58" y="612" font-size="11.5" fill="#52606d">subject to the Sussman anomaly</text>
+  <text x="58" y="638" font-size="12" fill="#E69F00" font-weight="700">A* progression - planning as search</text>
+  <text x="58" y="656" font-size="11.5" fill="#52606d">cost-optimal - uses the SAME astar() function</text>
+  <text x="58" y="672" font-size="11.5" fill="#52606d">heuristic: unsatisfied goal literals</text>
+  <text x="500" y="112" font-size="15" fill="#1f2933" font-weight="700">2 - Means-ends analysis: the GPS recursion</text>
+  <rect x="500" y="126" width="300" height="42" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.8"/>
+  <text x="514" y="144" font-size="12" fill="#0b5c8a" font-weight="700">DIFFERENCE to reduce</text>
+  <text x="514" y="161" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">service-restored(N)</text>
+  <rect x="500" y="194" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="212" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">close_work_order(N)</text>
+  <rect x="500" y="254" width="300" height="42" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.4"/>
+  <text x="514" y="272" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">link-up(N)</text>
+  <text x="514" y="289" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">logged(N)</text>
+  <rect x="500" y="322" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="340" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">verify_link(N)</text>
+  <rect x="500" y="382" width="300" height="34" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.4"/>
+  <text x="514" y="400" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">fault-cleared(N)</text>
+  <rect x="500" y="442" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="460" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">realign_antenna(N)</text>
+  <rect x="500" y="502" width="300" height="42" rx="7" fill="#e6f5f0" stroke="#009E73" stroke-width="1.4"/>
+  <text x="514" y="520" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">crew-at(BASE)  - already true</text>
+  <text x="514" y="537" font-size="11" fill="#8a94a0">recursion ends: the difference is gone</text>
+  <line x1="650" y1="170" x2="650.0" y2="179.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,190 644.5,179.0 655.5,179.0" fill="#52606d"/>
+  <line x1="650" y1="230" x2="650.0" y2="239.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,250 644.5,239.0 655.5,239.0" fill="#52606d"/>
+  <line x1="650" y1="298" x2="650.0" y2="307.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,318 644.5,307.0 655.5,307.0" fill="#52606d"/>
+  <line x1="650" y1="358" x2="650.0" y2="367.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,378 644.5,367.0 655.5,367.0" fill="#52606d"/>
+  <line x1="650" y1="418" x2="650.0" y2="427.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,438 644.5,427.0 655.5,427.0" fill="#52606d"/>
+  <line x1="650" y1="478" x2="650.0" y2="487.0" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,498 644.5,487.0 655.5,487.0" fill="#52606d"/>
+  <text x="662" y="186" font-size="11" fill="#8a94a0">an operator that reduces it</text>
+  <text x="662" y="246" font-size="11" fill="#8a94a0">preconditions become differences</text>
+  <path d="M 812 520 C 862 520 862 152 818 150" stroke="#009E73" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+  <polygon points="806,150 819,144 818,157" fill="#009E73"/>
+  <text x="874" y="330" font-size="12" fill="#046c50" font-weight="700">the plan is the</text>
+  <text x="874" y="348" font-size="12" fill="#046c50" font-weight="700">stack unwound</text>
+  <text x="874" y="368" font-size="11" fill="#52606d">in reverse order</text>
+  <rect x="500" y="562" width="580" height="122" rx="8" fill="#fdecea" stroke="#D55E00" stroke-width="1.6"/>
+  <text x="518" y="584" font-size="13" fill="#a8442a" font-weight="700">THE WEAKNESS OF GPS, DEMONSTRATED</text>
+  <text x="518" y="605" font-size="11.5" fill="#a8442a">GPS orders operators by their OWN cost - and never sees the cost of their PRECONDITIONS.</text>
+  <text x="518" y="628" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">GPS:  travel_crew (10) + cheap_local_fix (1)   =  cost 11</text>
+  <text x="518" y="648" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">A* :  remote_fix (3)                          =  cost  3</text>
+  <text x="518" y="672" font-size="11.5" fill="#a8442a" font-style="italic">That is why both planners live in the same repository.</text>
+  <rect x="820" y="126" width="260" height="120" rx="8" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
+  <text x="836" y="148" font-size="12.5" fill="#1f2933" font-weight="700">WHY COST MATTERS</text>
+  <text x="836" y="168" font-size="11.5" fill="#52606d">If every action cost 1,</text>
+  <text x="836" y="183" font-size="11.5" fill="#52606d">planning would be counting steps.</text>
+  <text x="836" y="205" font-size="11.5" fill="#1f2933">dispatch_crew ....... 4</text>
+  <text x="836" y="221" font-size="11.5" fill="#1f2933">replace_power_unit .. 5</text>
+  <text x="836" y="237" font-size="11.5" fill="#1f2933">fix_vlan ............ 1</text>
+</svg>

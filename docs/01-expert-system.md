@@ -8,7 +8,12 @@
 
 Codigo / code: [`src/aisg/expert_system/`](../src/aisg/expert_system/)
 
-![Camadas de regras e os dois encadeamentos](assets/02-expert-system.svg)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/02-expert-system-dark.svg">
+    <img src="assets/02-expert-system-light.svg" alt="The 43 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
+  </picture>
+</p>
 
 ---
 

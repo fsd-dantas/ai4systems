@@ -7,7 +7,12 @@
 
 Codigo / code: [`src/aisg/planning/`](../src/aisg/planning/)
 
-![Anatomia STRIPS e a recursao meios-fins do GPS](assets/03-planning.svg)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/03-planning-dark.svg">
+    <img src="assets/03-planning-light.svg" alt="On the left, the three sets that define a STRIPS action. On the right, the GPS means-ends recursion for restoring service on a node." width="100%">
+  </picture>
+</p>
 
 ---
 
