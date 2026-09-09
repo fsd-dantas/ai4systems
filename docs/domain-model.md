@@ -15,6 +15,21 @@ A rede de comunicacao que liga ativos distribuidos de um sistema eletrico ao cen
 | Sobreposicao LTE | `LTE_ENB` | Caminho alternativo independente do radio 900 MHz |
 | Campo | `RECLOSER_7` | Dispositivo de campo, destino tipico do trafego |
 
+### Dois cenarios / two scenarios
+
+| Nome | Nos | Enlaces | Uso |
+|---|---|---|---|
+| `base` | 17 | 24 | Cenario de trabalho. Pequeno o bastante para acompanhar o raciocinio no quadro. |
+| `scale` | 30 | 44 | Cenario de escala: tres setores, cada um com estrela de radio e cadeia armazena-e-encaminha ate um dispositivo de campo. |
+
+```bash
+aisg --topology scale route --compare
+```
+
+O cenario de escala existe para mostrar que **a vantagem da heuristica cresce com o grafo**. Somando todos os pares origem-objetivo, o A* expande menos nos que a busca de custo uniforme nos dois cenarios — mas a economia e nitidamente maior no de 30 nos. Ha teste que verifica exatamente essa relacao.
+
+Ambos sao carregados pelo mesmo codigo: `load_topology("base")` ou `load_topology("scale")`. Um caminho de arquivo tambem e aceito, para cenarios proprios mantidos fora do repositorio.
+
 ### A topologia e sintetica — e isso e uma afirmacao, nao uma ressalva
 
 Este e um modelo didatico da *classe* de cenarios estudada em laboratorios de backhaul sem fio. Nao contem inventario real, enderecamento, identificacao de equipamento, parametros de RF nem topologia de campo de qualquer laboratorio ou concessionaria. As distancias sao geometria nominal de alimentador de distribuicao, nao levantamento de campo.

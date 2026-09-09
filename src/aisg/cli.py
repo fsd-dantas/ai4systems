@@ -23,7 +23,7 @@ import sys
 from typing import Optional, Sequence, Tuple
 
 from aisg import __version__
-from aisg.domain import load_default_topology
+from aisg.domain import BUNDLED_TOPOLOGIES, load_topology
 from aisg.expert_system import (
     CASES,
     ConflictResolution,
@@ -50,6 +50,39 @@ THIN = "-" * 78
 
 def _header(text: str) -> str:
     return f"\n{RULE}\n{text}\n{RULE}"
+
+
+def _first_of_kind(topology, kind: str) -> Optional[str]:
+    return next((n.id for n in topology.nodes.values() if n.kind == kind), None)
+
+
+def _default_source(topology) -> str:
+    """The operations centre, or any node if the scenario declares none."""
+    return _first_of_kind(topology, "control_centre") or next(iter(topology.nodes))
+
+
+def _default_target(topology, exclude: Optional[str] = None) -> str:
+    """
+    A field device: the natural destination for operational traffic.
+
+    PT-BR: Resolvido a partir da topologia, e nao fixado no codigo, para que os
+           comandos funcionem em qualquer cenario carregado com --topology.
+    EN:    Resolved from the topology rather than hard-coded, so the commands work on
+           whichever scenario --topology loaded.
+    """
+    for node in topology.nodes.values():
+        if node.kind == "field_device" and node.id != exclude:
+            return node.id
+    return next(n for n in topology.nodes if n != exclude)
+
+
+def _default_repair_node(topology) -> str:
+    """A store-and-forward relay makes the most interesting restoration case."""
+    return (
+        _first_of_kind(topology, "saf_relay")
+        or _first_of_kind(topology, "remote_master")
+        or next(iter(topology.nodes))
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -196,7 +229,7 @@ def _print_search_result(result: SearchResult, problem: RoutingProblem, lang: st
 
 def cmd_route(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_default_topology()
+    topology = load_topology(getattr(args, "topology", "base"))
 
     for spec in args.disable_link or []:
         try:
@@ -209,8 +242,10 @@ def cmd_route(args: argparse.Namespace) -> int:
     print(_header(t("se_title", lang)))
     print(topology.summary(lang))
 
+    source = args.source or _default_source(topology)
+    target = args.target or _default_target(topology)
     try:
-        problem = RoutingProblem(topology, args.source, args.target, tuple(args.avoid or ()))
+        problem = RoutingProblem(topology, source, target, tuple(args.avoid or ()))
     except (KeyError, ValueError) as exc:
         print(exc)
         return 2
@@ -224,7 +259,7 @@ def cmd_route(args: argparse.Namespace) -> int:
 
     result = astar(problem, problem.heuristic())
     if not result.found:
-        print(t("se_no_path", lang, start=args.source, goal=args.target))
+        print(t("se_no_path", lang, start=source, goal=target))
         return 1
     _print_search_result(result, problem, lang, show_expansion=args.expansion)
     print()
@@ -251,9 +286,10 @@ def _report_plan(plan, lang: str, *, label: str) -> None:
 
 def cmd_plan(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_default_topology()
+    topology = load_topology(getattr(args, "topology", "base"))
+    node = args.node or _default_repair_node(topology)
     try:
-        problem = problem_from_diagnosis(args.diagnosis, args.node, topology=topology)
+        problem = problem_from_diagnosis(args.diagnosis, node, topology=topology)
     except (ValueError, KeyError) as exc:
         print(exc)
         return 2
@@ -287,7 +323,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 def cmd_pipeline(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_default_topology()
+    topology = load_topology(getattr(args, "topology", "base"))
     kb = build_knowledge_base()
 
     if args.case not in CASES:
@@ -315,7 +351,8 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
 
     # --- 2. plan ---------------------------------------------------------
     print(_header(f"2/3  {t('pl_title', lang)}"))
-    problem = problem_from_diagnosis(str(diagnosis.value), args.node, topology=topology)
+    node = args.node or _default_repair_node(topology)
+    problem = problem_from_diagnosis(str(diagnosis.value), node, topology=topology)
     plan, result = plan_with_astar(problem)
     _report_plan(plan, lang, label=result.algorithm)
 
@@ -324,22 +361,14 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
     reroute = plan is not None and any(
         a.operator.name == "reroute_traffic" for a in plan.actions
     )
-    target = args.target or next(
-        (n.id for n in topology.nodes.values() if n.kind == "field_device"), None
-    )
-    source = next(
-        (n.id for n in topology.nodes.values() if n.kind == "control_centre"),
-        next(iter(topology.nodes)),
-    )
-    if target is None:
-        print("no field device in the topology to route towards")
-        return 0
+    source = _default_source(topology)
+    target = args.target or _default_target(topology, exclude=node)
 
-    avoid = (args.node,) if reroute else ()
+    avoid = (node,) if reroute else ()
     if reroute:
-        note = (f"O plano inclui desviar trafego: recalculando a rota evitando {args.node}."
+        note = (f"O plano inclui desviar trafego: recalculando a rota evitando {node}."
                 if lang == "pt"
-                else f"The plan includes rerouting: recomputing the route avoiding {args.node}.")
+                else f"The plan includes rerouting: recomputing the route avoiding {node}.")
         print(note)
     try:
         routing = RoutingProblem(topology, source, target, avoid)
@@ -370,6 +399,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--lang", choices=("pt", "en"), default="pt", help="output language / idioma"
     )
+    parser.add_argument(
+        "--topology",
+        default="base",
+        help=(
+            "bundled scenario or path to a JSON file / cenario ou caminho: "
+            + ", ".join(sorted(BUNDLED_TOPOLOGIES))
+        ),
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     # diagnose
@@ -390,8 +427,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # route
     r = sub.add_parser("route", help="A* routing / roteamento por A*")
-    r.add_argument("--from", dest="source", default="NOC")
-    r.add_argument("--to", dest="target", default="RECLOSER_7")
+    r.add_argument("--from", dest="source", help="default: the operations centre")
+    r.add_argument("--to", dest="target", help="default: a field device")
     r.add_argument("--avoid", nargs="*", help="nodes the route must not traverse")
     r.add_argument("--disable-link", nargs="*", metavar="A-B", help="take links out of service")
     r.add_argument("--compare", action="store_true", help="compare BFS, DFS, UCS, greedy, A*")
@@ -401,7 +438,7 @@ def build_parser() -> argparse.ArgumentParser:
     # plan
     p = sub.add_parser("plan", help="automated planning / planejamento automatico")
     p.add_argument("--diagnosis", default="rf_interference")
-    p.add_argument("--node", default="RM_A5")
+    p.add_argument("--node", help="default: a store-and-forward relay")
     p.add_argument("--solver", choices=("gps", "astar", "both"), default="both")
     p.add_argument("--heuristic", choices=("goal_count", "zero"), default="goal_count")
     p.add_argument("--trace", action="store_true", help="show the means-ends trace")
@@ -412,7 +449,7 @@ def build_parser() -> argparse.ArgumentParser:
         "pipeline", help="diagnose -> plan -> route / diagnosticar -> planejar -> rotear"
     )
     pl.add_argument("--case", default="congestion", help=f"one of: {', '.join(sorted(CASES))}")
-    pl.add_argument("--node", default="SAF_A2")
+    pl.add_argument("--node", help="default: a store-and-forward relay")
     pl.add_argument("--target", help="routing destination / destino do roteamento")
     pl.set_defaults(func=cmd_pipeline)
 

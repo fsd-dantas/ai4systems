@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 720" width="1120" height="720" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>STRIPS e GPS: anatomia do operador e analise meios-fins</title>
+  <desc>A esquerda, os tres conjuntos que definem uma acao STRIPS. A direita, a recursao da analise meios-fins do GPS para restaurar o servico num no.</desc>
+
+  <defs>
+    <marker id="p-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#52606d"/>
+    </marker>
+    <marker id="p-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#009E73"/>
+    </marker>
+    <marker id="p-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#D55E00"/>
+    </marker>
+  </defs>
+
+  <rect width="1120" height="720" fill="#fbfaf7"/>
+
+  <text x="40" y="46" font-size="23" font-weight="600" fill="#1f2933">Geracao automatica de planos — STRIPS e GPS</text>
+  <text x="40" y="72" font-size="14" fill="#52606d">STRIPS e a REPRESENTACAO. GPS e a ESTRATEGIA: toda acao existe para eliminar uma diferenca concreta.</text>
+
+  <!-- ============ STRIPS operator anatomy ============ -->
+  <text x="40" y="112" font-size="15" font-weight="700" fill="#1f2933">1 · Anatomia de um operador STRIPS</text>
+
+  <rect x="40" y="126" width="420" height="212" rx="10" fill="#ffffff" stroke="#009E73" stroke-width="2"/>
+  <rect x="40" y="126" width="420" height="32" rx="10" fill="#009E73"/>
+  <rect x="40" y="148" width="420" height="10" fill="#009E73"/>
+  <text x="58" y="148" font-size="14" font-weight="700" fill="#ffffff" font-family="Consolas, monospace">realign_antenna(?n)</text>
+  <text x="404" y="148" font-size="12.5" font-weight="600" fill="#ffffff" text-anchor="end">custo 3</text>
+
+  <text x="58" y="182" font-size="12.5" font-weight="700" fill="#8a6100">PRECONDICOES — o que precisa ser verdade</text>
+  <text x="70" y="202" font-size="12" fill="#1f2933" font-family="Consolas, monospace">authorized(?n)</text>
+  <text x="70" y="219" font-size="12" fill="#1f2933" font-family="Consolas, monospace">crew-at(?n)</text>
+  <text x="70" y="236" font-size="12" fill="#1f2933" font-family="Consolas, monospace">misaligned(?n)</text>
+
+  <text x="58" y="264" font-size="12.5" font-weight="700" fill="#046c50">LISTA DE ADICAO — o que passa a ser verdade</text>
+  <text x="70" y="284" font-size="12" fill="#1f2933" font-family="Consolas, monospace">+ fault-cleared(?n)</text>
+
+  <text x="58" y="310" font-size="12.5" font-weight="700" fill="#a8442a">LISTA DE REMOCAO — o que deixa de ser verdade</text>
+  <text x="70" y="330" font-size="12" fill="#1f2933" font-family="Consolas, monospace">- misaligned(?n)</text>
+
+  <rect x="40" y="352" width="420" height="66" rx="8" fill="#e6f5f0" stroke="#009E73"/>
+  <text x="58" y="374" font-size="12.5" font-weight="700" fill="#046c50">GOVERNANCA COMO PRECONDICAO</text>
+  <text x="58" y="393" font-size="11.5" fill="#046c50">Todo operador que alcanca a planta exige authorized(?n).</text>
+  <text x="58" y="409" font-size="11.5" fill="#046c50">Agir sem autorizacao nao e desaconselhado: e INALCANCAVEL.</text>
+
+  <rect x="40" y="432" width="420" height="86" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="58" y="453" font-size="12.5" font-weight="700" fill="#1f2933">HIPOTESE DO MUNDO FECHADO</text>
+  <text x="58" y="472" font-size="11.5" fill="#52606d">O estado e o conjunto de literais VERDADEIROS.</text>
+  <text x="58" y="488" font-size="11.5" fill="#52606d">O que nao esta no conjunto e considerado falso.</text>
+  <text x="58" y="508" font-size="11.5" fill="#8a94a0">estado = { diagnosed(N), crew-at(BASE), misaligned(N) }</text>
+
+  <!-- planners comparison -->
+  <rect x="40" y="532" width="420" height="152" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="58" y="554" font-size="13" font-weight="700" fill="#1f2933">DOIS SOLUCIONADORES SOBRE A MESMA REPRESENTACAO</text>
+
+  <text x="58" y="578" font-size="12" font-weight="700" fill="#0072B2">GPS — analise meios-fins</text>
+  <text x="58" y="596" font-size="11.5" fill="#52606d">explicavel · NAO completo · NAO otimo</text>
+  <text x="58" y="612" font-size="11.5" fill="#52606d">sujeito a anomalia de Sussman</text>
+
+  <text x="58" y="638" font-size="12" font-weight="700" fill="#E69F00">A* progressivo — planejamento como busca</text>
+  <text x="58" y="656" font-size="11.5" fill="#52606d">otimo em custo · usa a MESMA funcao astar()</text>
+  <text x="58" y="672" font-size="11.5" fill="#52606d">heuristica: literais do objetivo nao satisfeitos</text>
+
+  <!-- ============ GPS means-ends recursion ============ -->
+  <text x="500" y="112" font-size="15" font-weight="700" fill="#1f2933">2 · Analise meios-fins: a recursao do GPS</text>
+
+  <!-- goal -->
+  <rect x="500" y="126" width="300" height="42" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.8"/>
+  <text x="514" y="144" font-size="12" font-weight="700" fill="#0b5c8a">DIFERENCA a reduzir</text>
+  <text x="514" y="161" font-size="12" fill="#1f2933" font-family="Consolas, monospace">service-restored(N)</text>
+
+  <line x1="650" y1="170" x2="650" y2="181" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,190 644,180 656,180" fill="#52606d"/>
+  <text x="662" y="186" font-size="11" fill="#8a94a0">operador que a reduz</text>
+
+  <rect x="500" y="194" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="216" font-size="12" fill="#1f2933" font-family="Consolas, monospace">close_work_order(N)</text>
+
+  <line x1="650" y1="230" x2="650" y2="241" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,250 644,240 656,240" fill="#52606d"/>
+  <text x="662" y="246" font-size="11" fill="#8a94a0">precondicoes viram diferencas</text>
+
+  <rect x="500" y="254" width="300" height="42" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.4"/>
+  <text x="514" y="272" font-size="12" fill="#1f2933" font-family="Consolas, monospace">link-up(N)</text>
+  <text x="514" y="289" font-size="12" fill="#1f2933" font-family="Consolas, monospace">logged(N)</text>
+
+  <line x1="650" y1="298" x2="650" y2="309" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,318 644,308 656,308" fill="#52606d"/>
+
+  <rect x="500" y="322" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="344" font-size="12" fill="#1f2933" font-family="Consolas, monospace">verify_link(N)</text>
+
+  <line x1="650" y1="358" x2="650" y2="369" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,378 644,368 656,368" fill="#52606d"/>
+
+  <rect x="500" y="382" width="300" height="34" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.4"/>
+  <text x="514" y="404" font-size="12" fill="#1f2933" font-family="Consolas, monospace">fault-cleared(N)</text>
+
+  <line x1="650" y1="418" x2="650" y2="429" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,438 644,428 656,428" fill="#52606d"/>
+
+  <rect x="500" y="442" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
+  <text x="514" y="464" font-size="12" fill="#1f2933" font-family="Consolas, monospace">realign_antenna(N)</text>
+
+  <line x1="650" y1="478" x2="650" y2="489" stroke="#52606d" stroke-width="1.8"/>
+  <polygon points="650,498 644,488 656,488" fill="#52606d"/>
+
+  <rect x="500" y="502" width="300" height="42" rx="7" fill="#eef7f2" stroke="#009E73" stroke-width="1.4"/>
+  <text x="514" y="520" font-size="12" fill="#1f2933" font-family="Consolas, monospace">crew-at(BASE)  ✓ ja verdade</text>
+  <text x="514" y="537" font-size="11" fill="#8a94a0">recursao termina: a diferenca desapareceu</text>
+
+  <path d="M 812 520 C 862 520 862 152 818 150" stroke="#009E73" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+  <polygon points="806,150 819,144 818,157" fill="#009E73"/>
+  <text x="874" y="330" font-size="12" font-weight="700" fill="#046c50">o plano e a</text>
+  <text x="874" y="348" font-size="12" font-weight="700" fill="#046c50">pilha desfeita</text>
+  <text x="874" y="368" font-size="11" fill="#52606d">na ordem inversa</text>
+
+  <!-- GPS weakness -->
+  <rect x="500" y="562" width="580" height="122" rx="8" fill="#fdecea" stroke="#D55E00" stroke-width="1.6"/>
+  <text x="518" y="584" font-size="13" font-weight="700" fill="#a8442a">A FRAQUEZA DO GPS, DEMONSTRADA</text>
+  <text x="518" y="605" font-size="11.5" fill="#a8442a">O GPS ordena os operadores pelo custo PROPRIO — e nao ve o custo das PRECONDICOES.</text>
+  <text x="518" y="628" font-size="11.5" fill="#1f2933" font-family="Consolas, monospace">GPS:  deslocar_equipe (10) + conserto_barato (1)   =  custo 11</text>
+  <text x="518" y="648" font-size="11.5" fill="#1f2933" font-family="Consolas, monospace">A* :  conserto_remoto (3)                          =  custo  3</text>
+  <text x="518" y="672" font-size="11.5" font-style="italic" fill="#a8442a">E por isso que os dois planejadores convivem no mesmo repositorio.</text>
+
+  <!-- side note on cost -->
+  <rect x="820" y="126" width="260" height="120" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="836" y="148" font-size="12.5" font-weight="700" fill="#1f2933">POR QUE O CUSTO IMPORTA</text>
+  <text x="836" y="168" font-size="11.5" fill="#52606d">Se toda acao custasse 1,</text>
+  <text x="836" y="183" font-size="11.5" fill="#52606d">planejar seria contar passos.</text>
+  <text x="836" y="205" font-size="11.5" fill="#1f2933">dispatch_crew ....... 4</text>
+  <text x="836" y="221" font-size="11.5" fill="#1f2933">replace_power_unit .. 5</text>
+  <text x="836" y="237" font-size="11.5" fill="#1f2933">fix_vlan ............ 1</text>
+</svg>

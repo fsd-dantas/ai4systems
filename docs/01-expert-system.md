@@ -8,6 +8,8 @@
 
 Codigo / code: [`src/aisg/expert_system/`](../src/aisg/expert_system/)
 
+![Camadas de regras e os dois encadeamentos](assets/02-expert-system.svg)
+
 ---
 
 ## Português

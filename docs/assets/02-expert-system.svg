@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" width="1120" height="700" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Sistema especialista: camadas de regras e os dois encadeamentos</title>
+  <desc>As 43 regras em cinco camadas. O encadeamento progressivo sobe das medicoes ate a autorizacao; o regressivo desce do objetivo ate as perguntas necessarias.</desc>
+
+  <defs>
+    <marker id="a-up" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0072B2"/>
+    </marker>
+    <marker id="a-down" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#CC79A7"/>
+    </marker>
+    <marker id="a-thin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#52606d"/>
+    </marker>
+  </defs>
+
+  <rect width="1120" height="700" fill="#fbfaf7"/>
+
+  <text x="40" y="46" font-size="23" font-weight="600" fill="#1f2933">Sistema especialista — 43 regras em cinco camadas</text>
+  <text x="40" y="72" font-size="14" fill="#52606d">As regras de diagnostico nunca leem a medicao bruta: leem a conclusao da camada anterior. Trocar o sensor muda UMA camada.</text>
+
+  <!-- layer boxes -->
+  <g>
+    <rect x="230" y="100" width="470" height="66" rx="8" fill="#ffffff" stroke="#9aa5b1"/>
+    <text x="248" y="124" font-size="14" font-weight="700" fill="#1f2933">CAMADA 1 · R01–R04</text>
+    <text x="248" y="145" font-size="12.5" fill="#52606d">RSSI, SNR  →  qualidade do sinal  (good / marginal / poor)</text>
+    <text x="248" y="161" font-size="11.5" fill="#8a94a0">R01: SE rssi &lt; -95 E snr &lt; 8  ENTAO qualidade = poor   (CF +0,90)</text>
+
+    <rect x="230" y="182" width="470" height="66" rx="8" fill="#ffffff" stroke="#9aa5b1"/>
+    <text x="248" y="206" font-size="14" font-weight="700" fill="#1f2933">CAMADA 2 · R05–R09</text>
+    <text x="248" y="227" font-size="12.5" fill="#52606d">estado, perda, RTT  →  sintoma do enlace</text>
+    <text x="248" y="243" font-size="11.5" fill="#8a94a0">none / degraded / unstable / outage</text>
+
+    <rect x="230" y="264" width="470" height="94" rx="8" fill="#ffffff" stroke="#0072B2" stroke-width="2"/>
+    <text x="248" y="288" font-size="14" font-weight="700" fill="#0072B2">CAMADA 3 · R10–R24  →  DIAGNOSTICO</text>
+    <text x="248" y="309" font-size="12.5" fill="#52606d">rf_interference · path_obstruction · rain_fade · congestion</text>
+    <text x="248" y="326" font-size="12.5" fill="#52606d">node_power_failure · upstream_relay_failure · vlan_misconfiguration · healthy</text>
+    <text x="248" y="348" font-size="11.5" fill="#8a94a0">oito hipoteses concorrentes, cada uma com seu proprio fator de certeza</text>
+
+    <rect x="230" y="374" width="470" height="60" rx="8" fill="#fdecea" stroke="#D55E00" stroke-width="1.6"/>
+    <text x="248" y="396" font-size="13.5" font-weight="700" fill="#a8442a">CAMADA 3b · R25–R27 — CONTRA-EVIDENCIA (CF negativo)</text>
+    <text x="248" y="416" font-size="11.5" fill="#a8442a">R25: SE clima = clear  ENTAO rain_fade   (CF -0,80)   — evidencia CONTRA a hipotese</text>
+
+    <rect x="230" y="450" width="470" height="60" rx="8" fill="#ffffff" stroke="#9aa5b1"/>
+    <text x="248" y="472" font-size="14" font-weight="700" fill="#1f2933">CAMADA 4 · R28–R35  →  ACAO RECOMENDADA</text>
+    <text x="248" y="494" font-size="11.5" fill="#8a94a0">change_channel · realign_antenna · wait_and_monitor · reroute_traffic · ...</text>
+
+    <rect x="230" y="526" width="470" height="60" rx="8" fill="#e6f5f0" stroke="#009E73" stroke-width="1.6"/>
+    <text x="248" y="548" font-size="14" font-weight="700" fill="#046c50">CAMADA 5 · R36–R43  →  EXIGE AUTORIZACAO?</text>
+    <text x="248" y="570" font-size="11.5" fill="#046c50">toda acao que alcanca a planta: sim. observar: nao.</text>
+  </g>
+
+  <!-- forward chaining rail: measurements at the bottom rise to authorisation -->
+  <line x1="200" y1="566" x2="200" y2="136" stroke="#0072B2" stroke-width="2.6"/>
+  <polygon points="200,124 193,140 207,140" fill="#0072B2"/>
+  <rect x="70" y="270" width="118" height="128" rx="8" fill="#e8f2f8" stroke="#0072B2"/>
+  <text x="129" y="296" font-size="13" font-weight="700" fill="#0072B2" text-anchor="middle">PROGRESSIVO</text>
+  <text x="129" y="313" font-size="11" fill="#0b5c8a" text-anchor="middle">forward</text>
+  <text x="129" y="336" font-size="11" fill="#52606d" text-anchor="middle">dirigido por</text>
+  <text x="129" y="350" font-size="11" fill="#52606d" text-anchor="middle">DADOS</text>
+  <text x="129" y="372" font-size="10.5" fill="#8a94a0" text-anchor="middle">chega telemetria,</text>
+  <text x="129" y="385" font-size="10.5" fill="#8a94a0" text-anchor="middle">o sistema conclui</text>
+
+  <!-- backward chaining rail: starts at the goal and descends to the questions -->
+  <line x1="732" y1="128" x2="732" y2="558" stroke="#CC79A7" stroke-width="2.6"/>
+  <polygon points="732,570 725,554 739,554" fill="#CC79A7"/>
+  <rect x="756" y="270" width="150" height="146" rx="8" fill="#faeef5" stroke="#CC79A7"/>
+  <text x="831" y="296" font-size="13" font-weight="700" fill="#a44a7f" text-anchor="middle">REGRESSIVO</text>
+  <text x="831" y="313" font-size="11" fill="#a44a7f" text-anchor="middle">backward</text>
+  <text x="831" y="336" font-size="11" fill="#52606d" text-anchor="middle">dirigido por</text>
+  <text x="831" y="350" font-size="11" fill="#52606d" text-anchor="middle">OBJETIVO</text>
+  <text x="831" y="372" font-size="10.5" fill="#8a94a0" text-anchor="middle">pergunta so o que</text>
+  <text x="831" y="385" font-size="10.5" fill="#8a94a0" text-anchor="middle">o objetivo exige</text>
+  <text x="831" y="405" font-size="11" font-weight="700" fill="#a44a7f" text-anchor="middle">6 de 13 perguntas</text>
+
+  <!-- two shortening properties -->
+  <rect x="756" y="432" width="324" height="78" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="772" y="453" font-size="12.5" font-weight="700" fill="#1f2933">o que encurta a consulta</text>
+  <text x="772" y="473" font-size="11.5" fill="#52606d">1. curto-circuito: condicao falsa abandona a regra —</text>
+  <text x="772" y="487" font-size="11.5" fill="#52606d">    as demais NAO sao perguntadas</text>
+  <text x="772" y="503" font-size="11.5" fill="#52606d">2. corte por suficiencia: objetivo com CF ≥ 0,9 encerra</text>
+
+  <!-- certainty factors panel -->
+  <rect x="40" y="430" width="150" height="156" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="56" y="452" font-size="12.5" font-weight="700" fill="#1f2933">FATORES DE</text>
+  <text x="56" y="468" font-size="12.5" font-weight="700" fill="#1f2933">CERTEZA</text>
+  <text x="56" y="490" font-size="11" fill="#52606d">premissa = minimo</text>
+  <text x="56" y="505" font-size="11" fill="#52606d">(elo mais fraco)</text>
+  <text x="56" y="524" font-size="11" fill="#52606d">conclusao =</text>
+  <text x="56" y="538" font-size="11" fill="#52606d">premissa x regra</text>
+  <text x="56" y="557" font-size="11" fill="#52606d">dispara so acima</text>
+  <text x="56" y="571" font-size="11" fill="#52606d">de 0,2</text>
+
+  <!-- conflict resolution -->
+  <rect x="756" y="100" width="324" height="150" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="772" y="122" font-size="12.5" font-weight="700" fill="#1f2933">RESOLUCAO DE CONFLITO</text>
+  <text x="772" y="141" font-size="11.5" fill="#52606d">varias regras prontas — qual dispara primeiro?</text>
+  <text x="772" y="164" font-size="11.5" fill="#1f2933">· first-match — ordem da base</text>
+  <text x="772" y="182" font-size="11.5" fill="#1f2933">· specificity — mais condicoes primeiro (padrao)</text>
+  <text x="772" y="200" font-size="11.5" fill="#1f2933">· recency — fatos mais recentes primeiro</text>
+  <text x="772" y="224" font-size="11.5" font-style="italic" fill="#8a94a0">muda a ORDEM do raciocinio,</text>
+  <text x="772" y="239" font-size="11.5" font-style="italic" fill="#8a94a0">nao o ponto fixo</text>
+
+  <!-- evidence input -->
+  <rect x="40" y="100" width="150" height="150" rx="8" fill="#eef1f4" stroke="#c3ccd5"/>
+  <text x="56" y="122" font-size="12.5" font-weight="700" fill="#1f2933">EVIDENCIA</text>
+  <text x="56" y="142" font-size="11" fill="#52606d">13 variaveis</text>
+  <text x="56" y="157" font-size="11" fill="#52606d">perguntaveis</text>
+  <text x="56" y="177" font-size="10.5" fill="#8a94a0">rssi_dbm, snr_db,</text>
+  <text x="56" y="191" font-size="10.5" fill="#8a94a0">packet_loss_pct,</text>
+  <text x="56" y="205" font-size="10.5" fill="#8a94a0">rtt_ms, link_state,</text>
+  <text x="56" y="219" font-size="10.5" fill="#8a94a0">node_power, weather,</text>
+  <text x="56" y="233" font-size="10.5" fill="#8a94a0">spectrum_scan, ...</text>
+  <line x1="194" y1="150" x2="220" y2="136" stroke="#52606d" stroke-width="1.6"/>
+  <polygon points="228,132 216,131 221,142" fill="#52606d"/>
+
+  <!-- explanation footer -->
+  <rect x="40" y="608" width="1040" height="62" rx="8" fill="#ffffff" stroke="#c9c2b8"/>
+  <text x="60" y="630" font-size="13" font-weight="700" fill="#1f2933">EXPLICACAO</text>
+  <text x="150" y="630" font-size="12" fill="#52606d">por que — durante a consulta: a cadeia de regras que levou ate esta pergunta</text>
+  <text x="150" y="650" font-size="12" fill="#52606d">como — apos concluir: percorre as regras que sustentam o fato ate os dados informados pelo usuario</text>
+  <text x="60" y="662" font-size="11" fill="#8a94a0">why / how</text>
+</svg>

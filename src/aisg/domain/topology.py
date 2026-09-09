@@ -39,6 +39,19 @@ from typing import Dict, Iterable, Iterator, List, Optional, Tuple
 DATA_DIR = Path(__file__).resolve().parent / "data"
 DEFAULT_TOPOLOGY_FILE = DATA_DIR / "backhaul-topology.json"
 
+#: Bundled scenarios, by short name.
+#:
+#: PT-BR: ``base`` e o cenario de trabalho (17 nos). ``scale`` e o cenario de escala
+#:        (30 nos, tres setores), usado para mostrar como as estrategias de busca se
+#:        comportam quando o grafo cresce.
+#: EN:    ``base`` is the working scenario (17 nodes). ``scale`` is the scale
+#:        scenario (30 nodes, three sectors), used to show how the search strategies
+#:        behave as the graph grows.
+BUNDLED_TOPOLOGIES: Dict[str, Path] = {
+    "base": DEFAULT_TOPOLOGY_FILE,
+    "scale": DATA_DIR / "backhaul-topology-30.json",
+}
+
 
 @dataclass(frozen=True)
 class LinkType:
@@ -317,3 +330,24 @@ class Topology:
 def load_default_topology() -> Topology:
     """Convenience loader used across the three systems."""
     return Topology.load()
+
+
+def load_topology(name: str = "base") -> Topology:
+    """
+    Load a bundled scenario by short name.
+
+    PT-BR: ``base`` (17 nos) ou ``scale`` (30 nos). Tambem aceita um caminho de
+           arquivo, para cenarios proprios fora do repositorio.
+    EN:    ``base`` (17 nodes) or ``scale`` (30 nodes). Also accepts a file path, for
+           private scenarios kept outside the repository.
+    """
+    path = BUNDLED_TOPOLOGIES.get(name)
+    if path is None:
+        candidate = Path(name)
+        if candidate.is_file():
+            return Topology.load(candidate)
+        raise KeyError(
+            f"unknown topology {name!r}; bundled scenarios: "
+            f"{', '.join(sorted(BUNDLED_TOPOLOGIES))}"
+        )
+    return Topology.load(path)

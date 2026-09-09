@@ -17,7 +17,12 @@ import math
 
 import pytest
 
-from aisg.domain import MAX_SPEED_M_PER_MS, load_default_topology
+from aisg.domain import (
+    BUNDLED_TOPOLOGIES,
+    MAX_SPEED_M_PER_MS,
+    load_default_topology,
+    load_topology,
+)
 from aisg.search import (
     RoutingProblem,
     astar,
@@ -32,34 +37,58 @@ from aisg.search import (
 
 @pytest.fixture
 def topology():
+    """The 17-node working scenario."""
     return load_default_topology()
 
 
+@pytest.fixture(params=sorted(BUNDLED_TOPOLOGIES))
+def any_topology(request):
+    """
+    Every bundled scenario.
+
+    PT-BR: As propriedades do A* — admissibilidade, consistencia e otimalidade — nao
+           podem depender do cenario. Por isso sao verificadas em todos eles.
+    EN:    A*'s properties — admissibility, consistency, optimality — must not depend
+           on the scenario, so they are checked against every one of them.
+    """
+    return load_topology(request.param)
+
+
 # --- topology integrity ----------------------------------------------------
-def test_topology_loads_and_is_connected(topology):
-    assert len(topology.nodes) == 17
-    reached = {"NOC"}
-    frontier = ["NOC"]
+def test_every_bundled_scenario_is_connected(any_topology):
+    start = next(iter(any_topology.nodes))
+    reached = {start}
+    frontier = [start]
     while frontier:
-        for neighbour, _link in topology.neighbours(frontier.pop()):
+        for neighbour, _link in any_topology.neighbours(frontier.pop()):
             if neighbour not in reached:
                 reached.add(neighbour)
                 frontier.append(neighbour)
-    assert reached == set(topology.nodes), "every node must be reachable"
+    assert reached == set(any_topology.nodes), "every node must be reachable"
 
 
-def test_link_costs_are_positive(topology):
-    for link in topology.active_links():
-        assert topology.link_cost(link) > 0
+def test_bundled_scenarios_have_the_expected_size():
+    assert len(load_topology("base").nodes) == 17
+    assert len(load_topology("scale").nodes) == 30
+
+
+def test_link_costs_are_positive(any_topology):
+    for link in any_topology.active_links():
+        assert any_topology.link_cost(link) > 0
+
+
+def test_unknown_topology_name_is_rejected():
+    with pytest.raises(KeyError, match="unknown topology"):
+        load_topology("nonexistent-scenario")
 
 
 # --- heuristic properties: the heart of A* ---------------------------------
-def test_heuristic_is_admissible_for_every_source_goal_pair(topology):
+def test_heuristic_is_admissible_for_every_source_goal_pair(any_topology):
     """h(n) must never exceed the true optimal cost from n to the goal."""
-    for goal in topology.nodes:
-        h = topology.heuristic(goal)
-        for source in topology.nodes:
-            problem = RoutingProblem(topology, source, goal)
+    for goal in any_topology.nodes:
+        h = any_topology.heuristic(goal)
+        for source in any_topology.nodes:
+            problem = RoutingProblem(any_topology, source, goal)
             optimal = uniform_cost(problem)  # ground truth, no heuristic involved
             assert optimal.found
             assert h(source) <= optimal.cost + 1e-9, (
@@ -68,12 +97,12 @@ def test_heuristic_is_admissible_for_every_source_goal_pair(topology):
             )
 
 
-def test_heuristic_is_consistent(topology):
+def test_heuristic_is_consistent(any_topology):
     """h(u) <= cost(u, v) + h(v) for every edge and every goal."""
-    for goal in topology.nodes:
-        h = topology.heuristic(goal)
-        for u in topology.nodes:
-            for v, step_cost in topology.successors(u):
+    for goal in any_topology.nodes:
+        h = any_topology.heuristic(goal)
+        for u in any_topology.nodes:
+            for v, step_cost in any_topology.successors(u):
                 assert h(u) <= step_cost + h(v) + 1e-9, (
                     f"consistency violated on {u} -> {v} towards {goal}"
                 )
@@ -91,24 +120,44 @@ def test_heuristic_equals_straight_line_over_max_speed(topology):
 
 
 # --- optimality ------------------------------------------------------------
-def test_astar_matches_uniform_cost_on_every_pair(topology):
+def test_astar_matches_uniform_cost_on_every_pair(any_topology):
     """A* with an admissible heuristic must return an optimal-cost path."""
-    for source, goal in itertools.combinations(sorted(topology.nodes), 2):
-        problem = RoutingProblem(topology, source, goal)
+    for source, goal in itertools.combinations(sorted(any_topology.nodes), 2):
+        problem = RoutingProblem(any_topology, source, goal)
         optimal = uniform_cost(problem)
         informed = astar(problem, problem.heuristic())
         assert informed.found == optimal.found
         assert informed.cost == pytest.approx(optimal.cost)
 
 
-def test_astar_never_expands_more_nodes_than_uniform_cost(topology):
+def test_astar_never_expands_more_nodes_than_uniform_cost(any_topology):
     """A consistent heuristic can only help. Totalled to avoid per-pair noise."""
     astar_total = ucs_total = 0
-    for source, goal in itertools.combinations(sorted(topology.nodes), 2):
-        problem = RoutingProblem(topology, source, goal)
+    for source, goal in itertools.combinations(sorted(any_topology.nodes), 2):
+        problem = RoutingProblem(any_topology, source, goal)
         astar_total += astar(problem, problem.heuristic()).expanded
         ucs_total += uniform_cost(problem).expanded
     assert astar_total <= ucs_total
+
+
+def test_the_heuristic_saves_more_work_as_the_graph_grows():
+    """
+    PT-BR: A vantagem da heuristica cresce com o grafo — o argumento pratico a favor
+           do A* em cenarios maiores.
+    EN:    The heuristic's advantage grows with the graph — the practical argument for
+           A* on larger scenarios.
+    """
+    savings = {}
+    for name in ("base", "scale"):
+        topology = load_topology(name)
+        astar_total = ucs_total = 0
+        for source, goal in itertools.combinations(sorted(topology.nodes), 2):
+            problem = RoutingProblem(topology, source, goal)
+            astar_total += astar(problem, problem.heuristic()).expanded
+            ucs_total += uniform_cost(problem).expanded
+        savings[name] = 1.0 - astar_total / ucs_total
+
+    assert savings["scale"] > savings["base"]
 
 
 def test_reported_cost_equals_the_recomputed_path_cost(topology):

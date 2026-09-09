@@ -1,6 +1,7 @@
 """Shared domain model / Modelo de dominio compartilhado."""
 
 from aisg.domain.topology import (
+    BUNDLED_TOPOLOGIES,
     LINK_TYPES,
     MAX_SPEED_M_PER_MS,
     Link,
@@ -9,9 +10,11 @@ from aisg.domain.topology import (
     Topology,
     TopologyError,
     load_default_topology,
+    load_topology,
 )
 
 __all__ = [
+    "BUNDLED_TOPOLOGIES",
     "LINK_TYPES",
     "MAX_SPEED_M_PER_MS",
     "Link",
@@ -20,4 +23,5 @@ __all__ = [
     "Topology",
     "TopologyError",
     "load_default_topology",
+    "load_topology",
 ]

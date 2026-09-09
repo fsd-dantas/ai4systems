@@ -7,6 +7,8 @@
 
 Codigo / code: [`src/aisg/planning/`](../src/aisg/planning/)
 
+![Anatomia STRIPS e a recursao meios-fins do GPS](assets/03-planning.svg)
+
 ---
 
 ## Português

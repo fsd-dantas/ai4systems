@@ -4,7 +4,9 @@ Tres temas, **30 minutos cada**: sistema especialista, geracao automatica de pla
 Com esse tempo, cada tema comporta teoria, demonstracao ao vivo e discussao de limitacoes — nao apenas
 uma corrida pela demo.
 
-**Antes de comecar:** `python -m pytest` — 99 testes verdes na tela sao um bom cartao de visita.
+**Antes de comecar:** `python -m pytest` — 108 testes verdes na tela sao um bom cartao de visita.
+
+**Diagramas prontos para os slides:** [`docs/assets/`](assets/) — integracao dos tres sistemas, camadas de regras, anatomia STRIPS com a recursao do GPS, e f = g + h com a prova e a tabela comparativa.
 
 **Material de apoio:** [`notebooks/apresentacao.ipynb`](../notebooks/apresentacao.ipynb) executa tudo o que
 esta abaixo, com as figuras. Rode os comandos de terminal quando quiser mostrar o sistema como ferramenta;

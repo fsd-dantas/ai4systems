@@ -20,19 +20,16 @@
 
 **The three connect.** The expert system's diagnosis becomes the planner's initial state; the *reroute traffic* action is applicable only when A* search confirms an alternative route exists; and the progression planner uses **the same A\* function**, not a copy, that solves routing.
 
-```
-   telemetria / telemetry
-            |
-            v
-  [1] sistema especialista  --diagnostico-->  [2] planejador STRIPS/GPS
-      expert system            diagnosis          STRIPS/GPS planner
-                                                        |
-                                            rota alternativa existe?
-                                            alternative route exists?
-                                                        |
-                                                        v
-                                              [3] busca A* / A* search
-```
+![Integracao dos tres sistemas / Integration of the three systems](docs/assets/01-integration.svg)
+
+### Diagramas / Diagrams
+
+| Diagrama | Conteudo / Contents |
+|---|---|
+| [Integracao](docs/assets/01-integration.svg) | Como os tres sistemas trocam informacao / How the three systems exchange information |
+| [Sistema especialista](docs/assets/02-expert-system.svg) | As cinco camadas de regras e os dois encadeamentos / The five rule layers and both chainings |
+| [Planejamento](docs/assets/03-planning.svg) | Anatomia STRIPS e a recursao meios-fins do GPS / STRIPS anatomy and GPS means-ends recursion |
+| [Busca A*](docs/assets/04-astar.svg) | f = g + h, a prova de admissibilidade e a comparacao / f = g + h, the admissibility proof, and the comparison |
 
 ---
 
@@ -56,6 +53,9 @@ aisg plan --diagnosis node_power_failure --node RM_A5 --solver both --trace
 # 3 — busca A* / A* search
 aisg route --from NOC --to RECLOSER_7 --compare --expansion
 
+# cenario de escala, 30 nos / scale scenario, 30 nodes
+aisg --topology scale route --compare
+
 # os tres em sequencia / all three in sequence
 aisg pipeline --case congestion --node SAF_A2
 ```
@@ -63,7 +63,7 @@ aisg pipeline --case congestion --node SAF_A2
 Sem instalar / without installing: `PYTHONPATH=src python -m aisg ...`
 Em ingles / in English: acrescente `--lang en` / add `--lang en`.
 
-Testes / tests: `python -m pytest` (99 testes / 99 tests).
+Testes / tests: `python -m pytest` (108 testes / 108 tests).
 
 Apresentacao / presentation: [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb).
 

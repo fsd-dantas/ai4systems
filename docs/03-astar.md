@@ -8,6 +8,8 @@
 
 Codigo / code: [`src/aisg/search/`](../src/aisg/search/)
 
+![f = g + h, a prova de admissibilidade e a comparacao entre estrategias](assets/04-astar.svg)
+
 ---
 
 ## Português
@@ -105,6 +107,34 @@ LTE_CORE -> LTE_ENB    fibra optica           0,95       10,55       16,54
 LTE_ENB -> RM_A5       LTE privativo          0,80       69,94       86,48
 RM_A5 -> RECLOSER_7    ethernet local         1,00        5,74       92,22
 ```
+
+### A vantagem da heuristica cresce com o grafo
+
+O cenario de escala (30 nos, 44 enlaces) existe para medir isso.
+
+Num unico par — `NOC` ate o dispositivo de campo mais distante:
+
+| Cenario | Nos | A* expandidos | Custo uniforme expandidos | Economia |
+|---|---|---|---|---|
+| `base` | 17 | 11 | 13 | 15% |
+| `scale` | 30 | 14 | 25 | **44%** |
+
+Um unico par pode ser sorte. Somando **todos** os pares origem-objetivo de cada cenario:
+
+| Cenario | Nos | A* expandidos (total) | Custo uniforme (total) | Economia |
+|---|---|---|---|---|
+| `base` | 17 | 1382 | 1519 | 9,0% |
+| `scale` | 30 | 5571 | 7657 | **27,2%** |
+
+A economia agregada triplica ao passar de 17 para 30 nos.
+
+```bash
+aisg --topology scale route --compare
+```
+
+Nos dois cenarios a resposta e a mesma — o caminho otimo. O que muda e o trabalho para chega-la, e a diferenca aumenta com o tamanho do grafo. E o argumento pratico a favor do A* quando a rede cresce: num grafo pequeno, a busca cega e barata; num grande, deixa de ser.
+
+O teste `test_the_heuristic_saves_more_work_as_the_graph_grows` verifica essa relacao somando **todos** os pares origem-objetivo de cada cenario, e nao apenas o par escolhido para a apresentacao.
 
 ### Falhas e recalculo de rota
 

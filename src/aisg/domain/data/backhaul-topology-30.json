@@ -1,0 +1,545 @@
+{
+  "id": "SGB-DEMO-30",
+  "title_pt": "Backhaul sintetico de comunicacao \u2014 cenario de escala (30 nos)",
+  "title_en": "Synthetic communication backhaul \u2014 scale scenario (30 nodes)",
+  "provenance": "SYNTHETIC. Structure only: three radio sectors, each a star around an access point with a store-and-forward chain reaching a distant field device, tied together by a fibre backbone and a private LTE overlay. Node identifiers, coordinates, link qualities and RF parameters are invented for this exercise. Nothing here is taken from the inventory, addressing, equipment identification, configuration or field topology of any laboratory or utility.",
+  "coordinate_system": "Local planar grid in metres; origin at the operations centre. Distances are Euclidean and DERIVED from these coordinates, never stored separately, so the geometry and the A* heuristic can never disagree.",
+  "nodes": [
+    {
+      "id": "NOC",
+      "label_pt": "Centro de Operacao",
+      "label_en": "Operations Centre",
+      "kind": "control_centre",
+      "sector": "core",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "LTE_CORE",
+      "label_pt": "Nucleo LTE privativo",
+      "label_en": "Private LTE core",
+      "kind": "lte_core",
+      "sector": "core",
+      "x": 900,
+      "y": -600
+    },
+    {
+      "id": "LTE_ENB",
+      "label_pt": "Radio base LTE",
+      "label_en": "LTE base station",
+      "kind": "lte_enb",
+      "sector": "core",
+      "x": 2600,
+      "y": -1500
+    },
+    {
+      "id": "AP_A",
+      "label_pt": "Ponto de acesso \u2014 setor A",
+      "label_en": "Access point \u2014 sector A",
+      "kind": "access_point",
+      "sector": "A",
+      "x": 3100,
+      "y": 5369
+    },
+    {
+      "id": "RM_A1",
+      "label_pt": "Radio remoto A1",
+      "label_en": "Remote radio A1",
+      "kind": "remote_master",
+      "sector": "A",
+      "x": 3916,
+      "y": 5750
+    },
+    {
+      "id": "RM_A2",
+      "label_pt": "Radio remoto A2",
+      "label_en": "Remote radio A2",
+      "kind": "remote_master",
+      "sector": "A",
+      "x": 3168,
+      "y": 6668
+    },
+    {
+      "id": "RM_A3",
+      "label_pt": "Radio remoto A3",
+      "label_en": "Remote radio A3",
+      "kind": "remote_master",
+      "sector": "A",
+      "x": 1643,
+      "y": 6245
+    },
+    {
+      "id": "RM_A4",
+      "label_pt": "Radio remoto A4",
+      "label_en": "Remote radio A4",
+      "kind": "remote_master",
+      "sector": "A",
+      "x": 1300,
+      "y": 4288
+    },
+    {
+      "id": "RM_A5",
+      "label_pt": "Radio remoto A5",
+      "label_en": "Remote radio A5",
+      "kind": "remote_master",
+      "sector": "A",
+      "x": 3231,
+      "y": 2873
+    },
+    {
+      "id": "SAF_A1",
+      "label_pt": "Repetidor SAF A1",
+      "label_en": "Store-and-forward relay A1",
+      "kind": "saf_relay",
+      "sector": "A",
+      "x": 2822,
+      "y": 6945
+    },
+    {
+      "id": "SAF_A2",
+      "label_pt": "Repetidor SAF A2",
+      "label_en": "Store-and-forward relay A2",
+      "kind": "saf_relay",
+      "sector": "A",
+      "x": 2544,
+      "y": 8521
+    },
+    {
+      "id": "FD_A",
+      "label_pt": "Dispositivo de campo A",
+      "label_en": "Field device A",
+      "kind": "field_device",
+      "sector": "A",
+      "x": 2266,
+      "y": 10096
+    },
+    {
+      "id": "AP_B",
+      "label_pt": "Ponto de acesso \u2014 setor B",
+      "label_en": "Access point \u2014 sector B",
+      "kind": "access_point",
+      "sector": "B",
+      "x": -6774,
+      "y": -593
+    },
+    {
+      "id": "RM_B1",
+      "label_pt": "Radio remoto B1",
+      "label_en": "Remote radio B1",
+      "kind": "remote_master",
+      "sector": "B",
+      "x": -5958,
+      "y": -212
+    },
+    {
+      "id": "RM_B2",
+      "label_pt": "Radio remoto B2",
+      "label_en": "Remote radio B2",
+      "kind": "remote_master",
+      "sector": "B",
+      "x": -6706,
+      "y": 706
+    },
+    {
+      "id": "RM_B3",
+      "label_pt": "Radio remoto B3",
+      "label_en": "Remote radio B3",
+      "kind": "remote_master",
+      "sector": "B",
+      "x": -8231,
+      "y": 283
+    },
+    {
+      "id": "RM_B4",
+      "label_pt": "Radio remoto B4",
+      "label_en": "Remote radio B4",
+      "kind": "remote_master",
+      "sector": "B",
+      "x": -8574,
+      "y": -1674
+    },
+    {
+      "id": "RM_B5",
+      "label_pt": "Radio remoto B5",
+      "label_en": "Remote radio B5",
+      "kind": "remote_master",
+      "sector": "B",
+      "x": -6643,
+      "y": -3089
+    },
+    {
+      "id": "SAF_B1",
+      "label_pt": "Repetidor SAF B1",
+      "label_en": "Store-and-forward relay B1",
+      "kind": "saf_relay",
+      "sector": "B",
+      "x": -7905,
+      "y": -1724
+    },
+    {
+      "id": "SAF_B2",
+      "label_pt": "Repetidor SAF B2",
+      "label_en": "Store-and-forward relay B2",
+      "kind": "saf_relay",
+      "sector": "B",
+      "x": -9037,
+      "y": -2855
+    },
+    {
+      "id": "FD_B",
+      "label_pt": "Dispositivo de campo B",
+      "label_en": "Field device B",
+      "kind": "field_device",
+      "sector": "B",
+      "x": -10168,
+      "y": -3987
+    },
+    {
+      "id": "AP_C",
+      "label_pt": "Ponto de acesso \u2014 setor C",
+      "label_en": "Access point \u2014 sector C",
+      "kind": "access_point",
+      "sector": "C",
+      "x": 3250,
+      "y": -5629
+    },
+    {
+      "id": "RM_C1",
+      "label_pt": "Radio remoto C1",
+      "label_en": "Remote radio C1",
+      "kind": "remote_master",
+      "sector": "C",
+      "x": 4066,
+      "y": -5249
+    },
+    {
+      "id": "RM_C2",
+      "label_pt": "Radio remoto C2",
+      "label_en": "Remote radio C2",
+      "kind": "remote_master",
+      "sector": "C",
+      "x": 3318,
+      "y": -4331
+    },
+    {
+      "id": "RM_C3",
+      "label_pt": "Radio remoto C3",
+      "label_en": "Remote radio C3",
+      "kind": "remote_master",
+      "sector": "C",
+      "x": 1793,
+      "y": -4754
+    },
+    {
+      "id": "RM_C4",
+      "label_pt": "Radio remoto C4",
+      "label_en": "Remote radio C4",
+      "kind": "remote_master",
+      "sector": "C",
+      "x": 1450,
+      "y": -6711
+    },
+    {
+      "id": "RM_C5",
+      "label_pt": "Radio remoto C5",
+      "label_en": "Remote radio C5",
+      "kind": "remote_master",
+      "sector": "C",
+      "x": 3381,
+      "y": -8126
+    },
+    {
+      "id": "SAF_C1",
+      "label_pt": "Repetidor SAF C1",
+      "label_en": "Store-and-forward relay C1",
+      "kind": "saf_relay",
+      "sector": "C",
+      "x": 4754,
+      "y": -6176
+    },
+    {
+      "id": "SAF_C2",
+      "label_pt": "Repetidor SAF C2",
+      "label_en": "Store-and-forward relay C2",
+      "kind": "saf_relay",
+      "sector": "C",
+      "x": 6257,
+      "y": -6724
+    },
+    {
+      "id": "FD_C",
+      "label_pt": "Dispositivo de campo C",
+      "label_en": "Field device C",
+      "kind": "field_device",
+      "sector": "C",
+      "x": 7761,
+      "y": -7271
+    }
+  ],
+  "links": [
+    {
+      "a": "NOC",
+      "b": "LTE_CORE",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "LTE_CORE",
+      "b": "LTE_ENB",
+      "type": "fiber",
+      "quality": 0.96
+    },
+    {
+      "a": "NOC",
+      "b": "AP_A",
+      "type": "fiber",
+      "quality": 0.99
+    },
+    {
+      "a": "AP_A",
+      "b": "RM_A1",
+      "type": "radio_900mhz",
+      "quality": 0.94
+    },
+    {
+      "a": "AP_A",
+      "b": "RM_A2",
+      "type": "radio_900mhz",
+      "quality": 0.89
+    },
+    {
+      "a": "AP_A",
+      "b": "RM_A3",
+      "type": "radio_900mhz",
+      "quality": 0.84
+    },
+    {
+      "a": "AP_A",
+      "b": "RM_A4",
+      "type": "radio_900mhz",
+      "quality": 0.79
+    },
+    {
+      "a": "AP_A",
+      "b": "RM_A5",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_A1",
+      "b": "RM_A2",
+      "type": "radio_900mhz",
+      "quality": 0.8
+    },
+    {
+      "a": "RM_A3",
+      "b": "RM_A4",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_A4",
+      "b": "RM_A5",
+      "type": "radio_900mhz",
+      "quality": 0.68
+    },
+    {
+      "a": "AP_A",
+      "b": "SAF_A1",
+      "type": "radio_900mhz_saf",
+      "quality": 0.78
+    },
+    {
+      "a": "SAF_A1",
+      "b": "SAF_A2",
+      "type": "radio_900mhz_saf",
+      "quality": 0.68
+    },
+    {
+      "a": "SAF_A2",
+      "b": "FD_A",
+      "type": "radio_900mhz_saf",
+      "quality": 0.58
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "FD_A",
+      "type": "lte",
+      "quality": 0.82
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "RM_A4",
+      "type": "lte",
+      "quality": 0.76
+    },
+    {
+      "a": "NOC",
+      "b": "AP_B",
+      "type": "fiber",
+      "quality": 0.97
+    },
+    {
+      "a": "AP_B",
+      "b": "RM_B1",
+      "type": "radio_900mhz",
+      "quality": 0.94
+    },
+    {
+      "a": "AP_B",
+      "b": "RM_B2",
+      "type": "radio_900mhz",
+      "quality": 0.89
+    },
+    {
+      "a": "AP_B",
+      "b": "RM_B3",
+      "type": "radio_900mhz",
+      "quality": 0.84
+    },
+    {
+      "a": "AP_B",
+      "b": "RM_B4",
+      "type": "radio_900mhz",
+      "quality": 0.79
+    },
+    {
+      "a": "AP_B",
+      "b": "RM_B5",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_B1",
+      "b": "RM_B2",
+      "type": "radio_900mhz",
+      "quality": 0.8
+    },
+    {
+      "a": "RM_B3",
+      "b": "RM_B4",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_B4",
+      "b": "RM_B5",
+      "type": "radio_900mhz",
+      "quality": 0.68
+    },
+    {
+      "a": "AP_B",
+      "b": "SAF_B1",
+      "type": "radio_900mhz_saf",
+      "quality": 0.78
+    },
+    {
+      "a": "SAF_B1",
+      "b": "SAF_B2",
+      "type": "radio_900mhz_saf",
+      "quality": 0.68
+    },
+    {
+      "a": "SAF_B2",
+      "b": "FD_B",
+      "type": "radio_900mhz_saf",
+      "quality": 0.58
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "FD_B",
+      "type": "lte",
+      "quality": 0.78
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "RM_B4",
+      "type": "lte",
+      "quality": 0.73
+    },
+    {
+      "a": "NOC",
+      "b": "AP_C",
+      "type": "fiber",
+      "quality": 0.97
+    },
+    {
+      "a": "AP_C",
+      "b": "RM_C1",
+      "type": "radio_900mhz",
+      "quality": 0.94
+    },
+    {
+      "a": "AP_C",
+      "b": "RM_C2",
+      "type": "radio_900mhz",
+      "quality": 0.89
+    },
+    {
+      "a": "AP_C",
+      "b": "RM_C3",
+      "type": "radio_900mhz",
+      "quality": 0.84
+    },
+    {
+      "a": "AP_C",
+      "b": "RM_C4",
+      "type": "radio_900mhz",
+      "quality": 0.79
+    },
+    {
+      "a": "AP_C",
+      "b": "RM_C5",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_C1",
+      "b": "RM_C2",
+      "type": "radio_900mhz",
+      "quality": 0.8
+    },
+    {
+      "a": "RM_C3",
+      "b": "RM_C4",
+      "type": "radio_900mhz",
+      "quality": 0.74
+    },
+    {
+      "a": "RM_C4",
+      "b": "RM_C5",
+      "type": "radio_900mhz",
+      "quality": 0.68
+    },
+    {
+      "a": "AP_C",
+      "b": "SAF_C1",
+      "type": "radio_900mhz_saf",
+      "quality": 0.78
+    },
+    {
+      "a": "SAF_C1",
+      "b": "SAF_C2",
+      "type": "radio_900mhz_saf",
+      "quality": 0.68
+    },
+    {
+      "a": "SAF_C2",
+      "b": "FD_C",
+      "type": "radio_900mhz_saf",
+      "quality": 0.58
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "FD_C",
+      "type": "lte",
+      "quality": 0.74
+    },
+    {
+      "a": "LTE_ENB",
+      "b": "RM_C4",
+      "type": "lte",
+      "quality": 0.7
+    }
+  ]
+}

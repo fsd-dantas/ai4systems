@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 660" width="1180" height="660" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Integracao dos tres sistemas / Integration of the three systems</title>
+  <desc>O sistema especialista produz um diagnostico que vira o estado inicial do planejador; o planejador consulta a busca A* para confirmar rota alternativa; e o planejador progressivo reutiliza a mesma funcao A* do roteamento.</desc>
+
+  <rect width="1180" height="660" fill="#fbfaf7"/>
+
+  <text x="40" y="46" font-size="23" font-weight="600" fill="#1f2933">Como os tres sistemas se conectam / How the three systems connect</text>
+  <text x="40" y="72" font-size="14" fill="#52606d">Um incidente atravessa os tres. As setas mostram o que cada sistema entrega ao seguinte.</text>
+  <text x="40" y="91" font-size="14" fill="#52606d">One incident crosses all three. The arrows show what each system hands to the next.</text>
+
+  <!-- input -->
+  <rect x="40" y="126" width="240" height="62" rx="8" fill="#eef1f4" stroke="#c3ccd5"/>
+  <text x="160" y="152" font-size="14" font-weight="600" fill="#1f2933" text-anchor="middle">telemetria / telemetry</text>
+  <text x="160" y="172" font-size="12" fill="#52606d" text-anchor="middle">RSSI, SNR, perda, RTT, estado</text>
+  <line x1="160" y1="190" x2="160" y2="212" stroke="#52606d" stroke-width="2"/>
+  <polygon points="160,222 155,210 165,210" fill="#52606d"/>
+
+  <!-- 1 expert system -->
+  <rect x="40" y="226" width="320" height="180" rx="10" fill="#ffffff" stroke="#0072B2" stroke-width="2"/>
+  <path d="M 50 226 H 350 A 10 10 0 0 1 360 236 V 262 H 40 V 236 A 10 10 0 0 1 50 226 Z" fill="#0072B2"/>
+  <text x="58" y="251" font-size="15" font-weight="700" fill="#ffffff">1 — SISTEMA ESPECIALISTA</text>
+  <text x="58" y="288" font-size="13" fill="#1f2933">43 regras de producao, 5 camadas</text>
+  <text x="58" y="308" font-size="13" fill="#52606d">encadeamento progressivo e regressivo</text>
+  <text x="58" y="328" font-size="13" fill="#52606d">fatores de certeza (MYCIN)</text>
+  <text x="58" y="348" font-size="13" fill="#52606d">explicacao: por que / como</text>
+  <rect x="58" y="362" width="284" height="32" rx="6" fill="#e8f2f8" stroke="#9dc6e0"/>
+  <text x="200" y="383" font-size="12.5" font-weight="600" fill="#0b5c8a" text-anchor="middle">diagnostico + acao + autorizacao</text>
+
+  <!-- 2 planner -->
+  <rect x="440" y="226" width="320" height="180" rx="10" fill="#ffffff" stroke="#009E73" stroke-width="2"/>
+  <path d="M 450 226 H 750 A 10 10 0 0 1 760 236 V 262 H 440 V 236 A 10 10 0 0 1 450 226 Z" fill="#009E73"/>
+  <text x="458" y="251" font-size="15" font-weight="700" fill="#ffffff">2 — PLANEJADOR STRIPS / GPS</text>
+  <text x="458" y="288" font-size="13" fill="#1f2933">12 operadores STRIPS</text>
+  <text x="458" y="308" font-size="13" fill="#52606d">GPS: analise meios-fins</text>
+  <text x="458" y="328" font-size="13" fill="#52606d">planejador progressivo por A*</text>
+  <text x="458" y="348" font-size="13" fill="#52606d">validacao do plano</text>
+  <rect x="458" y="362" width="284" height="32" rx="6" fill="#e6f5f0" stroke="#93cfbb"/>
+  <text x="600" y="383" font-size="12.5" font-weight="600" fill="#046c50" text-anchor="middle">plano ordenado e validado</text>
+
+  <!-- 3 search -->
+  <rect x="840" y="226" width="300" height="180" rx="10" fill="#ffffff" stroke="#E69F00" stroke-width="2"/>
+  <path d="M 850 226 H 1130 A 10 10 0 0 1 1140 236 V 262 H 840 V 236 A 10 10 0 0 1 850 226 Z" fill="#E69F00"/>
+  <text x="858" y="251" font-size="15" font-weight="700" fill="#ffffff">3 — BUSCA A*</text>
+  <text x="858" y="288" font-size="13" fill="#1f2933">f(n) = g(n) + h(n)</text>
+  <text x="858" y="308" font-size="13" fill="#52606d">heuristica admissivel e consistente</text>
+  <text x="858" y="328" font-size="13" fill="#52606d">largura, profundidade, custo uniforme</text>
+  <text x="858" y="348" font-size="13" fill="#52606d">gulosa — para comparacao</text>
+  <rect x="858" y="362" width="264" height="32" rx="6" fill="#fdf1dc" stroke="#e2c281"/>
+  <text x="990" y="383" font-size="12.5" font-weight="600" fill="#8a6100" text-anchor="middle">caminho exato + custo otimo</text>
+
+  <!-- diagnosis arrow: box 1 -> box 2 -->
+  <line x1="364" y1="316" x2="426" y2="316" stroke="#52606d" stroke-width="2.4"/>
+  <polygon points="436,316 424,310 424,322" fill="#52606d"/>
+  <text x="400" y="302" font-size="12" font-weight="600" fill="#1f2933" text-anchor="middle">diagnostico</text>
+  <text x="400" y="336" font-size="11" fill="#52606d" text-anchor="middle">vira o estado</text>
+  <text x="400" y="349" font-size="11" fill="#52606d" text-anchor="middle">inicial</text>
+
+  <!-- query / answer between planner and search -->
+  <line x1="764" y1="300" x2="826" y2="300" stroke="#D55E00" stroke-width="2.4"/>
+  <polygon points="836,300 824,294 824,306" fill="#D55E00"/>
+  <text x="800" y="276" font-size="11.5" font-weight="600" fill="#D55E00" text-anchor="middle">existe rota</text>
+  <text x="800" y="289" font-size="11.5" font-weight="600" fill="#D55E00" text-anchor="middle">alternativa?</text>
+
+  <line x1="836" y1="344" x2="774" y2="344" stroke="#D55E00" stroke-width="2.4"/>
+  <polygon points="764,344 776,338 776,350" fill="#D55E00"/>
+  <text x="800" y="364" font-size="11.5" font-weight="600" fill="#D55E00" text-anchor="middle">sim / nao</text>
+
+  <!-- reuse note -->
+  <path d="M 600 410 L 600 446 L 990 446 L 990 410" stroke="#8c6db5" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+  <rect x="646" y="430" width="298" height="32" rx="6" fill="#f3eefa" stroke="#c3aede"/>
+  <text x="795" y="451" font-size="12.5" font-weight="600" fill="#5b3f86" text-anchor="middle">a MESMA funcao astar(), nao uma copia</text>
+
+  <!-- shared domain -->
+  <rect x="40" y="492" width="1100" height="80" rx="10" fill="#ffffff" stroke="#b6b0a6" stroke-width="1.6"/>
+  <text x="60" y="518" font-size="14" font-weight="700" fill="#1f2933">DOMINIO COMPARTILHADO — topologia sintetica do backhaul</text>
+  <text x="60" y="540" font-size="12.5" fill="#52606d">17 nos (cenario base) ou 30 nos (cenario de escala) · nucleo em fibra · setores de radio 900 MHz · cadeia armazena-e-encaminha · sobreposicao LTE privativa</text>
+  <text x="60" y="559" font-size="12.5" fill="#52606d">custo do enlace = sobrecarga(tipo) + distancia / (velocidade(tipo) x qualidade)   —   distancias derivadas das coordenadas</text>
+
+  <path d="M 200 488 L 200 408" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+  <path d="M 600 488 L 600 464" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+  <path d="M 990 488 L 990 464" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+
+  <!-- validity limit -->
+  <rect x="40" y="590" width="1100" height="46" rx="8" fill="#fdecea" stroke="#e0a49c"/>
+  <text x="60" y="610" font-size="12.5" font-weight="700" fill="#8a2f22">LIMITE DE VALIDADE / VALIDITY LIMIT</text>
+  <text x="60" y="627" font-size="12" fill="#8a2f22">Topologia sintetica. Limiares nominais e nao calibrados. Nao existe conjunto de dados rotulado de falhas para este dominio. O sistema RECOMENDA, nao atua.</text>
+</svg>
