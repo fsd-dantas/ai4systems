@@ -127,12 +127,8 @@ def test_no_plant_touching_action_precedes_authorisation(diagnosis, topology):
     PT-BR: Invariante de governanca: nenhuma acao que alcanca a planta pode aparecer
            antes da autorizacao. Nao e recomendacao, e precondicao.
     """
-    # halt_transmission is exempt deliberately: authorisation gates changes to
-    # the plant, and ceasing to transmit is the safe act. Making it wait for a
-    # window would be the dangerous design. Its ordering is asserted separately,
-    # in test_transmission_halts_before_any_action_touches_the_plant.
     exempt = {"request_authorization", "monitor_and_wait", "verify_link",
-              "record_logbook", "close_work_order", "halt_transmission"}
+              "record_logbook", "close_work_order", }
     problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
     plan, _ = plan_with_astar(problem)
 
@@ -335,57 +331,15 @@ def test_gps_can_be_suboptimal_when_a_cheap_action_has_expensive_preconditions()
     assert astar_plan.cost < gps_plan.cost
 
 
-# --- containment breach: halting precedes everything -----------------------
-@pytest.mark.parametrize(
-    "companion,repair",
-    [
-        ("interference", "change_channel"),
-        ("power-failed", "replace_power_unit"),
-        ("vlan-wrong", "fix_vlan"),
-    ],
-)
-def test_transmission_halts_before_any_action_touches_the_plant(companion, repair):
-    """
-    PT-BR: Enquanto a contencao esta violada o equipamento irradia acima do
-           criterio do ensaio. Nenhum plano pode reparar, autorizar ou deslocar
-           equipe antes de interromper a transmissao.
-    EN:    While containment is breached the rig radiates above the test's
-           criterion. No plan may repair, authorise, or send a crew before
-           transmission has stopped.
-    """
-    problem = build_restoration_problem("N1", ["containment-breached", companion])
-    for plan in (plan_with_astar(problem)[0], plan_with_gps(problem, lang="en")[0]):
-        assert plan is not None
-        names = [a.operator.name for a in plan.actions]
-        assert "halt_transmission" in names
-        assert names.index("halt_transmission") < names.index(repair)
-        assert plan.validate()[0]
-        assert _remaining_faults(problem, plan) == []
 
-
-def test_no_crew_is_sent_while_the_rig_is_radiating_over_the_limit():
-    problem = build_restoration_problem("N1", ["containment-breached", "power-failed"])
-    plan, _ = plan_with_astar(problem)
-    names = [a.operator.name for a in plan.actions]
-    assert names.index("halt_transmission") < names.index("dispatch_crew")
-
-
-def test_halting_needs_no_authorisation():
-    """Authorisation gates changes to the plant; it must never gate stopping."""
-    problem = build_restoration_problem("N1", ["containment-breached"])
-    halt = next(a for a in problem.ground_actions() if a.name == "halt_transmission(N1)")
-
-    assert halt.applicable(problem.initial), "halting waited for an authorised window"
-
-
-# --- indoor conducted bench ------------------------------------------------
+# --- simulated scenario ------------------------------------------------
 @pytest.mark.parametrize(
     "fault,repair",
-    [("excess-attenuation", "restore_path_budget"), ("cabling-fault", "inspect_connectors")],
+    [("excess-path-loss", "restore_path_budget"), ("mac-contention", "separate_channels")],
 )
 def test_the_indoor_diagnoses_have_planning_semantics(fault, repair):
     """Both bench-only conditions must produce an executable plan."""
-    problem = build_restoration_problem("N1", [fault], indoor=True)
+    problem = build_restoration_problem("N1", [fault], simulated=True)
     plan, _ = plan_with_astar(problem)
 
     assert plan is not None
@@ -394,28 +348,28 @@ def test_the_indoor_diagnoses_have_planning_semantics(fault, repair):
     assert _remaining_faults(problem, plan) == []
 
 
-def test_hands_on_the_harness_require_the_rig_powered_down():
-    """Working the RF harness live is the unsafe act the model must exclude."""
-    problem = build_restoration_problem("N1", ["cabling-fault"], indoor=True)
-    inspect = next(
-        a for a in problem.ground_actions() if a.name == "inspect_connectors(N1)"
+def test_a_parameter_change_requires_the_run_to_be_stopped():
+    """Changing a scenario parameter mid-run would invalidate the measurement."""
+    problem = build_restoration_problem("N1", ["mac-contention"], simulated=True)
+    change = next(
+        a for a in problem.ground_actions() if a.name == "separate_channels(N1)"
     )
-    assert not inspect.applicable(problem.initial), "inspection allowed on a live rig"
+    assert not change.applicable(problem.initial), "parameter changed during a live run"
 
     plan, _ = plan_with_astar(problem)
     names = [a.operator.name for a in plan.actions]
-    assert names.index("power_down_rig") < names.index("inspect_connectors")
+    assert names.index("stop_run") < names.index("separate_channels")
 
 
-def test_verification_requires_the_rig_live_again():
-    """Powering down is a cost, not a free precaution: the link must be re-verified."""
-    problem = build_restoration_problem("N1", ["cabling-fault"], indoor=True)
+def test_verification_requires_the_run_active_again():
+    """Stopping is a cost, not a free precaution: the link must be re-verified."""
+    problem = build_restoration_problem("N1", ["mac-contention"], simulated=True)
     plan, _ = plan_with_astar(problem)
     names = [a.operator.name for a in plan.actions]
-    assert names.index("power_up_rig") < names.index("verify_link")
+    assert names.index("start_run") < names.index("verify_link")
 
 
-def test_physical_repairs_share_one_power_cycle():
+def test_parameter_changes_share_one_run_restart():
     """
     PT-BR: Indoors nao ha deslocamento, mas ha o ciclo de energia. Duas correcoes
            fisicas devem caber num unico ciclo — e o compromisso que substitui a
@@ -424,22 +378,22 @@ def test_physical_repairs_share_one_power_cycle():
            repairs must fit inside one - the trade-off that replaces crew travel.
     """
     problem = build_restoration_problem(
-        "N1", ["cabling-fault", "power-failed"], indoor=True
+        "N1", ["mac-contention", "excess-path-loss"], simulated=True
     )
     plan, _ = plan_with_astar(problem)
     names = [a.operator.name for a in plan.actions]
 
-    assert names.count("power_down_rig") == 1
-    assert names.count("power_up_rig") == 1
+    assert names.count("stop_run") == 1
+    assert names.count("start_run") == 1
     assert _remaining_faults(problem, plan) == []
 
 
-def test_a_remote_fix_needs_no_power_cycle():
-    """Changing a remote attenuator setting must not power the bench down."""
-    problem = build_restoration_problem("N1", ["excess-attenuation"], indoor=True)
+def test_a_runtime_repair_needs_no_run_restart():
+    """A runtime repair must not stop the run: only parameter changes do."""
+    problem = build_restoration_problem("N1", ["node-stopped"], simulated=True)
     plan, _ = plan_with_astar(problem)
     names = [a.operator.name for a in plan.actions]
-    assert "power_down_rig" not in names
+    assert "stop_run" not in names
 
 
 def test_the_field_domain_is_unchanged_by_the_indoor_option(topology):
@@ -448,5 +402,5 @@ def test_the_field_domain_is_unchanged_by_the_indoor_option(topology):
         problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
         plan, _ = plan_with_astar(problem)
         names = [a.operator.name for a in plan.actions]
-        assert "power_down_rig" not in names
-        assert "rig-live(RM_A5)" not in {str(p) for p in problem.initial}
+        assert "stop_run" not in names
+        assert "run-active(RM_A5)" not in {str(p) for p in problem.initial}

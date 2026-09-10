@@ -39,18 +39,21 @@ DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "vlan_misconfiguration": "vlan-wrong",
     "congestion": "congested",
     "healthy": None,  # nothing to repair; the link is already clear
-    # From the bench knowledge base. Not a service fault: a stop condition.
-    "containment_breach": "containment-breached",
-    # Indoor conducted bench: the two conditions that replace the outdoor
-    # propagation faults.
-    "excess_attenuation": "excess-attenuation",
-    "cabling_fault": "cabling-fault",
+    # Simulated ns-3 scenario. A simulation does not radiate, so there is no
+    # containment condition here; and it has no antenna or cable, so the outdoor
+    # propagation faults are replaced by what a simulator can actually command.
+    "excess_path_loss": "excess-path-loss",
+    "mac_contention": "mac-contention",
+    "node_failure": "node-stopped",
+    "routing_misconfiguration": "route-missing",
 }
 
-#: Diagnoses that exist only on the indoor conducted bench. Asking to plan one
-#: implies that scenario: their repairs are bench operators, and in the field
-#: domain there would be no operator able to clear them.
-INDOOR_ONLY_DIAGNOSES = frozenset({"excess_attenuation", "cabling_fault"})
+#: Diagnoses that exist only in the simulated scenario. Asking to plan one
+#: implies that scenario: their repairs are simulation operators, and in the
+#: field domain there would be no operator able to clear them.
+SIMULATED_ONLY_DIAGNOSES = frozenset(
+    {"excess_path_loss", "mac_contention", "node_failure", "routing_misconfiguration"}
+)
 
 #: Every fault the domain can repair. A fault outside this set would have no
 #: operator able to clear it, and the planner would fail with no explanation.
@@ -73,7 +76,7 @@ def cleared(fault: str) -> str:
     return f"cleared-{fault}(?n)"
 
 
-def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List[Operator]:
+def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> List[Operator]:
     """
     The twelve restoration operators, in STRIPS form.
 
@@ -85,27 +88,11 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
     """
     build = Operator.build
     verify_preconditions = ("diagnosed(?n)",) + tuple(cleared(f) for f in faults)
-    if indoor:
+    if simulated:
         # A link is only verifiable with the rig transmitting again, which is
         # what makes powering down a cost rather than a free precaution.
-        verify_preconditions += ("rig-live(?n)",)
+        verify_preconditions += ("run-active(?n)",)
 
-    # Safety gate. While containment is breached the rig is radiating above the
-    # test's acceptance criterion, so nothing may touch the plant and no crew may
-    # be sent until transmission has stopped. STRIPS cannot say "while not
-    # breached", so the requirement is expressed positively: when a breach is in
-    # the instance, every plant-touching operator additionally demands that the
-    # breach has been cleared. Halting is what clears it, so halting must come
-    # first - it is a precondition, not an instruction to be followed.
-    breached = "containment-breached" in faults
-
-    def gate_on(parameter: str) -> tuple:
-        """The gate literal, bound to whichever parameter names the node."""
-        if not breached:
-            return ()
-        return (cleared("containment-breached").replace("?n", parameter),)
-
-    gate = gate_on("?n")
     return [
         build(
             "request_authorization",
@@ -119,7 +106,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "dispatch_crew",
             parameters=("?from", "?to"),
-            preconditions=("authorized(?to)", "crew-at(?from)") + gate_on("?to"),
+            preconditions=("authorized(?to)", "crew-at(?from)"),
             add=("crew-at(?to)",),
             delete=("crew-at(?from)",),
             cost=4.0,
@@ -129,7 +116,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "change_channel",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "interference(?n)") + gate,
+            preconditions=("authorized(?n)", "interference(?n)"),
             add=("cleared-interference(?n)",),
             delete=("interference(?n)",),
             cost=2.0,
@@ -139,7 +126,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "realign_antenna",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)") + gate,
+            preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)"),
             add=("cleared-misaligned(?n)",),
             delete=("misaligned(?n)",),
             cost=3.0,
@@ -150,10 +137,10 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
             "replace_power_unit",
             parameters=("?n",),
             preconditions=(
-                ("authorized(?n)", "rig-powered-down(?n)", "power-failed(?n)")
-                if indoor
+                ("authorized(?n)", "run-stopped(?n)", "power-failed(?n)")
+                if simulated
                 else ("authorized(?n)", "crew-at(?n)", "power-failed(?n)")
-            ) + gate,
+            ),
             add=("cleared-power-failed(?n)",),
             delete=("power-failed(?n)",),
             cost=5.0,
@@ -163,7 +150,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "restore_relay",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "relay-down(?n)") + gate,
+            preconditions=("authorized(?n)", "relay-down(?n)"),
             add=("cleared-relay-down(?n)",),
             delete=("relay-down(?n)",),
             cost=2.0,
@@ -173,7 +160,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "fix_vlan",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "vlan-wrong(?n)") + gate,
+            preconditions=("authorized(?n)", "vlan-wrong(?n)"),
             add=("cleared-vlan-wrong(?n)",),
             delete=("vlan-wrong(?n)",),
             cost=1.0,
@@ -183,7 +170,7 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
         build(
             "reroute_traffic",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)") + gate,
+            preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)"),
             add=("cleared-congested(?n)", "traffic-rerouted(?n)"),
             delete=("congested(?n)",),
             cost=2.0,
@@ -200,67 +187,76 @@ def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List
             description_pt="Acompanhar ?n: causa transitoria, nenhuma intervencao na planta.",
             description_en="Monitor ?n: transient cause, no intervention on the plant.",
         ),
-        # ---- indoor conducted bench -----------------------------------
-        # Indoors nobody travels, so crew dispatch is not the cost that matters.
-        # What matters is that physical work on the RF harness requires the rig
-        # powered down, and verification requires it live again. That restores a
-        # real trade-off: batch the physical repairs into one power cycle, or pay
-        # for another.
+        # ---- simulated scenario ----------------------------------------
+        # Nobody travels to a simulation, so crew dispatch is not the cost that
+        # matters. What matters is that changing a SCENARIO PARAMETER - the
+        # propagation budget, the channel plan - invalidates the run in progress,
+        # so the run must be stopped and restarted. Runtime repairs do not. That
+        # restores a real trade-off: batch the parameter changes into one restart,
+        # or pay for another.
         build(
-            "power_down_rig",
+            "stop_run",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "rig-live(?n)"),
-            add=("rig-powered-down(?n)",),
-            delete=("rig-live(?n)",),
+            preconditions=("authorized(?n)", "run-active(?n)"),
+            add=("run-stopped(?n)",),
+            delete=("run-active(?n)",),
             cost=2.0,
-            description_pt="Desenergizar a bancada de ?n para intervencao fisica.",
-            description_en="Power the bench at ?n down for physical work.",
+            description_pt="Interromper a execucao de ?n para alterar parametros do cenario.",
+            description_en="Stop the run at ?n to change scenario parameters.",
         ),
         build(
-            "power_up_rig",
+            "start_run",
             parameters=("?n",),
-            preconditions=("rig-powered-down(?n)",),
-            add=("rig-live(?n)",),
-            delete=("rig-powered-down(?n)",),
+            preconditions=("run-stopped(?n)",),
+            add=("run-active(?n)",),
+            delete=("run-stopped(?n)",),
             cost=2.0,
-            description_pt="Reenergizar a bancada de ?n.",
-            description_en="Power the bench at ?n back up.",
+            description_pt="Retomar a execucao de ?n.",
+            description_en="Restart the run at ?n.",
         ),
         build(
             "restore_path_budget",
             parameters=("?n",),
-            # A remote attenuator setting: no power cycle, no hands on the rig.
-            preconditions=("authorized(?n)", "excess-attenuation(?n)") + gate,
-            add=(cleared("excess-attenuation"),),
-            delete=("excess-attenuation(?n)",),
+            # A propagation parameter: the run in progress cannot absorb it.
+            preconditions=("authorized(?n)", "excess-path-loss(?n)", "run-stopped(?n)"),
+            add=(cleared("excess-path-loss"),),
+            delete=("excess-path-loss(?n)",),
             cost=1.0,
-            description_pt="Restaurar a atenuacao pretendida no percurso de ?n.",
-            description_en="Restore the intended path attenuation at ?n.",
+            description_pt="Restaurar o orcamento de percurso de ?n no cenario.",
+            description_en="Restore the scenario's path budget at ?n.",
         ),
         build(
-            "inspect_connectors",
+            "separate_channels",
             parameters=("?n",),
-            # Hands on the RF harness: only with the rig powered down.
-            preconditions=("authorized(?n)", "cabling-fault(?n)",
-                           "rig-powered-down(?n)") + gate,
-            add=(cleared("cabling-fault"),),
-            delete=("cabling-fault(?n)",),
+            # A channel-plan change: also a scenario parameter.
+            preconditions=("authorized(?n)", "mac-contention(?n)",
+                           "run-stopped(?n)"),
+            add=(cleared("mac-contention"),),
+            delete=("mac-contention(?n)",),
             cost=3.0,
-            description_pt="Inspecionar e refazer conectores e cabos de ?n.",
-            description_en="Inspect and remake the connectors and cables at ?n.",
+            description_pt="Separar os setores em frequencia no cenario de ?n.",
+            description_en="Separate the sectors in frequency in the scenario at ?n.",
         ),
         build(
-            "halt_transmission",
+            "restart_node",
             parameters=("?n",),
-            # Deliberately NOT gated on authorised(?n). Authorisation exists to
-            # gate changes to the plant; ceasing to transmit is the safe act, and
-            # making it wait for a window would be the dangerous design.
-            preconditions=("diagnosed(?n)", "containment-breached(?n)"),
-            add=(cleared("containment-breached"),),
-            delete=("containment-breached(?n)",),
+            # A runtime event in the simulator: no parameter change, no restart.
+            preconditions=("authorized(?n)", "node-stopped(?n)"),
+            add=(cleared("node-stopped"),),
+            delete=("node-stopped(?n)",),
             cost=1.0,
-            description_pt="Interromper a transmissao: contencao violada.",
-            description_en="Interrupt transmission: containment breached.",
+            description_pt="Reativar o no parado no cenario de ?n.",
+            description_en="Restart the node stopped in the scenario at ?n.",
+        ),
+        build(
+            "fix_routing",
+            parameters=("?n",),
+            preconditions=("authorized(?n)", "route-missing(?n)"),
+            add=(cleared("route-missing"),),
+            delete=("route-missing(?n)",),
+            cost=1.0,
+            description_pt="Corrigir a rota para o destino de ?n.",
+            description_en="Correct the route to the destination at ?n.",
         ),
         build(
             "verify_link",
@@ -303,7 +299,7 @@ def build_restoration_problem(
     node: str,
     faults: Sequence[str],
     *,
-    indoor: bool = False,
+    simulated: bool = False,
     alternate_route: bool = False,
     crew_base: str = CREW_BASE,
     extra_initial: Iterable[str] = (),
@@ -322,8 +318,8 @@ def build_restoration_problem(
         )
 
     initial: List[str] = [f"diagnosed({node})"]
-    if indoor:
-        initial.append(f"rig-live({node})")
+    if simulated:
+        initial.append(f"run-active({node})")
     else:
         initial.append(f"crew-at({crew_base})")
     initial += [f"{fault}({node})" for fault in faults]
@@ -335,7 +331,7 @@ def build_restoration_problem(
     # preconditions reduce to diagnosed(?n).
     return Problem(
         name=f"restore-service-{node}",
-        operators=build_operators(faults, indoor=indoor),
+        operators=build_operators(faults, simulated=simulated),
         initial=make_state(initial),
         goal=make_state([f"service-restored({node})", f"logged({node})"]),
         objects={"node": [node], "location": [crew_base, node]},
@@ -351,7 +347,7 @@ def problem_from_diagnosis(
     topology: Optional[Topology] = None,
     reroute_target: Optional[str] = None,  # the destination, not the source
     crew_base: str = CREW_BASE,
-    indoor: bool = False,
+    simulated: bool = False,
 ) -> Problem:
     """
     Turn an expert-system diagnosis into a planning problem.
@@ -372,7 +368,7 @@ def problem_from_diagnosis(
         )
 
     # The diagnosis selects the scenario when it can only belong to one.
-    indoor = indoor or diagnosis in INDOOR_ONLY_DIAGNOSES
+    simulated = simulated or diagnosis in SIMULATED_ONLY_DIAGNOSES
 
     fault = DIAGNOSIS_TO_FAULT[diagnosis]
     faults = [fault] if fault else []
@@ -390,7 +386,7 @@ def problem_from_diagnosis(
             alternate = shortest_route(topology, source, target, avoid=(node,)) is not None
 
     return build_restoration_problem(
-        node, faults, indoor=indoor, alternate_route=alternate, crew_base=crew_base
+        node, faults, simulated=simulated, alternate_route=alternate, crew_base=crew_base
     )
 
 
