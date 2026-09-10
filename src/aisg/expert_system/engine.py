@@ -346,6 +346,12 @@ class WorkingMemory:
     def __init__(self) -> None:
         self._facts: Dict[str, Dict[object, Fact]] = {}
         self._clock = 0
+        # (variable, value) -> {source: cf}. Contributions are kept apart so a
+        # rule that fires again REPLACES its own earlier contribution instead of
+        # being combined with it. Combining a rule with itself would count the
+        # same evidence twice, which is the failure mode MYCIN's combination
+        # function is least forgiving about.
+        self._contributions: Dict[Tuple[str, object], Dict[str, float]] = {}
 
     def __contains__(self, variable: str) -> bool:
         return variable in self._facts
@@ -355,19 +361,31 @@ class WorkingMemory:
         return list(self._facts)
 
     def assert_fact(self, variable: str, value: object, cf: float, source: str) -> Fact:
-        """Add or reinforce a belief, combining certainty factors when it repeats."""
+        """
+        Record one source's support for ``variable = value`` and recombine.
+
+        PT-BR: A cada chamada, a contribuicao DAQUELA fonte e substituida e o CF
+               final e recalculado a partir de todas as contribuicoes. Assim, uma
+               regra que dispara de novo com premissa mais forte corrige sua
+               propria conclusao, em vez de somar-se a si mesma.
+        EN:    Each call replaces THAT source's contribution and recomputes the
+               final CF from all contributions. A rule that fires again on a
+               stronger premise therefore corrects its own conclusion instead of
+               compounding with itself.
+        """
         self._clock += 1
-        bucket = self._facts.setdefault(variable, {})
-        existing = bucket.get(value)
-        if existing is None:
-            fact = Fact(variable, value, cf, source, self._clock)
-        else:
-            merged = combine_cf(existing.cf, cf)
-            source_chain = (
-                existing.source if source in existing.source else f"{existing.source}+{source}"
-            )
-            fact = Fact(variable, value, merged, source_chain, self._clock)
-        bucket[value] = fact
+        key = (variable, value)
+        contributions = self._contributions.setdefault(key, {})
+        contributions[source] = cf
+
+        # Deterministic order, so the result does not depend on firing order.
+        merged = 0.0
+        for name in sorted(contributions):
+            merged = combine_cf(merged, contributions[name])
+
+        source_chain = "+".join(sorted(contributions))
+        fact = Fact(variable, value, merged, source_chain, self._clock)
+        self._facts.setdefault(variable, {})[value] = fact
         return fact
 
     def get(self, variable: str, value: object) -> Optional[Fact]:
@@ -489,6 +507,8 @@ class InferenceEngine:
         self.memory = WorkingMemory()
         self.trace: List[TraceEntry] = []
         self._fired: List[str] = []
+        #: rule id -> the premise CF it last fired on
+        self._fired_premise: Dict[str, float] = {}
         self._why_stack: List[Rule] = []
         self._pending: set = set()
 
@@ -497,6 +517,7 @@ class InferenceEngine:
         self.memory = WorkingMemory()
         self.trace = []
         self._fired = []
+        self._fired_premise = {}
         self._why_stack = []
         self._pending = set()
 
@@ -608,11 +629,20 @@ class InferenceEngine:
         while cycles < self.max_cycles:
             candidates: List[Tuple[Rule, float]] = []
             for rule in self.kb.rules:
-                if rule.id in self._fired:
-                    continue
                 cf = self.premise_cf(rule)
-                if cf is not None and cf > FIRING_THRESHOLD:
-                    candidates.append((rule, cf))
+                if cf is None or cf <= FIRING_THRESHOLD:
+                    continue
+                previous = self._fired_premise.get(rule.id)
+                # A rule fires once, and again only if its premise has since
+                # STRENGTHENED. Without this, a conclusion drawn early from a
+                # partial premise stays frozen while its own support keeps
+                # growing - which made downstream certainties depend on the
+                # conflict-resolution policy that happened to order the firings.
+                # Premises are bounded above by 1 and must strictly increase, so
+                # re-firing terminates.
+                if previous is not None and cf <= previous + 1e-9:
+                    continue
+                candidates.append((rule, cf))
 
             if not candidates:
                 break
@@ -643,7 +673,9 @@ class InferenceEngine:
         fact = self.memory.assert_fact(
             rule.conclusion.variable, rule.conclusion.value, conclusion_cf, rule.id
         )
-        self._fired.append(rule.id)
+        if rule.id not in self._fired:
+            self._fired.append(rule.id)
+        self._fired_premise[rule.id] = premise_cf
         self._log(
             "fire",
             f"{rule.id}: premise CF {premise_cf:+.2f} x rule CF {rule.cf:+.2f} "

@@ -386,7 +386,14 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
     # --- 2. plan ---------------------------------------------------------
     print(_header(f"2/3  {t('pl_title', lang)}"))
     node = args.node or _default_repair_node(topology)
-    problem = problem_from_diagnosis(str(diagnosis.value), node, topology=topology)
+    # The planner must validate the SAME destination the route step will show.
+    # Letting it fall back to its own default meant a plan could certify a
+    # reroute towards one device while the demonstration routed to another -
+    # and could report service restored for a destination that is unreachable.
+    target = args.target or _default_target(topology, exclude=node)
+    problem = problem_from_diagnosis(
+        str(diagnosis.value), node, topology=topology, reroute_target=target
+    )
     plan, result = plan_with_astar(problem)
     _report_plan(plan, lang, label=result.algorithm)
 
@@ -396,7 +403,6 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
         a.operator.name == "reroute_traffic" for a in plan.actions
     )
     source = _default_source(topology)
-    target = args.target or _default_target(topology, exclude=node)
 
     avoid = (node,) if reroute else ()
     if reroute:

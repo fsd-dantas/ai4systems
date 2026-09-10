@@ -154,7 +154,7 @@ combinacao de duas conclusoes independentes sobre o mesmo fato:
 > Regras puramente booleanas obrigariam a escolher entre ignorar a evidencia e afirmar demais. O fator de
 > certeza permite dizer "isto torna a hipotese menos provavel" — que e o que um especialista realmente faz.
 
-Mostre tambem o caso `rain_fade`, que conclui com CF 0,56: o sistema **admite** que a evidencia e fraca em
+Mostre tambem o caso `rain_fade`, que conclui com CF 0,66: o sistema **admite** que a evidencia e fraca em
 vez de fingir confianca.
 
 ### 22:00–26:00 — Encadeamento regressivo e explicacao

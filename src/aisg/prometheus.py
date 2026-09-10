@@ -79,6 +79,13 @@ class MetricSpec:
     note: str = ""
 
     def render(self, subject: str) -> str:
+        """
+        Substitute the subject into the query.
+
+        Braces are PromQL label selectors and must survive verbatim, so this uses
+        str.replace rather than str.format - a format call would treat every
+        selector as a field reference.
+        """
         return self.query.replace("{subject}", subject)
 
     def interpret(self, raw: float) -> Any:
@@ -98,32 +105,32 @@ class MetricSpec:
 #: metric names differ per exporter, so treat these as templates to edit, not as
 #: names that will exist in any particular installation.
 DEFAULT_SPECS: List[MetricSpec] = [
-    MetricSpec("rssi_dbm", 'min_over_time(radio_rssi_dbm{{link="{subject}"}}[5m])'),
-    MetricSpec("snr_db", 'min_over_time(radio_snr_db{{link="{subject}"}}[5m])'),
+    MetricSpec("rssi_dbm", 'min_over_time(radio_rssi_dbm{link="{subject}"}[5m])'),
+    MetricSpec("snr_db", 'min_over_time(radio_snr_db{link="{subject}"}[5m])'),
     MetricSpec(
         "packet_loss_pct",
-        'avg_over_time(probe_success{{link="{subject}"}}[5m])',
+        'avg_over_time(probe_success{link="{subject}"}[5m])',
         convert="success_ratio_to_loss_pct",
     ),
     MetricSpec(
         "rtt_ms",
-        'avg_over_time(probe_duration_seconds{{link="{subject}"}}[5m])',
+        'avg_over_time(probe_duration_seconds{link="{subject}"}[5m])',
         convert="seconds_to_ms",
     ),
     MetricSpec(
         "traffic_load_pct",
-        '100 * rate(link_in_octets{{link="{subject}"}}[5m]) * 8'
-        ' / link_capacity_bps{{link="{subject}"}}',
+        '100 * rate(link_in_octets{link="{subject}"}[5m]) * 8'
+        ' / link_capacity_bps{link="{subject}"}',
     ),
     MetricSpec(
         "link_state",
-        'link_oper_status{{link="{subject}"}}',
+        'link_oper_status{link="{subject}"}',
         mapping={"1": "up", "0": "down"},
         note="flapping is not a level; derive it from changes() over a window",
     ),
     MetricSpec(
         "upstream_relay_reachable",
-        'probe_success{{link="{subject}",role="upstream"}}',
+        'probe_success{link="{subject}",role="upstream"}',
         mapping={"1": "yes", "0": "no"},
     ),
 ]

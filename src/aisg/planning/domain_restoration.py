@@ -278,7 +278,7 @@ def problem_from_diagnosis(
     node: str,
     *,
     topology: Optional[Topology] = None,
-    reroute_target: Optional[str] = None,
+    reroute_target: Optional[str] = None,  # the destination, not the source
     crew_base: str = CREW_BASE,
 ) -> Problem:
     """
@@ -306,9 +306,12 @@ def problem_from_diagnosis(
     if fault == "congested" and topology is not None:
         from aisg.search.graph_problem import shortest_route
 
-        source = reroute_target or _default_source(topology)
-        target = _default_target(topology, node)
-        if target is not None:
+        # `reroute_target` names the DESTINATION whose traffic is being diverted,
+        # not the source. Using it as the source silently checked a different
+        # route from the one the caller asked about.
+        source = _default_source(topology)
+        target = reroute_target or _default_target(topology, node)
+        if target is not None and target != node:
             alternate = shortest_route(topology, source, target, avoid=(node,)) is not None
 
     return build_restoration_problem(

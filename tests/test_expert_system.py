@@ -253,3 +253,44 @@ def test_uncertain_evidence_lowers_the_conclusion_certainty():
     certain_cf = certain.forward_chain().memory.best("diagnosis").cf
     hedged_cf = hedged.forward_chain().memory.best("diagnosis").cf
     assert hedged_cf < certain_cf
+
+
+def test_downstream_certainty_does_not_depend_on_the_conflict_policy():
+    """
+    PT-BR: A afirmacao apresentada e que a politica muda a ORDEM do raciocinio,
+           nao o resultado. Verificar apenas o diagnostico vencedor nao sustenta
+           isso: uma regra de acao que dispara cedo, sobre um diagnostico ainda
+           parcial, congelava um CF derivado mais baixo.
+    EN:    The claim presented is that the policy changes the ORDER of reasoning,
+           not the outcome. Checking only the winning diagnosis does not support
+           it: an action rule firing early, on a still-partial diagnosis, froze a
+           lower derived CF.
+    """
+    for case in CASES:
+        certainties = set()
+        for strategy in ConflictResolution:
+            engine = InferenceEngine(build_knowledge_base(), strategy=strategy)
+            for variable, value in CASES[case].items():
+                engine.given(variable, value)
+            conclusions = engine.forward_chain().conclusions()
+            certainties.add((
+                conclusions["diagnosis"][0].value,
+                round(conclusions["diagnosis"][0].cf, 6),
+                conclusions["recommended_action"][0].value,
+                round(conclusions["recommended_action"][0].cf, 6),
+            ))
+        assert len(certainties) == 1, f"{case}: policy changed the outcome: {certainties}"
+
+
+def test_a_rule_refiring_does_not_count_its_own_evidence_twice():
+    """A rule that fires again must replace its contribution, not compound it."""
+    engine = InferenceEngine(build_knowledge_base())
+    for variable, value in CASES["interference"].items():
+        engine.given(variable, value)
+    engine.forward_chain()
+
+    best = engine.memory.best("diagnosis")
+    assert best.cf <= 1.0
+    # The supporting rules are named once each, never repeated.
+    sources = best.source.split("+")
+    assert len(sources) == len(set(sources))

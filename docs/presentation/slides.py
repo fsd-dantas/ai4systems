@@ -464,7 +464,7 @@ regra e o fato que a sustentam. É a diferença entre parecer e poder mostrar.""
         [
             ["interference", "rf_interference", "+0,93", "change_channel", "sim"],
             ["obstruction", "path_obstruction", "+0,91", "realign_antenna", "sim"],
-            ["rain_fade", "rain_fade", "+0,56", "wait_and_monitor", "não"],
+            ["rain_fade", "rain_fade", "+0,66", "wait_and_monitor", "não"],
             ["power_failure", "node_power_failure", "+0,95", "dispatch_power_team", "sim"],
             ["relay_failure", "upstream_relay_failure", "+0,95", "restore_upstream_relay", "sim"],
             ["vlan", "vlan_misconfiguration", "+0,96", "fix_vlan_allowlist", "sim"],
@@ -472,7 +472,7 @@ regra e o fato que a sustentam. É a diferença entre parecer e poder mostrar.""
             ["healthy", "healthy", "+0,81", "no_action", "não"],
         ],
         """Oito casos, oito diagnósticos corretos. Mas o número a apontar é o de
-rain_fade: CF +0,56, nitidamente mais baixo que os demais.
+rain_fade: CF +0,66, nitidamente mais baixo que os demais.
 
 Isso não é um defeito — é o sistema admitindo que a evidência é fraca. Chuva com
 margem estreita é mesmo evidência fraca. Um sistema que devolvesse +0,95 nesse
