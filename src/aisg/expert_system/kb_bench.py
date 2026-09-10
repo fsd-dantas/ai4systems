@@ -77,6 +77,10 @@ BENCH_THRESHOLDS: Dict[str, Number] = {
     # starts to dominate the link budget rather than the radio.
     "attenuation_nominal_db": 6.0,
     "attenuation_high_db": 30.0,
+    # PLACEHOLDER. The containment acceptance criterion is per-experiment and
+    # belongs to the authorised test plan; it is not a value to invent here.
+    # Replace with the figure the plan declares before any transmitting run.
+    "leakage_limit_dbm": -60.0,
 }
 
 #: How each diagnosis is DELIBERATELY INDUCED on the bench. This is the
@@ -91,6 +95,9 @@ INDUCIBLE_BY: Dict[str, str] = {
     "vlan_misconfiguration": "remove the VLAN from the trunk allow-list on the switch",
     "congestion": "drive the link past capacity with a traffic generator",
     "healthy": "baseline run: attenuator at floor, no injection, nominal configuration",
+    # Not a condition to induce. It is detected during any transmitting run and
+    # stops it. Listed so the "every diagnosis is accounted for" test still holds.
+    "containment_breach": "NOT induced deliberately: measured during a run and halts it",
 }
 
 VALIDITY_PT = (
@@ -148,6 +155,17 @@ def build_bench_knowledge_base() -> KnowledgeBase:
         bounds=(0.0, 80.0), unit="dB",
         prompt_pt="Qual a atenuacao comandada no percurso, em dB [0, 80]?",
         prompt_en="What attenuation is commanded on the path, in dB [0, 80]?",
+    ))
+    # Containment is a SAFETY measurement, not a performance one. The lab's own
+    # concepts note is explicit that a conducted path is not zero power, that
+    # residual leakage always exists, and that containment must be measured or
+    # technically justified - never presumed from the presence of a cable.
+    add(Variable(
+        "residual_leakage_dbm", VariableKind.NUMERIC,
+        "vazamento residual medido", "measured residual leakage",
+        bounds=(-140.0, 0.0), unit="dBm",
+        prompt_pt="Qual o vazamento residual medido na fronteira de contencao, em dBm [-140, 0]?",
+        prompt_en="What residual leakage is measured at the containment boundary, in dBm [-140, 0]?",
     ))
     add(Variable(
         "packet_loss_pct", VariableKind.NUMERIC,
@@ -250,6 +268,7 @@ def build_bench_knowledge_base() -> KnowledgeBase:
             "restore_upstream_relay",
             "fix_vlan_allowlist",
             "reroute_traffic",
+            "halt_transmission",
             "no_action",
         ),
         askable=False,
@@ -460,6 +479,31 @@ def build_bench_knowledge_base() -> KnowledgeBase:
             Conclusion("authorization_required", "yes"), 1.00,
             "Toda alteracao no cenario exige janela de experimento autorizada.",
             "Any change to the scenario requires an authorised experiment window."))
+    # ---- containment: a STOP condition, not a restoration one -------------
+    # The lab's concepts note: a conducted path is not zero power, residual
+    # leakage always exists, and if it exceeds the test's acceptance criterion the
+    # transmission must be interrupted. That inverts the governance model used
+    # everywhere else in this base - see B46.
+    r(Rule("B44", (_cond("residual_leakage_dbm", ">", t["leakage_limit_dbm"]),),
+        Conclusion("diagnosis", "containment_breach"), 0.98,
+        "Vazamento residual acima do criterio de aceitacao do ensaio.",
+        "Residual leakage above the test's acceptance criterion."))
+    r(Rule("B45", (_cond("residual_leakage_dbm", "<=", t["leakage_limit_dbm"]),),
+        Conclusion("diagnosis", "containment_breach"), -0.95,
+        "Vazamento medido dentro do criterio e evidencia CONTRA violacao de contencao.",
+        "Measured leakage within the criterion is evidence AGAINST a breach."))
+    r(Rule("B46", (_cond("diagnosis", "=", "containment_breach"),),
+        Conclusion("recommended_action", "halt_transmission"), 1.00,
+        "Interromper a transmissao precede qualquer outra acao.",
+        "Interrupting transmission precedes every other action."))
+    # The inversion: every other action waits for an authorised window. This one
+    # does not, because the safe act is to STOP. Authorisation gates changes to
+    # the plant; it must never gate ceasing to transmit.
+    r(Rule("B47", (_cond("recommended_action", "=", "halt_transmission"),),
+        Conclusion("authorization_required", "no"), 1.00,
+        "Parar nao altera a planta: interromper primeiro, reportar depois.",
+        "Stopping changes nothing on the plant: halt first, report after."))
+
     r(Rule("B43", (_cond("recommended_action", "=", "no_action"),),
         Conclusion("authorization_required", "no"), 1.00,
         "Nenhuma acao, nenhuma janela.",
@@ -520,8 +564,17 @@ BENCH_CASES: Dict[str, Dict[str, object]] = {
         "neighbours_affected": "none", "recent_change": "none",
         "vlan_trunk_ok": "yes", "upstream_relay_reachable": "yes",
     },
+    "containment_breach": {
+        "rssi_dbm": -80.0, "snr_db": 20.0, "attenuation_db": 6.0,
+        "residual_leakage_dbm": -42.0,
+        "packet_loss_pct": 0.0, "rtt_ms": 38.0, "traffic_load_pct": 20.0,
+        "link_state": "up", "node_power": "ok", "spectrum_scan": "clean",
+        "neighbours_affected": "none", "recent_change": "none",
+        "vlan_trunk_ok": "yes", "upstream_relay_reachable": "yes",
+    },
     "healthy": {
         "rssi_dbm": -74.0, "snr_db": 25.0, "attenuation_db": 6.0,
+        "residual_leakage_dbm": -88.0,
         "packet_loss_pct": 0.0, "rtt_ms": 35.0, "traffic_load_pct": 22.0,
         "link_state": "up", "node_power": "ok", "spectrum_scan": "clean",
         "neighbours_affected": "none", "recent_change": "none",

@@ -127,8 +127,12 @@ def test_no_plant_touching_action_precedes_authorisation(diagnosis, topology):
     PT-BR: Invariante de governanca: nenhuma acao que alcanca a planta pode aparecer
            antes da autorizacao. Nao e recomendacao, e precondicao.
     """
+    # halt_transmission is exempt deliberately: authorisation gates changes to
+    # the plant, and ceasing to transmit is the safe act. Making it wait for a
+    # window would be the dangerous design. Its ordering is asserted separately,
+    # in test_transmission_halts_before_any_action_touches_the_plant.
     exempt = {"request_authorization", "monitor_and_wait", "verify_link",
-              "record_logbook", "close_work_order"}
+              "record_logbook", "close_work_order", "halt_transmission"}
     problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
     plan, _ = plan_with_astar(problem)
 
@@ -329,3 +333,46 @@ def test_gps_can_be_suboptimal_when_a_cheap_action_has_expensive_preconditions()
     assert gps_plan.cost == 11.0  # travel (10) + cheap fix (1)
     assert astar_plan.cost == 3.0  # remote fix
     assert astar_plan.cost < gps_plan.cost
+
+
+# --- containment breach: halting precedes everything -----------------------
+@pytest.mark.parametrize(
+    "companion,repair",
+    [
+        ("interference", "change_channel"),
+        ("power-failed", "replace_power_unit"),
+        ("vlan-wrong", "fix_vlan"),
+    ],
+)
+def test_transmission_halts_before_any_action_touches_the_plant(companion, repair):
+    """
+    PT-BR: Enquanto a contencao esta violada o equipamento irradia acima do
+           criterio do ensaio. Nenhum plano pode reparar, autorizar ou deslocar
+           equipe antes de interromper a transmissao.
+    EN:    While containment is breached the rig radiates above the test's
+           criterion. No plan may repair, authorise, or send a crew before
+           transmission has stopped.
+    """
+    problem = build_restoration_problem("N1", ["containment-breached", companion])
+    for plan in (plan_with_astar(problem)[0], plan_with_gps(problem, lang="en")[0]):
+        assert plan is not None
+        names = [a.operator.name for a in plan.actions]
+        assert "halt_transmission" in names
+        assert names.index("halt_transmission") < names.index(repair)
+        assert plan.validate()[0]
+        assert _remaining_faults(problem, plan) == []
+
+
+def test_no_crew_is_sent_while_the_rig_is_radiating_over_the_limit():
+    problem = build_restoration_problem("N1", ["containment-breached", "power-failed"])
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+    assert names.index("halt_transmission") < names.index("dispatch_crew")
+
+
+def test_halting_needs_no_authorisation():
+    """Authorisation gates changes to the plant; it must never gate stopping."""
+    problem = build_restoration_problem("N1", ["containment-breached"])
+    halt = next(a for a in problem.ground_actions() if a.name == "halt_transmission(N1)")
+
+    assert halt.applicable(problem.initial), "halting waited for an authorised window"

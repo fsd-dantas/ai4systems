@@ -39,6 +39,8 @@ DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "vlan_misconfiguration": "vlan-wrong",
     "congestion": "congested",
     "healthy": None,  # nothing to repair; the link is already clear
+    # From the bench knowledge base. Not a service fault: a stop condition.
+    "containment_breach": "containment-breached",
 }
 
 #: Every fault the domain can repair. A fault outside this set would have no
@@ -74,6 +76,23 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
     """
     build = Operator.build
     verify_preconditions = ("diagnosed(?n)",) + tuple(cleared(f) for f in faults)
+
+    # Safety gate. While containment is breached the rig is radiating above the
+    # test's acceptance criterion, so nothing may touch the plant and no crew may
+    # be sent until transmission has stopped. STRIPS cannot say "while not
+    # breached", so the requirement is expressed positively: when a breach is in
+    # the instance, every plant-touching operator additionally demands that the
+    # breach has been cleared. Halting is what clears it, so halting must come
+    # first - it is a precondition, not an instruction to be followed.
+    breached = "containment-breached" in faults
+
+    def gate_on(parameter: str) -> tuple:
+        """The gate literal, bound to whichever parameter names the node."""
+        if not breached:
+            return ()
+        return (cleared("containment-breached").replace("?n", parameter),)
+
+    gate = gate_on("?n")
     return [
         build(
             "request_authorization",
@@ -87,7 +106,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "dispatch_crew",
             parameters=("?from", "?to"),
-            preconditions=("authorized(?to)", "crew-at(?from)"),
+            preconditions=("authorized(?to)", "crew-at(?from)") + gate_on("?to"),
             add=("crew-at(?to)",),
             delete=("crew-at(?from)",),
             cost=4.0,
@@ -97,7 +116,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "change_channel",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "interference(?n)"),
+            preconditions=("authorized(?n)", "interference(?n)") + gate,
             add=("cleared-interference(?n)",),
             delete=("interference(?n)",),
             cost=2.0,
@@ -107,7 +126,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "realign_antenna",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)"),
+            preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)") + gate,
             add=("cleared-misaligned(?n)",),
             delete=("misaligned(?n)",),
             cost=3.0,
@@ -117,7 +136,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "replace_power_unit",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "crew-at(?n)", "power-failed(?n)"),
+            preconditions=("authorized(?n)", "crew-at(?n)", "power-failed(?n)") + gate,
             add=("cleared-power-failed(?n)",),
             delete=("power-failed(?n)",),
             cost=5.0,
@@ -127,7 +146,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "restore_relay",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "relay-down(?n)"),
+            preconditions=("authorized(?n)", "relay-down(?n)") + gate,
             add=("cleared-relay-down(?n)",),
             delete=("relay-down(?n)",),
             cost=2.0,
@@ -137,7 +156,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "fix_vlan",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "vlan-wrong(?n)"),
+            preconditions=("authorized(?n)", "vlan-wrong(?n)") + gate,
             add=("cleared-vlan-wrong(?n)",),
             delete=("vlan-wrong(?n)",),
             cost=1.0,
@@ -147,7 +166,7 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "reroute_traffic",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)"),
+            preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)") + gate,
             add=("cleared-congested(?n)", "traffic-rerouted(?n)"),
             delete=("congested(?n)",),
             cost=2.0,
@@ -163,6 +182,19 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
             cost=1.0,
             description_pt="Acompanhar ?n: causa transitoria, nenhuma intervencao na planta.",
             description_en="Monitor ?n: transient cause, no intervention on the plant.",
+        ),
+        build(
+            "halt_transmission",
+            parameters=("?n",),
+            # Deliberately NOT gated on authorised(?n). Authorisation exists to
+            # gate changes to the plant; ceasing to transmit is the safe act, and
+            # making it wait for a window would be the dangerous design.
+            preconditions=("diagnosed(?n)", "containment-breached(?n)"),
+            add=(cleared("containment-breached"),),
+            delete=("containment-breached(?n)",),
+            cost=1.0,
+            description_pt="Interromper a transmissao: contencao violada.",
+            description_en="Interrupt transmission: containment breached.",
         ),
         build(
             "verify_link",

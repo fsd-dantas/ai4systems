@@ -100,6 +100,12 @@ def test_high_attenuation_outranks_a_cabling_fault():
 
 
 def test_actions_touching_the_rig_require_an_authorised_window():
+    """
+    Two exemptions, for opposite reasons: `no_action` changes nothing, and
+    `halt_transmission` is the safe act - gating a stop behind a window is the
+    dangerous design this base exists to avoid.
+    """
+    exempt = {"no_action", "halt_transmission"}
     for case in BENCH_CASES:
         engine = InferenceEngine(build_bench_knowledge_base())
         for variable, value in BENCH_CASES[case].items():
@@ -107,8 +113,10 @@ def test_actions_touching_the_rig_require_an_authorised_window():
         conclusions = engine.forward_chain().conclusions()
         action = conclusions["recommended_action"][0].value
         required = conclusions["authorization_required"][0].value
-        if action != "no_action":
+        if action not in exempt:
             assert required == "yes", f"{case}: {action} escaped the window gate"
+        elif action == "halt_transmission":
+            assert required == "no", "halting must not wait for a window"
 
 
 def test_thresholds_are_declared_in_one_block():
@@ -130,3 +138,75 @@ def test_both_knowledge_bases_run_on_the_same_engine():
         for variable, value in cases[first].items():
             engine.given(variable, value)
         assert engine.forward_chain().conclusions(), name
+
+
+# --- containment: a stop condition, not a restoration one ------------------
+def test_leakage_above_the_criterion_is_diagnosed_as_a_breach():
+    engine = InferenceEngine(build_bench_knowledge_base())
+    for variable, value in BENCH_CASES["containment_breach"].items():
+        engine.given(variable, value)
+    conclusions = engine.forward_chain().conclusions()
+
+    assert conclusions["diagnosis"][0].value == "containment_breach"
+    assert conclusions["recommended_action"][0].value == "halt_transmission"
+
+
+def test_a_breach_outranks_a_service_fault():
+    """
+    PT-BR: Com interferencia E contencao violada, o sistema deve mandar PARAR —
+           nao mudar de canal. Recomendar uma acao de radio num equipamento que
+           irradia acima do criterio e a recomendacao perigosa que esta base
+           existe para evitar.
+    EN:    With interference AND a breach, the system must say STOP - not change
+           channel. Recommending a radio action on a rig radiating above the
+           criterion is the dangerous recommendation this base exists to avoid.
+    """
+    engine = InferenceEngine(build_bench_knowledge_base())
+    for variable, value in BENCH_CASES["rf_interference"].items():
+        engine.given(variable, value)
+    engine.given("residual_leakage_dbm", -40.0)  # above the declared limit
+    conclusions = engine.forward_chain().conclusions()
+
+    assert conclusions["diagnosis"][0].value == "containment_breach"
+    assert conclusions["recommended_action"][0].value == "halt_transmission"
+
+
+def test_halting_does_not_wait_for_an_authorised_window():
+    """The inversion: authorisation gates changes to the plant, never stopping."""
+    engine = InferenceEngine(build_bench_knowledge_base())
+    for variable, value in BENCH_CASES["containment_breach"].items():
+        engine.given(variable, value)
+    conclusions = engine.forward_chain().conclusions()
+
+    assert conclusions["authorization_required"][0].value == "no"
+
+
+def test_measured_containment_within_the_criterion_argues_against_a_breach():
+    engine = InferenceEngine(build_bench_knowledge_base())
+    for variable, value in BENCH_CASES["healthy"].items():
+        engine.given(variable, value)
+    engine.forward_chain()
+
+    breach = engine.memory.get("diagnosis", "containment_breach")
+    assert breach is not None and breach.cf < 0
+
+
+def test_unmeasured_leakage_does_not_certify_containment():
+    """
+    PT-BR: A nota de conceitos do laboratorio e explicita: a contencao deve ser
+           MEDIDA, nunca presumida pela presenca do cabo. Sem a medicao, o motor
+           nao deve concluir que a contencao esta boa.
+    EN:    The lab's concepts note is explicit that containment must be MEASURED,
+           never presumed from the presence of a cable. Without the measurement,
+           the engine must not conclude containment is fine.
+    """
+    evidence = dict(BENCH_CASES["healthy"])
+    evidence.pop("residual_leakage_dbm")
+
+    engine = InferenceEngine(build_bench_knowledge_base())
+    for variable, value in evidence.items():
+        engine.given(variable, value)
+    engine.forward_chain()
+
+    # Neither confirmed nor refuted: absence of measurement is not evidence.
+    assert engine.memory.get("diagnosis", "containment_breach") is None
