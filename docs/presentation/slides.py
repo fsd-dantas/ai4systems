@@ -63,6 +63,74 @@ vale mais do que responder depois.""",
     )
 
     d.statement(
+        "Como recomendar diagnóstico e ação sem dados rotulados de falha?",
+        "De forma auditável, e sob restrições explícitas de autorização — numa rede "
+        "de comunicação de sistema elétrico.",
+        """A pergunta de pesquisa. Enuncie-a e deixe-a no ar por um instante antes de
+seguir.
+
+Ela tem três qualificadores, e cada um é uma restrição real, não retórica:
+
+"sem dados rotulados de falha" — não há conjunto rotulado neste domínio, e não há
+como produzi-lo sem instrumento de degradação controlada. Isso elimina a via
+indutiva para o diagnóstico.
+
+"de forma auditável" — em operação crítica, uma recomendação que não pode ser
+justificada não é utilizável. Toda conclusão precisa apontar para a regra e o
+fato que a sustentam.
+
+"sob restrições explícitas de autorização" — nada pode alcançar a planta sem
+janela, autorização e operador responsável.
+
+A pergunta decompõe-se em três, uma por trabalho:
+  1. Por que o enlace degradou, e com que confiança?      -> sistema especialista
+  2. Em que sequência agir, respeitando as restrições?    -> planejamento STRIPS/GPS
+  3. Existe caminho alternativo, e qual o de menor custo? -> busca A*
+
+Diga isso: os três trabalhos não foram escolhidos por serem os temas da
+disciplina — eles são as três partes de uma pergunta só.""",
+        accent=BLUE, kicker="PERGUNTA DE PESQUISA",
+    )
+
+    d.two_up(
+        "Como isto é medido: dois níveis de KPI",
+        "KPIs do domínio — a entrada", [
+            "RSSI (dBm) e SNR (dB) — qualidade do enlace",
+            "Perda de pacotes (%) e RTT (ms) — sintoma",
+            "Utilização do enlace (%) — congestionamento",
+            "Custo de transporte (ms) — derivado, alimenta a busca",
+            "⚠ Limiares NOMINAIS e NÃO calibrados",
+        ],
+        "KPIs de avaliação — o veredito", [
+            "Diagnóstico: fator de certeza (CF) da conclusão",
+            "Plano: custo total, e validade (executável + atinge o objetivo)",
+            "Busca: nós expandidos, custo do caminho, otimalidade",
+            "Transversal: 108 testes; admissibilidade verificada em todos os pares",
+        ],
+        """Distinga os dois níveis com clareza — eles respondem a perguntas diferentes.
+
+Os KPIs do DOMÍNIO são as grandezas que um operador de rede realmente observa, e
+são a entrada dos sistemas: alimentam as regras do sistema especialista e, no
+caso do custo de transporte, a função de custo da busca.
+
+Os KPIs de AVALIAÇÃO são como julgamos se os sistemas funcionam. Note que cada
+trabalho tem um critério próprio e verificável: o fator de certeza diz quanta
+confiança há na conclusão; a validade do plano é reexecutada desde o estado
+inicial; a otimalidade da busca é comparada contra custo uniforme, que não usa
+heurística e serve de verdade de referência.
+
+O aviso da coluna esquerda é o que mantém a apresentação honesta: os limiares do
+domínio vieram de faixas de folha de dados e de prática comum de telecom. São
+ponto de partida para calibração, não valores medidos numa instalação. Por isso
+estão reunidos num único bloco, prontos para serem ajustados quando existir linha
+de base medida.
+
+Em resumo: os KPIs de avaliação estão verificados; os do domínio estão
+declarados, e declarados como não calibrados.""",
+        accent=BLUE, left_colour=AMBER, right_colour=GREEN,
+    )
+
+    d.statement(
         "Por que o DIAGNÓSTICO não é aprendido?",
         "Não existe, para este domínio, conjunto de dados rotulado de falhas.",
         """Este é o argumento mais forte da apresentação — mas repare no escopo do

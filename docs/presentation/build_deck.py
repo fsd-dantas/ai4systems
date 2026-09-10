@@ -217,9 +217,12 @@ class Deck:
         return slide
 
     def statement(self, headline: str, detail: str, note: str,
-                  accent: RGBColor = RED):
+                  accent: RGBColor = RED, kicker: str = ""):
         slide = self._new(bg=DARK)
         band(slide, accent, y=Inches(2.5), h=Inches(0.06))
+        if kicker:
+            textbox(slide, Inches(1.1), Inches(2.0), Inches(11.1), Inches(0.5),
+                    kicker, 17, accent, bold=True)
         textbox(slide, Inches(1.1), Inches(2.85), Inches(11.1), Inches(2.0),
                 headline, 36, WHITE, bold=True, spacing=1.15)
         textbox(slide, Inches(1.1), Inches(5.0), Inches(11.1), Inches(1.4),
@@ -331,10 +334,12 @@ class Deck:
             panel.shadow.inherit = False
             panel.text_frame.text = ""
 
-            textbox(slide, x + Inches(0.3), Inches(1.65), Inches(5.0), Inches(0.5),
+            # Panel titles are kept to one line; the body starts below the space
+            # a wrapped title would have needed.
+            textbox(slide, x + Inches(0.3), Inches(1.7), Inches(5.05), Inches(0.9),
                     head, 19, colour, bold=True)
-            box = slide.shapes.add_textbox(x + Inches(0.3), Inches(2.25),
-                                           Inches(5.0), Inches(4.0))
+            box = slide.shapes.add_textbox(x + Inches(0.3), Inches(2.5),
+                                           Inches(5.0), Inches(3.8))
             frame = box.text_frame
             frame.word_wrap = True
             for i, item in enumerate(items):
