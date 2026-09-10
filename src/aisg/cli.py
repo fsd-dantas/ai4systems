@@ -324,7 +324,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
     node = args.node or _default_repair_node(topology)
     try:
         problem = problem_from_diagnosis(
-            args.diagnosis, node, topology=topology, indoor=args.simulated
+            args.diagnosis, node, topology=topology, simulated=args.simulated
         )
     except (ValueError, KeyError) as exc:
         print(exc)
@@ -459,7 +459,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="backhaul",
         help=(
             "knowledge base / base de conhecimento: 'backhaul' (field network) "
-            "or 'bench' (indoor conducted rig, no weather)"
+            "or 'simulated' (ns-3 scenario, wireless KPIs)"
         ),
     )
     d.add_argument("--case", help="preset case; depends on --kb")

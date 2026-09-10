@@ -61,7 +61,7 @@ change_channel(?n)
 
 ### Governanca como precondicao, nao como recomendacao
 
-Todo operador que alcanca a planta exige `authorized(?n)`. Isso nao e enfeite: torna "agimos sem autorizacao" um estado **inalcancavel**, e nao apenas desaconselhado. Um teste verifica a invariante em todos os diagnosticos.
+Todo operador que altera o cenario exige `authorized(?n)`. Isso torna "agimos sem autorizacao" um estado **inalcancavel** em vez de uma verificacao em tempo de execucao — uma tecnica de modelagem STRIPS. Um teste verifica a invariante em todos os diagnosticos.
 
 A unica excecao e `monitor_and_wait`, porque observar nao altera a planta. O contraste e deliberado: no caso de atenuacao por chuva, o plano correto **nao toca a planta** e nem desloca equipe — a causa e transitoria, e intervir seria tratar o clima.
 
@@ -146,7 +146,7 @@ STRIPS (Fikes and Nilsson, 1971) represents an action by **preconditions**, an *
 
 ### Governance as a precondition, not as advice
 
-Every operator reaching the plant requires `authorized(?n)`, which makes "we acted without authorisation" an **unreachable** state rather than a discouraged one. A test checks the invariant across every diagnosis. The single exception is `monitor_and_wait`, because observing changes nothing — and in the rain-fade case the correct plan touches neither the plant nor the crew roster, since the cause is transient.
+Every operator that changes the scenario requires `authorized(?n)`, which makes "we acted without authorisation" an **unreachable** state rather than a runtime check -- a STRIPS modelling technique. A test checks the invariant across every diagnosis. The single exception is `monitor_and_wait`, because observing changes nothing — and in the rain-fade case the correct plan touches neither the plant nor the crew roster, since the cause is transient.
 
 ### GPS: means-ends analysis
 

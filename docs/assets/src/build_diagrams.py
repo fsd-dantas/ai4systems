@@ -178,9 +178,9 @@ def build_integration(t) -> str:
             ("explanation: why / how", "muted"),
         ], "diagnosis + action + authorisation", "blue_fill", "blue_text"),
         (440, 320, "green", "2 - STRIPS / GPS PLANNER", [
-            ("12 STRIPS operators", "ink"),
-            ("GPS: means-ends analysis", "muted"),
-            ("A* progression planner", "muted"),
+            ("initial state = the diagnosis", "ink"),
+            ("18 STRIPS operators", "muted"),
+            ("GPS means-ends + A* progression", "muted"),
             ("plan validation", "muted"),
         ], "ordered, validated plan", "green_fill", "green_text"),
         (840, 300, "amber", "3 - A* SEARCH", [
@@ -200,9 +200,9 @@ def build_integration(t) -> str:
 
     # diagnosis hand-off
     b += arrow(364, 298, 436, 298, t, width=2.4)
+    # The hand-off is named once, on the arrow. What it becomes is stated inside
+    # the planner card, where there is room to say it without crowding the box.
     b.append(txt(400, 284, "diagnosis", 12, "ink", "600", "middle", t=t))
-    b.append(txt(400, 318, "becomes the", 11, "muted", "middle", t=t))
-    b.append(txt(400, 331, "initial state", 11, "muted", "middle", t=t))
 
     # query / answer
     b += arrow(764, 282, 836, 282, t, "red", 2.4)
@@ -222,7 +222,7 @@ def build_integration(t) -> str:
     b.append(box(40, 474, 1100, 80, t, "panel", "rule", 1.6, 10))
     b.append(txt(60, 500, "SHARED DOMAIN - synthetic communication backhaul",
                  14, "ink", "700", t=t))
-    b.append(txt(60, 522, "Simulated ns-3 scenario: 30 nodes in three sectors - fibre core - "
+    b.append(txt(60, 522, "Synthetic 30-node scenario in three sectors - fibre core - "
                           "900 MHz radio - store-and-forward chains - private LTE overlay",
                  12.5, "muted", t=t))
     b.append(txt(60, 541, "link cost = overhead(type) + distance / (speed(type) x quality)"
@@ -230,14 +230,7 @@ def build_integration(t) -> str:
     for x, y in ((200, 390), (600, 446), (990, 446)):
         b.append(line(x, 470, x, y, t, "rule", 1.4, "4 4"))
 
-    # validity
-    b.append(box(40, 572, 1100, 46, t, "red_fill", "red", 1.0, 8))
-    b.append(txt(60, 592, "VALIDITY LIMIT", 12.5, "red_text", "700", t=t))
-    b.append(txt(60, 609, "Topology MODEL, not simulation output. Nominal, uncalibrated thresholds. "
-                          "A result here holds for the simulated model, not for physical radio. "
-                          "The system RECOMMENDS, it does not act.", 12, "red_text", t=t))
-
-    return document(1180, 640, "Integration of the three systems",
+    return document(1180, 584, "Integration of the three systems",
                     "The expert system produces a diagnosis that becomes the planner's initial "
                     "state; the planner asks A* whether an alternative route exists; and the "
                     "progression planner reuses the same A* function that solves routing.", b, t)
@@ -287,7 +280,7 @@ def build_expert(t) -> str:
     b.append(box(230, 526, 470, 60, t, "green_fill", "green", 1.6))
     b.append(txt(248, 548, "LAYER 5 - S35-S42  ->  AUTHORISATION REQUIRED?",
                  14, "green_text", "700", t=t))
-    b.append(txt(248, 570, "every action that reaches the plant: yes. observing: no.",
+    b.append(txt(248, 570, "every action that changes the scenario: yes. observing: no.",
                  11.5, "green_text", t=t))
 
     # rails
@@ -389,10 +382,10 @@ def build_planning(t) -> str:
     b.append(txt(70, 330, "- mac-contention(?n)", 12, "ink", mono=True, t=t))
 
     b.append(box(40, 352, 420, 66, t, "green_fill", "green"))
-    b.append(txt(58, 374, "GOVERNANCE AS A PRECONDITION", 12.5, "green_text", "700", t=t))
-    b.append(txt(58, 393, "Every operator reaching the plant requires authorized(?n).",
+    b.append(txt(58, 374, "A CONSTRAINT AS A PRECONDITION", 12.5, "green_text", "700", t=t))
+    b.append(txt(58, 393, "Operators that change the scenario require authorized(?n).",
                  11.5, "green_text", t=t))
-    b.append(txt(58, 409, "Acting without authorisation is not discouraged: it is UNREACHABLE.",
+    b.append(txt(58, 409, "The constraint lives in the state space, not in a runtime check.",
                  11.5, "green_text", t=t))
 
     b.append(box(40, 432, 420, 86, t, "panel", "border"))

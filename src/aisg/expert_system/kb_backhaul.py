@@ -56,7 +56,7 @@ VALIDITY_PT = (
     "existe, para este dominio, conjunto de dados rotulado de falhas: sem instrumento "
     "de degradacao controlada e sem linha de base de observabilidade autenticada, nao "
     "ha rotulo de 'degradado' ou 'em falha' derivado de medicao. O sistema RECOMENDA, "
-    "nao atua: toda acao sobre a planta exige autorizacao, janela e operador "
+    "alteracoes de cenario exigem uma janela autorizada "
     "responsavel."
 )
 
@@ -423,8 +423,8 @@ def build_knowledge_base() -> KnowledgeBase:
     ):
         r(Rule(rule_id, (_cond("recommended_action", "=", action),),
             Conclusion("authorization_required", "yes"), 1.00,
-            "Toda mudanca que alcanca a planta exige autorizacao, janela e operador.",
-            "Any change reaching the plant requires authorisation, a window, and an operator."))
+            "Toda mudanca de configuracao exige uma janela autorizada.",
+            "Any configuration change requires an authorised window."))
     r(Rule("R42", (_cond("recommended_action", "=", "wait_and_monitor"),),
         Conclusion("authorization_required", "no"), 0.90,
         "Observar nao altera a planta.",

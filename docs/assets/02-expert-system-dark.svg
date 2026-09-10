@@ -25,7 +25,7 @@
   <text x="248" y="494" font-size="11.5" fill="#788593">change_channel - separate_channels - restart_node - fix_routing - ...</text>
   <rect x="230" y="526" width="470" height="60" rx="8" fill="#0f2a22" stroke="#4ec9a0" stroke-width="1.6"/>
   <text x="248" y="548" font-size="14" fill="#7fe0c0" font-weight="700">LAYER 5 - S35-S42  -&gt;  AUTHORISATION REQUIRED?</text>
-  <text x="248" y="570" font-size="11.5" fill="#7fe0c0">every action that reaches the plant: yes. observing: no.</text>
+  <text x="248" y="570" font-size="11.5" fill="#7fe0c0">every action that changes the scenario: yes. observing: no.</text>
   <line x1="200" y1="566" x2="200.0" y2="135.0" stroke="#58a6ff" stroke-width="2.6"/>
   <polygon points="200,124 205.5,135.0 194.5,135.0" fill="#58a6ff"/>
   <rect x="60" y="270" width="128" height="128" rx="8" fill="#122238" stroke="#58a6ff" stroke-width="1.0"/>

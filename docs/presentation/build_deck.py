@@ -10,8 +10,9 @@ notes pane, so the deck stays readable on a projector while the detail travels
 with the presenter.
 
 Figures are embedded as PNG because PowerPoint's SVG support varies by version.
-The PNGs are rendered from the light variants in docs/assets/ by this script
-when svglib is available, and reused from docs/presentation/img/ otherwise.
+This script rasterises the light SVG variants in docs/assets/ alongside their
+sources, so there is ONE asset directory rather than a generated copy of it. If
+svglib is unavailable the PNGs already committed there are reused unchanged.
 """
 
 from __future__ import annotations
@@ -28,7 +29,6 @@ from pptx.util import Emu, Inches, Pt
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 ASSETS = ROOT / "docs" / "assets"
-IMG_DIR = Path(__file__).resolve().parent / "img"
 OUT = Path(__file__).resolve().parent / "ai-for-smartgrids-apresentacao.pptx"
 
 # 16:9
@@ -51,22 +51,16 @@ MONO = "Consolas"
 
 # --------------------------------------------------------------------------
 def render_figures() -> None:
-    """Rasterise the light SVGs into img/ so the deck can embed them."""
-    IMG_DIR.mkdir(parents=True, exist_ok=True)
+    """Rasterise each SVG in docs/assets/ to a PNG beside it."""
     try:
         from reportlab.graphics import renderPM
         from svglib.svglib import svg2rlg
     except ImportError:
-        print("svglib/reportlab missing - reusing whatever is already in img/")
+        print("svglib/reportlab missing - reusing the PNGs already in docs/assets/")
         return
-    for svg in sorted(glob.glob(str(ASSETS / "*-light.svg"))):
-        name = os.path.basename(svg).replace("-light.svg", ".png")
-        renderPM.drawToFile(svg2rlg(svg), str(IMG_DIR / name), fmt="PNG", dpi=200)
-    # The title slide is dark, so it needs the dark banner rather than the light one.
-    dark_banner = ASSETS / "banner-dark.svg"
-    if dark_banner.exists():
-        renderPM.drawToFile(svg2rlg(str(dark_banner)), str(IMG_DIR / "banner-dark.png"),
-                            fmt="PNG", dpi=200)
+    for svg in sorted(glob.glob(str(ASSETS / "*.svg"))):
+        png = Path(svg).with_suffix(".png")
+        renderPM.drawToFile(svg2rlg(svg), str(png), fmt="PNG", dpi=200)
 
 
 def _tf(shape, text: str, size: int, colour: RGBColor, *, bold=False,

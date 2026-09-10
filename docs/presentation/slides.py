@@ -11,7 +11,7 @@ The detailed argument sits in the speaker notes rather than on the slide.
 
 from __future__ import annotations
 
-from build_deck import AMBER, BLUE, GREEN, RED, Deck, IMG_DIR
+from build_deck import AMBER, ASSETS, BLUE, GREEN, RED, Deck
 
 
 def build_slides(d: Deck) -> None:
@@ -19,7 +19,7 @@ def build_slides(d: Deck) -> None:
     # ABERTURA — 5 min
     # ======================================================================
     d.title_slide(
-        IMG_DIR / "banner-dark.png",
+        ASSETS / "banner-dark.png",
         "Sistema especialista · Planejamento automático · Busca A*",
         "Fernando Sabino Dantas  ·  Introdução à Inteligência Artificial  ·  2026",
         """Abertura. Não comece pelo código: comece pelo domínio e pela escolha do
@@ -55,7 +55,7 @@ e os dois slides de apêndice, ocultos para preservar os 90 minutos autorizados.
 
     d.figure(
         "O domínio: o cenário simulado (ns-3)",
-        IMG_DIR / "05-simulated-30.png",
+        ASSETS / "05-simulated-30-light.png",
         """O cenário: 30 nós sem fio em três setores, cada um com estrela de rádio de
 900 MHz e uma cadeia armazena-e-encaminha até um dispositivo de campo, sobre um
 núcleo em fibra e uma sobreposição LTE.
@@ -254,7 +254,6 @@ projeto: os limiares estão num único bloco, prontos para calibração.""",
             "Duas perguntas: por quê? e o que fazer?",
             "Oito hipóteses concorrentes de diagnóstico",
             "A resposta precisa vir com um grau de confiança, não como certeza absoluta",
-            ("O sistema recomenda — não atua", 1),
         ],
         """Enquadre como um problema de classificação com evidência incerta. Sensores
 são imperfeitos, dados são incompletos, fenômenos variam.
@@ -317,7 +316,7 @@ não observada — é isso que torna a condição repetível, e rotulável.""",
 
     d.figure(
         "As 41 regras em cinco camadas",
-        IMG_DIR / "02-expert-system.png",
+        ASSETS / "02-expert-system-light.png",
         """A figura é a base simulada, S01 a S42 — as mesmas regras que rodaram nas
 demonstrações desta apresentação.
 
@@ -599,7 +598,7 @@ lógica de um laboratório que só aceita um resultado se ele estiver registrado
 
     d.figure(
         "STRIPS: a representação, e GPS: a estratégia",
-        IMG_DIR / "03-planning.png",
+        ASSETS / "03-planning-light.png",
         """À esquerda, a anatomia de um operador: precondições, lista de adição, lista
 de remoção. À direita, a recursão do GPS.
 
@@ -920,7 +919,7 @@ resto.""",
 
     d.figure(
         "f(n) = g(n) + h(n)",
-        IMG_DIR / "04-astar.png",
+        ASSETS / "04-astar-light.png",
         """À esquerda, o caminho ótimo com os custos salto a salto. À direita, a
 heurística, as duas provas, e a tabela comparativa.
 
@@ -1206,7 +1205,7 @@ Os três trabalhos não são três exercícios: são um sistema.""",
             "A topologia é sintética — não representa nenhuma instalação real",
             "Os limiares são nominais e não calibrados",
             "Não existe conjunto de dados rotulado de falhas para este domínio",
-            "O sistema recomenda, não atua — no planejador isso não é conselho: é precondição",
+            "Restrições viram precondições — a restrição fica no espaço de estados, não num teste em tempo de execução",
             ("Uma conclusão obtida aqui vale para ESTE MODELO, não para uma planta física", 1),
         ],
         """Feche pelos limites, e não pelos resultados. É o que separa um trabalho de

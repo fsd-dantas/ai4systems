@@ -95,8 +95,7 @@ VALIDITY_PT = (
     "NOMINAIS e NAO CALIBRADOS ate que existam execucoes medidas. Toda condicao "
     "aqui e COMANDAVEL no simulador — logo, rotulavel e repetivel. Um resultado "
     "obtido aqui vale para o MODELO simulado, nao para radio fisico: o MAC "
-    "simulado nao e o MAC proprietario do equipamento real. O sistema RECOMENDA, "
-    "nao atua."
+    "simulado nao e o MAC proprietario do equipamento real."
 )
 
 VALIDITY_EN = (
@@ -104,8 +103,7 @@ VALIDITY_EN = (
     "and UNCALIBRATED until measured runs exist. Every condition here is "
     "COMMANDABLE in the simulator, and therefore labellable and repeatable. A "
     "result obtained here holds for the SIMULATED model, not for physical radio: "
-    "the simulated MAC is not the real equipment's proprietary MAC. The system "
-    "RECOMMENDS, it does not act."
+    "the simulated MAC is not the real equipment's proprietary MAC."
 )
 
 
