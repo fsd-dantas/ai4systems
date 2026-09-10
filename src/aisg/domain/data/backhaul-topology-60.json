@@ -161,9 +161,9 @@
     },
     {
       "id": "RM_01",
-      "label_pt": "Unidade remota 900 MHz 01",
-      "label_en": "900 MHz remote master 01",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 01",
+      "label_en": "900 MHz remote radio 01",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 9800,
       "y": 5500
@@ -189,9 +189,9 @@
     },
     {
       "id": "RM_02",
-      "label_pt": "Unidade remota 900 MHz 02",
-      "label_en": "900 MHz remote master 02",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 02",
+      "label_en": "900 MHz remote radio 02",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 17800,
       "y": 5100
@@ -217,9 +217,9 @@
     },
     {
       "id": "RM_03",
-      "label_pt": "Unidade remota 900 MHz 03",
-      "label_en": "900 MHz remote master 03",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 03",
+      "label_en": "900 MHz remote radio 03",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 8800,
       "y": 3300
@@ -245,9 +245,9 @@
     },
     {
       "id": "RM_04",
-      "label_pt": "Unidade remota 900 MHz 04",
-      "label_en": "900 MHz remote master 04",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 04",
+      "label_en": "900 MHz remote radio 04",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 10100,
       "y": 1900
@@ -273,9 +273,9 @@
     },
     {
       "id": "RM_05",
-      "label_pt": "Unidade remota 900 MHz 05",
-      "label_en": "900 MHz remote master 05",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 05",
+      "label_en": "900 MHz remote radio 05",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 3800,
       "y": -100
@@ -301,9 +301,9 @@
     },
     {
       "id": "RM_06",
-      "label_pt": "Unidade remota 900 MHz 06",
-      "label_en": "900 MHz remote master 06",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 06",
+      "label_en": "900 MHz remote radio 06",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 7800,
       "y": -1900
@@ -329,9 +329,9 @@
     },
     {
       "id": "RM_07",
-      "label_pt": "Unidade remota 900 MHz 07",
-      "label_en": "900 MHz remote master 07",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 07",
+      "label_en": "900 MHz remote radio 07",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 15800,
       "y": -1100
@@ -357,9 +357,9 @@
     },
     {
       "id": "RM_08",
-      "label_pt": "Unidade remota 900 MHz 08",
-      "label_en": "900 MHz remote master 08",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 08",
+      "label_en": "900 MHz remote radio 08",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 9800,
       "y": -6900
@@ -385,9 +385,9 @@
     },
     {
       "id": "RM_09",
-      "label_pt": "Unidade remota 900 MHz 09",
-      "label_en": "900 MHz remote master 09",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 09",
+      "label_en": "900 MHz remote radio 09",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 17800,
       "y": -6500
@@ -413,9 +413,9 @@
     },
     {
       "id": "RM_10",
-      "label_pt": "Unidade remota 900 MHz 10",
-      "label_en": "900 MHz remote master 10",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 10",
+      "label_en": "900 MHz remote radio 10",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 7300,
       "y": -4000
@@ -441,9 +441,9 @@
     },
     {
       "id": "RM_11",
-      "label_pt": "Unidade remota 900 MHz 11",
-      "label_en": "900 MHz remote master 11",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 11",
+      "label_en": "900 MHz remote radio 11",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 23800,
       "y": 2900
@@ -469,9 +469,9 @@
     },
     {
       "id": "RM_12",
-      "label_pt": "Unidade remota 900 MHz 12",
-      "label_en": "900 MHz remote master 12",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 12",
+      "label_en": "900 MHz remote radio 12",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 24300,
       "y": -3900
@@ -497,9 +497,9 @@
     },
     {
       "id": "RM_13",
-      "label_pt": "Unidade remota 900 MHz 13",
-      "label_en": "900 MHz remote master 13",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 13",
+      "label_en": "900 MHz remote radio 13",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 20800,
       "y": -5900
@@ -525,9 +525,9 @@
     },
     {
       "id": "RM_14",
-      "label_pt": "Unidade remota 900 MHz 14",
-      "label_en": "900 MHz remote master 14",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 14",
+      "label_en": "900 MHz remote radio 14",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 20300,
       "y": 1700
@@ -553,9 +553,9 @@
     },
     {
       "id": "RM_15",
-      "label_pt": "Unidade remota 900 MHz 15",
-      "label_en": "900 MHz remote master 15",
-      "kind": "remote_master",
+      "label_pt": "Radio remoto 900 MHz 15",
+      "label_en": "900 MHz remote radio 15",
+      "kind": "remote_radio",
       "sector": "radio900",
       "x": 13800,
       "y": -3900

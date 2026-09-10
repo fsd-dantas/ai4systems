@@ -82,7 +82,7 @@ def _default_repair_node(topology) -> str:
     """A store-and-forward relay makes the most interesting restoration case."""
     return (
         _first_of_kind(topology, "saf_relay")
-        or _first_of_kind(topology, "remote_master")
+        or _first_of_kind(topology, "remote_radio")
         or next(iter(topology.nodes))
     )
 

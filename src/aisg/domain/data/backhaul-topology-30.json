@@ -45,7 +45,7 @@
       "id": "RM_A1",
       "label_pt": "Radio remoto A1",
       "label_en": "Remote radio A1",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "A",
       "x": 3916,
       "y": 5750
@@ -54,7 +54,7 @@
       "id": "RM_A2",
       "label_pt": "Radio remoto A2",
       "label_en": "Remote radio A2",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "A",
       "x": 3168,
       "y": 6668
@@ -63,7 +63,7 @@
       "id": "RM_A3",
       "label_pt": "Radio remoto A3",
       "label_en": "Remote radio A3",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "A",
       "x": 1643,
       "y": 6245
@@ -72,7 +72,7 @@
       "id": "RM_A4",
       "label_pt": "Radio remoto A4",
       "label_en": "Remote radio A4",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "A",
       "x": 1300,
       "y": 4288
@@ -81,7 +81,7 @@
       "id": "RM_A5",
       "label_pt": "Radio remoto A5",
       "label_en": "Remote radio A5",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "A",
       "x": 3231,
       "y": 2873
@@ -126,7 +126,7 @@
       "id": "RM_B1",
       "label_pt": "Radio remoto B1",
       "label_en": "Remote radio B1",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "B",
       "x": -5958,
       "y": -212
@@ -135,7 +135,7 @@
       "id": "RM_B2",
       "label_pt": "Radio remoto B2",
       "label_en": "Remote radio B2",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "B",
       "x": -6706,
       "y": 706
@@ -144,7 +144,7 @@
       "id": "RM_B3",
       "label_pt": "Radio remoto B3",
       "label_en": "Remote radio B3",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "B",
       "x": -8231,
       "y": 283
@@ -153,7 +153,7 @@
       "id": "RM_B4",
       "label_pt": "Radio remoto B4",
       "label_en": "Remote radio B4",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "B",
       "x": -8574,
       "y": -1674
@@ -162,7 +162,7 @@
       "id": "RM_B5",
       "label_pt": "Radio remoto B5",
       "label_en": "Remote radio B5",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "B",
       "x": -6643,
       "y": -3089
@@ -207,7 +207,7 @@
       "id": "RM_C1",
       "label_pt": "Radio remoto C1",
       "label_en": "Remote radio C1",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "C",
       "x": 4066,
       "y": -5249
@@ -216,7 +216,7 @@
       "id": "RM_C2",
       "label_pt": "Radio remoto C2",
       "label_en": "Remote radio C2",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "C",
       "x": 3318,
       "y": -4331
@@ -225,7 +225,7 @@
       "id": "RM_C3",
       "label_pt": "Radio remoto C3",
       "label_en": "Remote radio C3",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "C",
       "x": 1793,
       "y": -4754
@@ -234,7 +234,7 @@
       "id": "RM_C4",
       "label_pt": "Radio remoto C4",
       "label_en": "Remote radio C4",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "C",
       "x": 1450,
       "y": -6711
@@ -243,7 +243,7 @@
       "id": "RM_C5",
       "label_pt": "Radio remoto C5",
       "label_en": "Remote radio C5",
-      "kind": "remote_master",
+      "kind": "remote_radio",
       "sector": "C",
       "x": 3381,
       "y": -8126
