@@ -54,16 +54,20 @@ A referência ao ns-3 indica uma possível infraestrutura para uma campanha de s
 Também não utilizo fenômenos meteorológicos como explicação principal, pois eles não integram o recorte escolhido. A exclusão é uma decisão de modelagem; não é uma afirmação geral sobre tudo o que um simulador poderia representar. Essa delimitação permite avaliar com precisão o que já foi implementado e o que depende de trabalho experimental adicional.""")
 
 add("1 · FUNDAMENTOS E DOMÍNIO", "Topologia sintética e unidade de análise", "topology", {
-    "items": ["30 nós e 44 enlaces ativos no cenário selecionado.",
-              "Três setores, repetidores e rotas alternativas.",
+    "items": ["60 nós e 74 enlaces ativos no cenário selecionado.",
+              "Quinze sites com duplo acesso: pLTE e 900 MHz.",
               "Coordenadas e qualidades convencionais.",
               "Unidade de análise: incidente associado a um nó ou fluxo."],
     "takeaway": "Esquema lógico do cenário; não constitui planta de laboratório nem traço de simulação."},
-    """A topologia organiza trinta nós em três setores, conectados a um núcleo de comunicação. Existem enlaces com diferentes tipos e custos, além de caminhos alternativos que tornam o roteamento um problema relevante.
+    """A topologia organiza sessenta nós em duas redes de acesso independentes que alcançam os mesmos quinze sites da rede elétrica. De um lado, uma estrela de LTE privativo com dois eNodeBs e um nível de repetidores. Do outro, uma malha de 900 MHz do tipo armazena-e-encaminha. As duas se encontram apenas no roteador de borda de cada site.
 
-Os identificadores permitem acompanhar um incidente entre os módulos. RM_A5 será utilizado no exemplo de contenção, enquanto outros pares ilustrarão a seleção de rotas. As coordenadas pertencem ao modelo; não descrevem o posicionamento de equipamentos reais em uma sala. A figura é um esquema de conectividade e deve ser interpretada dessa maneira.
+Essa estrutura é deliberada, e corrige um defeito do cenário anterior. Ali o eNodeB aparecia como vértice de trânsito, o que permitia caminhos que entravam pelo LTE e saíam por outro meio sem passar pelo núcleo. Um eNodeB é nó de acesso, não roteador de trânsito entre assinantes.
 
-É importante separar o tamanho do grafo da quantidade de observações de diagnóstico. Ter trinta nós não significa dispor de trinta amostras independentes de falha. Da mesma forma, avaliar todos os pares de roteamento examina um conjunto de problemas sobre o mesmo grafo, e não uma coleção de redes independentes. Essa distinção será retomada na avaliação experimental.""",
+O roteador de borda também não faz trânsito. Ele é a fronteira da rede elétrica, e um site não transporta o tráfego de backhaul de um site vizinho. Essa restrição está declarada no modelo e é respeitada tanto pela busca quanto pelo oráculo de verificação.
+
+Os identificadores permitem acompanhar um incidente entre os módulos. ER_03 será utilizado no exemplo de contenção, enquanto outros pares ilustrarão a seleção de rotas. As coordenadas pertencem ao modelo e não descrevem posicionamento de equipamentos reais.
+
+É importante separar o tamanho do grafo da quantidade de observações de diagnóstico. Ter sessenta nós não significa dispor de sessenta amostras independentes de falha. Avaliar todos os pares de roteamento examina um conjunto de problemas sobre o mesmo grafo, e não uma coleção de redes independentes.""",
     "Identificar NOC, um ponto de acesso, um repetidor e uma rota alternativa.",
     "Repositório: src/aisg/domain/data/backhaul-topology-30.json")
 
@@ -327,7 +331,7 @@ add("3 · PLANEJAMENTO AUTOMÁTICO", "Modelo formal de planejamento STRIPS", "fo
 
 A transição remove os fatos da lista de exclusão e acrescenta os fatos da lista de adição. A aplicabilidade exige que todas as precondições estejam presentes no estado. Depois de aplicar a sequência, verificamos se o objetivo está contido no estado final.
 
-Os operadores podem ser escritos com parâmetros e depois instanciados para objetos concretos, como RM_A5. Essa representação é inspirada em STRIPS, mas não reproduz toda a expressividade do sistema histórico. O trabalho adota uma forma simplificada, apropriada à busca sobre conjuntos finitos de predicados. A vantagem é que podemos executar novamente cada transição e verificar a validade do plano de maneira direta.""",
+Os operadores podem ser escritos com parâmetros e depois instanciados para objetos concretos, como ER_03. Essa representação é inspirada em STRIPS, mas não reproduz toda a expressividade do sistema histórico. O trabalho adota uma forma simplificada, apropriada à busca sobre conjuntos finitos de predicados. A vantagem é que podemos executar novamente cada transição e verificar a validade do plano de maneira direta.""",
     source="Fikes e Nilsson (1971); implementação: src/aisg/planning/strips.py")
 
 add("3 · PLANEJAMENTO AUTOMÁTICO", "Hipóteses de planejamento e suas consequências", "table", {
@@ -449,7 +453,7 @@ Uma condição suficiente é que o custo de cada ação seja pelo menos o númer
 Um caso particular simples ocorre quando cada ação adiciona no máximo um objetivo e custa pelo menos uma unidade. Essa condição vale para os dois predicados finais utilizados na demonstração. O cuidado acadêmico é chamá-la de suficiente, evitando apresentá-la como a única situação possível de admissibilidade. A comparação com heurística zero fornece um controle para medir o efeito da informação adicional.""")
 
 add("3 · PLANEJAMENTO AUTOMÁTICO", "Demonstração: plano para contenção MAC", "code", {
-    "code": "python docs/presentation/presentation_demo.py plan\n\n1  request_authorization(RM_A5)   1\n2  stop_run(RM_A5)                2\n3  separate_channels(RM_A5)       3\n4  start_run(RM_A5)               2\n5  verify_link(RM_A5)             1\n6  record_logbook(RM_A5)          1\n7  close_work_order(RM_A5)        1\n                                 total = 11",
+    "code": "python docs/presentation/presentation_demo.py plan\n\n1  request_authorization(ER_03)   1\n2  stop_run(ER_03)                2\n3  separate_channels(ER_03)       3\n4  start_run(ER_03)               2\n5  verify_link(ER_03)             1\n6  record_logbook(ER_03)          1\n7  close_work_order(ER_03)        1\n                                 total = 11",
     "items": ["GPS e A*: plano válido de custo 11 nesta instância.", "Demonstração pela API Python com simulated=True."],
     "takeaway": "Validade: todas as ações aplicáveis e objetivo final satisfeito no modelo."},
     """O exemplo utiliza a API de planejamento para construir explicitamente o cenário simulado. Primeiro, o modelo solicita autorização. Em seguida, interrompe a execução, separa os canais e retoma a execução. Só então verifica o enlace, registra a intervenção e encerra a ordem.
@@ -561,32 +565,38 @@ A prova não substitui testes. Um erro na leitura da topologia, no cálculo da d
 
 Há ainda um cuidado na escolha do oráculo. No repositório, custo uniforme reutiliza a mesma função de A* com heurística zero. Comparar as duas versões é útil para avaliar a heurística, mas um algoritmo independente oferece uma verificação adicional da correção dos custos.""")
 
-add("4 · BUSCA A*", "Comparação: LTE_ENB → AP_B", "table", {
+add("4 · BUSCA A*", "Comparação: NOC → ER_03", "table", {
     "headers": ["Estratégia", "Saltos", "Custo do modelo", "Expandidos", "Garantia geral"],
-    "rows": [["Largura", "2", "381,46 ms", "7", "Mínimo de saltos"],
-             ["Profundidade", "6", "694,78 ms", "7", "Sem mínimo de custo"],
-             ["Custo uniforme", "3", "70,51 ms", "6", "Custo mínimo"],
-             ["Gulosa", "2", "381,46 ms", "3", "Sem mínimo de custo"],
-             ["A*", "3", "70,51 ms", "4", "Mínimo sob as hipóteses"]],
+    "rows": [["Largura", "4", "453,51 ms", "15", "Mínimo de saltos"],
+             ["Profundidade", "4", "453,51 ms", "7", "Sem mínimo de custo"],
+             ["Custo uniforme", "5", "360,35 ms", "28", "Custo mínimo"],
+             ["Gulosa", "5", "360,35 ms", "7", "Sem mínimo de custo"],
+             ["A*", "5", "360,35 ms", "23", "Mínimo sob as hipóteses"]],
     "widths": [2.6, 1.0, 2.4, 1.85, 3.9], "size": 18,
-    "takeaway": "Mesma instância e mesma função de custo; contagem inclui a remoção do objetivo."},
-    """Esta comparação utiliza a mesma origem, o mesmo destino e os mesmos pesos. A busca em largura encontra dois saltos, mas seu custo é maior que o caminho de três saltos encontrado por custo uniforme e A*.
+    "takeaway": "O caminho mais barato tem MAIS saltos: contar saltos não ordena por custo."},
+    """Esta comparação utiliza a mesma origem, o mesmo destino e os mesmos pesos. O ponto central está na primeira linha. A busca em largura encontra quatro saltos, e é o menor número de saltos possível, mas custa quatrocentos e cinquenta e três vírgula cinquenta e um. O caminho de cinco saltos devolvido por custo uniforme e por A* custa trezentos e sessenta vírgula trinta e cinco.
 
-A busca gulosa expande menos estados nesta instância, mas devolve o caminho caro. Esse resultado mostra por que menor esforço de busca, isoladamente, não caracteriza melhor solução. A busca em profundidade encontra um caminho ainda mais caro, dependente da ordem de exploração.
+A explicação é física, não numérica. O caminho curto em saltos desce para a malha de 900 MHz, que é lenta e acumula atraso de armazena-e-encaminha a cada repetidor. O caminho com um salto a mais permanece no LTE privativo, que é rápido. Contar saltos e minimizar custo são objetivos diferentes, e neste par eles discordam.
 
-A* e custo uniforme chegam ao mesmo custo, enquanto A* expande quatro estados e custo uniforme expande seis. Essa é uma observação da instância, não uma garantia de economia idêntica em qualquer problema.
+A busca gulosa acerta o custo nesta instância expandindo apenas sete estados, mas essa coincidência não é garantia: a heurística poderia conduzi-la a um caminho caro em outro par. A busca em profundidade encontra o mesmo caminho da largura, dependente da ordem de exploração.
+
+A* e custo uniforme chegam ao mesmo custo, enquanto A* expande vinte e três estados e custo uniforme expande vinte e oito. Essa é uma observação da instância, não uma garantia de economia idêntica em qualquer problema.
 
 Os custos em milissegundos pertencem à escala convencional já definida. A contagem de expansões inclui o estado objetivo removido da fronteira, conforme a instrumentação do código. Declarar essa convenção evita comparar números obtidos por definições diferentes.""",
     "Executar presentation_demo.py route; comparar custo, caminho e expansões.")
 
 add("4 · BUSCA A*", "Caminho ótimo e decomposição do custo", "table", {
     "headers": ["Enlace", "Tipo", "Custo do modelo", "Acumulado"],
-    "rows": [["LTE_ENB → LTE_CORE", "Fibra", "13,86 ms", "13,86 ms"],
-             ["LTE_CORE → NOC", "Ethernet", "9,41 ms", "23,27 ms"],
-             ["NOC → AP_B", "Fibra", "47,23 ms", "70,51 ms"]],
-    "widths": [4.7, 2.2, 2.45, 2.4],
-    "takeaway": "LTE_ENB → LTE_CORE → NOC → AP_B; total calculado antes do arredondamento."},
-    """O caminho devolvido por A* passa por LTE_CORE e NOC antes de alcançar AP_B. A tabela decompõe o custo por enlace e mostra o acumulado.
+    "rows": [["NOC → eNB_A", "Fibra", "60,00 ms", "60,00 ms"],
+             ["eNB_A → RELAY_1", "LTE privativo", "128,73 ms", "188,73 ms"],
+             ["RELAY_1 → RELAY_5", "LTE privativo", "86,33 ms", "275,05 ms"],
+             ["RELAY_5 → CPE_03", "LTE privativo", "76,65 ms", "351,70 ms"],
+             ["CPE_03 → ER_03", "Ethernet", "8,65 ms", "360,35 ms"]],
+    "widths": [4.7, 2.2, 2.45, 2.4], "size": 17,
+    "takeaway": "Cinco enlaces, um por salto; total calculado antes do arredondamento."},
+    """O caminho devolvido por A* sai do núcleo pela fibra até o eNodeB, atravessa dois repetidores LTE e termina no CPE do site, que entrega ao roteador de borda por cabo. A tabela decompõe o custo por enlace e mostra o acumulado.
+
+Observe onde está o custo. Os três saltos de rádio LTE somam duzentos e noventa e um vírgula setenta e um, e o último salto por cabo custa oito vírgula sessenta e cinco. O meio domina o custo, e é por isso que a escolha entre LTE e 900 MHz importa mais do que o número de saltos.
 
 Essa decomposição é parte da verificação da solução. Não basta confiar no custo informado pelo algoritmo: podemos conferir se cada enlace existe, se a origem e o destino correspondem à consulta e se a soma dos pesos reproduz o resultado.
 
@@ -594,28 +604,32 @@ Os valores foram arredondados apenas para apresentação. Por isso, a soma visua
 
 O exemplo também evidencia a diferença entre caminho exato e caminho único. O algoritmo retorna uma sequência concreta de custo mínimo, mas isso não implica que toda instância tenha apenas uma solução ótima. Empates devem ser interpretados segundo a política de desempate e a estrutura do grafo.""")
 
-add("4 · BUSCA A*", "Falha de enlace e recálculo de rota", "cards", [
-    ["Condição inicial", "LTE_ENB → LTE_CORE → NOC → AP_B\nCusto: 70,51 ms do modelo."],
-    ["Perturbação", "Remover o enlace LTE_ENB–LTE_CORE da topologia da consulta."],
-    ["Nova solução", "LTE_ENB → RM_C4 → AP_C → NOC → AP_B\nCusto: 345,80 ms do modelo."],
-], """Agora altero a instância removendo o enlace entre LTE_ENB e LTE_CORE. O caminho anteriormente ótimo deixa de ser viável e a busca deve ser executada sobre o grafo atualizado.
+add("4 · BUSCA A*", "Perda de um meio e comutação para o outro", "cards", [
+    ["Condição inicial", "NOC → eNB_A → RELAY_1 → RELAY_5 → CPE_03 → ER_03\nCusto: 360,35 ms do modelo; acesso por pLTE."],
+    ["Perturbação", "Desativar a fibra NOC–eNB_A, o que retira todo o acesso pLTE a partir do núcleo."],
+    ["Nova solução", "NOC → SAF_01 → SAF_02 → RM_03 → ER_03\nCusto: 453,51 ms do modelo; acesso por 900 MHz."],
+], """Agora altero a instância desativando a fibra entre o núcleo e o eNodeB A. Isso não remove um enlace qualquer: retira do núcleo todo o caminho de LTE privativo, e portanto o meio que servia este site.
 
-A nova solução utiliza RM_C4 e AP_C para chegar ao núcleo e, em seguida, ao destino. O custo aumenta para aproximadamente trezentos e quarenta e cinco vírgula oitenta na escala do modelo.
+O site não fica isolado. A busca encontra a rota pela malha de 900 MHz, e o custo sobe de trezentos e sessenta vírgula trinta e cinco para quatrocentos e cinquenta e três vírgula cinquenta e um. É exatamente isso que o duplo acesso compra, e o preço aparece no custo.
 
 Essa demonstração verifica adaptação a uma alteração explícita de conectividade. Ela não simula automaticamente a detecção temporal de uma falha nem o tempo necessário para convergência de um protocolo de roteamento. O enlace foi desativado como entrada da consulta.
 
 Também é importante incluir o caso em que o destino fica isolado. Nesse caso, a resposta correta é ausência de caminho. Um sistema integrado não deve transformar essa ausência em um plano que pressupõe desvio disponível. A comunicação explícita de insucesso é parte da correção funcional.""",
     "Executar presentation_demo.py reroute; conferir que o enlace removido não aparece no novo caminho.")
 
-add("4 · BUSCA A*", "Esforço de busca no cenário de 30 nós", "bars", {
-    "values": [["Custo uniforme", 13920], ["A*", 10310]],
-    "items": ["870 pares ordenados de origem e destino distintos.", "Redução agregada de expansões: 25,9%.", "Custos coincidentes em todos os pares verificados."],
-    "takeaway": "Resultado descritivo deste grafo; não estabelece uma lei de escalabilidade."},
-    """A avaliação agregada considera todos os pares ordenados de nós distintos: trinta vezes vinte e nove, totalizando oitocentas e setenta consultas.
+add("4 · BUSCA A*", "Esforço de busca no cenário de 60 nós", "bars", {
+    "values": [["Custo uniforme", 109740], ["A*", 99963]],
+    "items": ["3.540 pares ordenados de origem e destino distintos.", "Redução agregada de expansões: 8,9%.", "Com 30 nós a redução era 25,9%: ela DIMINUIU."],
+    "takeaway": "Duas medições em dois grafos; a vantagem não cresceu com o tamanho."},
+    """A avaliação agregada considera todos os pares ordenados de nós distintos: sessenta vezes cinquenta e nove, totalizando três mil quinhentas e quarenta consultas.
 
-Nessas consultas, a busca de custo uniforme realiza treze mil novecentas e vinte expansões, enquanto A* realiza dez mil trezentas e dez. A redução agregada é aproximadamente vinte e cinco vírgula nove por cento. Os custos das soluções coincidem em todos os pares verificados.
+Nessas consultas, a busca de custo uniforme realiza cento e nove mil setecentas e quarenta expansões, enquanto A* realiza noventa e nove mil novecentas e sessenta e três. A redução agregada é aproximadamente oito vírgula nove por cento. Os custos coincidem em todos os pares verificados.
 
-Esse resultado caracteriza o grafo e a heurística utilizados. Não demonstra que a vantagem cresça necessariamente com o número de nós, porque conectividade, pesos, distribuição de consultas e desempates também afetam o esforço. Além disso, os pares compartilham a mesma topologia e não são replicações independentes de redes.
+Peço atenção a este ponto, porque ele contraria a expectativa comum. No cenário de trinta nós a redução era de vinte e cinco vírgula nove por cento. Ao dobrar o número de nós, ela caiu para oito vírgula nove por cento. A vantagem da heurística não cresceu com o tamanho do grafo: diminuiu.
+
+A explicação está na estrutura, não no tamanho. Este cenário tem duas redes de acesso quase paralelas, e a distância em linha reta informa pouco sobre qual meio é mais barato, porque meios diferentes têm velocidades diferentes. Uma heurística geométrica é fraca quando a geometria não prediz o custo.
+
+Se eu tivesse apresentado apenas o resultado de trinta nós, a leitura natural seria que a vantagem cresce com o grafo. Duas medições em dois grafos mostram o contrário e continuam sendo apenas duas medições. Para estudar escalabilidade seria necessário variar sistematicamente tamanho e estrutura, controlar os demais fatores e medir tempo, memória e distribuição do esforço.
 
 Para estudar escalabilidade, seria necessário variar sistematicamente tamanho e estrutura, controlar os demais fatores e medir também tempo, memória e distribuição do esforço por consulta. A estatística apresentada é descritiva e não deve ser ampliada além desse alcance.""",
     "Executar presentation_demo.py benchmark; explicar o cálculo 1 − 10310/13920.")
@@ -645,13 +659,13 @@ Depois de construir o problema, validamos o plano e conferimos a rota usada para
 A composição demonstra compatibilidade funcional entre os módulos. Ela não configura uma execução experimental completa do ambiente, pois ainda não envia ações a um simulador nem coleta medições posteriores. O contrato apresentado identifica exatamente onde esses mecanismos precisariam ser conectados.""")
 
 add("5 · INTEGRAÇÃO E AVALIAÇÃO", "Demonstração integrada: congestionamento", "code", {
-    "code": "python docs/presentation/presentation_demo.py integrated\n\nCaso: congestion      Nó afetado: SAF_A1\nBase: simulated       Planejamento: simulated=True\nOrigem: NOC           Destino: FD_A\n\nDiagnóstico: congestion, CF +0,888\nPlano: contém reroute_traffic; validação positiva\nRota: NOC → LTE_CORE → LTE_ENB → FD_A\nCusto da rota: 267,06 ms do modelo",
-    "takeaway": "O caminho exclui SAF_A1 e corresponde ao destino utilizado para validar o desvio."},
-    """O incidente integrado utiliza o caso ilustrativo de congestionamento associado a SAF_A1. A origem é NOC e o destino é FD_A. O sistema especialista produz a hipótese congestion com suporte zero vírgula oitocentos e oitenta e oito.
+    "code": "python docs/presentation/presentation_demo.py integrated\n\nCaso: congestion      Nó afetado: SAF_02\nBase: simulated       Planejamento: simulated=True\nOrigem: NOC           Destino: ER_06\n\nDiagnóstico: congestion, CF +0,888\nPlano: contém reroute_traffic; validação positiva\nRota: NOC → eNB_A → RELAY_1 → RELAY_5 → CPE_06 → ER_06\nCusto da rota: 509,55 ms do modelo",
+    "takeaway": "O desvio exclui SAF_02 e move o site da malha de 900 MHz para o pLTE."},
+    """O incidente integrado utiliza o caso ilustrativo de congestionamento associado a SAF_02, um repetidor da malha de 900 MHz. A origem é NOC e o destino é ER_06, um site normalmente servido por essa malha. O sistema especialista produz a hipótese congestion com suporte zero vírgula oitocentos e oitenta e oito.
 
-A integração converte essa hipótese em uma condição do problema de planejamento. A disponibilidade de rota alternativa é verificada evitando SAF_A1 e preservando FD_A como destino. O plano inclui o operador de desvio e é validado pela reaplicação das ações.
+A integração converte essa hipótese em uma condição do problema de planejamento. A disponibilidade de rota alternativa é verificada evitando SAF_02 e preservando ER_06 como destino. O plano inclui o operador de desvio e é validado pela reaplicação das ações.
 
-A rota apresentada passa por LTE_CORE e LTE_ENB e alcança FD_A sem atravessar o nó afetado. O custo é aproximadamente duzentos e sessenta e sete vírgula zero seis na escala do modelo.
+A rota apresentada abandona a malha de 900 MHz e alcança ER_06 pelo LTE privativo, sem atravessar o repetidor afetado. O custo sobe para aproximadamente quinhentos e nove vírgula cinquenta e cinco na escala do modelo, porque o desvio troca o meio de acesso do site.
 
 Durante a demonstração, observamos quatro relações: hipótese e nó; nó e estado inicial; destino e consulta de viabilidade; plano e rota mostrada. A coerência dessas relações é a evidência de integração. A recuperação efetiva do tráfego continua sendo uma questão experimental futura.""",
     "Executar o comando; conferir base, predicado run-active, ação de desvio, destino e nó excluído.")

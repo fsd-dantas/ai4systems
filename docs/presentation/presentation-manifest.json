@@ -1,16 +1,16 @@
 {
   "slides": 57,
-  "speech_words": 8127,
+  "speech_words": 8556,
   "rehearsal_seconds": 5400,
-  "repository_head_at_build": "05110071371d7337b5cc40739b15ff78c6ec6ecd",
-  "baseline_sha256": "8b702894380dda17a319114084b7164bbaed147a6dc1d7b8ce666bfce5949e85",
-  "deck_sha256": "8b702894380dda17a319114084b7164bbaed147a6dc1d7b8ce666bfce5949e85",
-  "script_sha256": "2cb42e6ecac5d30bffaa2eb92923dea3d0db302673917abed67aed6262b880c0",
+  "repository_head_at_build": "954dccc9788bdd0cf7682c5ec2a99a097a874375",
+  "baseline_sha256": "542438abddc7858270e442e4961d1b4cc8a81dbf235bdfa0844fea257bdabd12",
+  "deck_sha256": "542438abddc7858270e442e4961d1b4cc8a81dbf235bdfa0844fea257bdabd12",
+  "script_sha256": "00a8a8babc2542367e4335a98b8308c313cf5204524079964dfb1c0f33dad26d",
   "source_sha256": {
-    "docs/presentation/academic_content.py": "8b75bf866ae0648b6cdfc2e2b8f2582f80fccb389e0984e6b27f09dbcaae6958",
+    "docs/presentation/academic_content.py": "6afe3c3f15ed746b91ad3746d87b8f14e5c8fa2b36cfe57bcae410d07cd0faf6",
     "docs/presentation/build_academic_deck.py": "3a04c46e74c2f99b00bddc7f895e9f5ff262fd6aee14b7225f070654a181b40a",
-    "docs/presentation/presentation_demo.py": "446d089ff622a6c26fb29cd4e63aabb79ca322c804f4110c733b7f51814135fe",
-    "docs/presentation/presentation-evidence.json": "84b9aeb9f6275ecde0f53a52efbf58d46f0b45e081da5783ae5e2af2cf64123e",
+    "docs/presentation/presentation_demo.py": "6775253fb71ab88d21fad7f6930cef273799e4ce9d8bc106583dafecb9155a09",
+    "docs/presentation/presentation-evidence.json": "2fb60ea800100d5baf5e200d223bd0457e1956daf971814b2dcecc31f259115a",
     "src/aisg/expert_system/engine.py": "845c1ff3684cd979892689ba9d47e925e465b825715fc475cfb04a7676c200c1",
     "src/aisg/expert_system/kb_simulated.py": "940acd298bebaaa0e948d5af508c7cc6b687c41ea75c7e557933f5d2004a2feb",
     "src/aisg/planning/domain_restoration.py": "8a755d7d52a890e851d0757dc60bad6833c0d43a122ec5b01aaa4e2c079f0254",
@@ -34,42 +34,42 @@
     {
       "number": 3,
       "title": "Problema e questão de investigação",
-      "notes_sha256": "0796ff06fc11bc83e4a985f94b8f264b53a66352f6e3d1e47002e9ac0644c648"
+      "notes_sha256": "f53886cf2f462217eac2790352800cb49a680c2faf903f2b35afa49d3628e268"
     },
     {
       "number": 4,
       "title": "Escopo: testes internos representados em software",
-      "notes_sha256": "626cb96b8da6a7108a727c35ab6653abcaec639111dad1eabeacbf9f8eb9de6f"
+      "notes_sha256": "7b73b91f28fef5415c417e70dc3d1a1aedbf74bc9afbc333e355e18cea84693a"
     },
     {
       "number": 5,
       "title": "Topologia sintética e unidade de análise",
-      "notes_sha256": "739628fdf43c8598fe137045a343425d1251fd5ef81a72872074fe9072db326b"
+      "notes_sha256": "9178bcb692ad3870e01d3dcc0735d5c1c6d494b8d737fce9e901e038550e4d0d"
     },
     {
       "number": 6,
       "title": "Grandezas físicas: definição e interpretação",
-      "notes_sha256": "fd4a6ef5a763a97ee2ac8db392a7b40e774572f067dae85f87da0e42759272e0"
+      "notes_sha256": "76f7d52a417d43fcc60578e7bf0470f4665cc10fc78375095b9852caa0666127"
     },
     {
       "number": 7,
       "title": "Indicadores de acesso ao meio e desempenho",
-      "notes_sha256": "f11ba4326ae967b6f3266ae4b17faa06f90cb168becf6c9cd9f10515b99eb8a9"
+      "notes_sha256": "b9fd6cc26942fc2d30ee639db012d0aff73971200be35fbd6015ca21abcdd048"
     },
     {
       "number": 8,
       "title": "Observações, intervenções e informação desconhecida",
-      "notes_sha256": "0919c533357ceb523de2b4121bd87e462b32905b3017c6dfedac9770cc3cd4cb"
+      "notes_sha256": "45a64551c56adc20ba951c703d44cc093c02dd3178c78438716c343f7eefac2b"
     },
     {
       "number": 9,
       "title": "Três representações, três critérios de correção",
-      "notes_sha256": "89a9028ce2960b7977d5f4609bb8df69fb5bd31d06450164d23cddc26b8edc29"
+      "notes_sha256": "78749cde88639819a9a154f911a4a8d0ed077e7c90bffd8ba293e976e7fae7ac"
     },
     {
       "number": 10,
       "title": "Escolha metodológica e alcance das evidências",
-      "notes_sha256": "21e06e79c889afc4d1afb3f41cec3ffcbdadb6aaebd2368cebed231b340d8fd7"
+      "notes_sha256": "3bedacc7a51aa03bfc3c348801d300fe9f5e0d6b1d788e9821742fb178cfddae"
     },
     {
       "number": 11,
@@ -149,7 +149,7 @@
     {
       "number": 26,
       "title": "Modelo formal de planejamento STRIPS",
-      "notes_sha256": "a5b5c3d084fd698c074dcc26203e2dc97e8e26f3b9f1edd134c5bd2ba1b19bb5"
+      "notes_sha256": "cb9b9a4ec3269f283f6f9e46b3a6c35799c6e1938666f0561454aa38d126d25b"
     },
     {
       "number": 27,
@@ -214,77 +214,77 @@
     {
       "number": 39,
       "title": "Busca de caminhos em um grafo ponderado",
-      "notes_sha256": "636d9c39f4f05e2d2eae835ff0a8bf41b3433c447401f9800942889a8ed695cb"
+      "notes_sha256": "f7215ca3e2d19e20578cdb018b1de9334735b86971ed4db8ee648a2c997d6056"
     },
     {
       "number": 40,
       "title": "Função de custo e significado dos parâmetros",
-      "notes_sha256": "ba18ace5aa6815c8681676e4f2afad2c5e3428aa2bd43bdd0666d99b1f54d74e"
+      "notes_sha256": "4240f9340e0e1afb8c22ad64145d66961ffc2109ef29326d0a750c12d3db2338"
     },
     {
       "number": 41,
       "title": "Função de avaliação e fronteira de busca",
-      "notes_sha256": "eca02fb08db5a99a0c1c374c7878fe16e68111c71ca4fa54cdb0baad89339cb2"
+      "notes_sha256": "576cdb351e3cee82fe1f1e4f989874cde3d3afa58c206389f5e18df0ea854ae5"
     },
     {
       "number": 42,
       "title": "Condições e decisões de implementação",
-      "notes_sha256": "2ec3d5182d14410abdd9397d61601cf52ce6e470a761085b96e33ccd942bca61"
+      "notes_sha256": "141fa5f54a4f34c15d04409f5c6ee9d4647b36f3b0387e1a547347dbd8d46410"
     },
     {
       "number": 43,
       "title": "Admissibilidade da heurística geométrica",
-      "notes_sha256": "baeb055747e5de4b22045119d73d5e0bb92edd4579337a87eadf55a624bada65"
+      "notes_sha256": "8307cb71febc6da468ef7e9ef299fbf0d8a49e9c75dfceeed9134c747f970e7d"
     },
     {
       "number": 44,
       "title": "Consistência e verificação independente",
-      "notes_sha256": "b73ab2e371dfe8e4a75bebaf34369be455cae6aa0d1a264f43f99cdb217545bd"
+      "notes_sha256": "f007b2899e3196829a0388cdfe967446565a2317f51717a008df1722fe1341d0"
     },
     {
       "number": 45,
-      "title": "Comparação: LTE_ENB → AP_B",
-      "notes_sha256": "e62ec5ddb2e8505df7321353997be53c3b60b7b2dcd9608f82d0c97cc134a870"
+      "title": "Comparação: NOC → ER_03",
+      "notes_sha256": "887814b68b26fa84fb6ca06881418b03406def90c328edfec9bd7a2662a26bb8"
     },
     {
       "number": 46,
       "title": "Caminho ótimo e decomposição do custo",
-      "notes_sha256": "1dc8f20cfe1b518f3e724adaa6fc882a933de8d6138835c188bed3b7d0ca820f"
+      "notes_sha256": "5ca92b0c08a26e6537a3a6f76e09902b4b90f8fc33f8eb261092ab2862018c58"
     },
     {
       "number": 47,
-      "title": "Falha de enlace e recálculo de rota",
-      "notes_sha256": "4f6addf5189ffe4f0254c4e50220a1b1daf72ac0ae5f1ef5969ed6fceb009429"
+      "title": "Perda de um meio e comutação para o outro",
+      "notes_sha256": "92b155497227b6e7da7b17e1e87383b403cc7fddb466f8470582c4837666a63a"
     },
     {
       "number": 48,
-      "title": "Esforço de busca no cenário de 30 nós",
-      "notes_sha256": "f67a7f3966407bb66cc6d06ed5d7dfb9cac419036f9ef192dc82b13c4f323d37"
+      "title": "Esforço de busca no cenário de 60 nós",
+      "notes_sha256": "21d6b36785f0d9aaa84f9cae423456e3d7f99b0c879c6c5195d1806856a97af3"
     },
     {
       "number": 49,
       "title": "Aprendizagem de heurísticas: possibilidade e cautela",
-      "notes_sha256": "a97db7c86e1afc60251589cd178fd1fe8d569163ea820c73dc570cc1eca969a7"
+      "notes_sha256": "20bcf2b2d43f318f687d38c1e5a5a438babdcca7a0673c5de53a11819686031f"
     },
     {
       "number": 50,
       "title": "Contrato entre diagnóstico, planejamento e busca",
-      "notes_sha256": "209294840bc6c3771f07572c91a3742e78732c70536e0a3e68f8ee1b2423722a"
+      "notes_sha256": "0db8e5189cf2630acb8a0847ab47179e682ecd433d501c597fdfe78724a23f40"
     },
     {
       "number": 51,
       "title": "Demonstração integrada: congestionamento",
-      "notes_sha256": "dde9bf5e170c1432ecec5ac9f74c751620ff3d227c04274307b9e0b601785e21"
+      "notes_sha256": "a8e62245344f35f5b1967f2ba40a7b486669e7ecd40325bc8068152e6e77b4d3"
     },
     {
       "number": 52,
       "title": "Procedimento experimental proposto",
-      "notes_sha256": "3c511d29a52eed6cb74ea29f942a3c22d19513a2c2a2ac0c13265d235af11cc0"
+      "notes_sha256": "09b376d489526952f773ce3d969fb0b81463bfc5efdb66c5561ac5dc0ab6a2d9"
     },
     {
       "number": 53,
       "title": "O que cada evidência permite concluir",
-      "notes_sha256": "7c3d83118a065adc6096b5852eb9e0176d10412e9c3561dd38fae77daa7556d9"
+      "notes_sha256": "967d5953dc8a8efe3262d3265684b059b80893d4ede22bdc06a34def460471e6"
     },
     {
       "number": 54,

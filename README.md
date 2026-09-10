@@ -88,12 +88,6 @@ Apresentação / presentation:
 Wiki com a teoria da disciplina / course theory wiki:
 [github.com/fsd-dantas/ai-for-smartgrids/wiki](https://github.com/fsd-dantas/ai-for-smartgrids/wiki)
 
-Avaliação / Assessment:
-[protocolo e proposta de rubrica](docs/assessment-protocol.md) — requisitos,
-pesos 30/30/25/15, evidências e procedimento para apreciação docente.
-Proposta de autoavaliação, sem endosso docente registrado; a nota oficial cabe ao professor.
-Proposed self-assessment rubric and reproducible evidence procedure; instructor
-endorsement has not been recorded, and the instructor assigns the official grade.
 
 ---
 
@@ -300,7 +294,7 @@ laboratory or utility. See [`docs/domain-model.md`](docs/domain-model.md).
 
 **Simulated rather than field, by methodological choice.** The scenario runs in
 ns-3, which inverts the usual internal/external validity trade-off in this work's
-favour: a *commanded* fault condition is repeatable and labellable, whereas an
+favor: a *commanded* fault condition is repeatable and labellable, whereas an
 *observed* field condition is merely probable. Each diagnosis declares in the
 `INDUCIBLE_BY` block **how it is induced in the simulator**, which makes the case
 set reproducible by third parties. The cost of that choice is explicit and

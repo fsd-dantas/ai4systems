@@ -55,7 +55,7 @@ def checked_plan(problem, solver):
 
 
 def plan():
-    problem = problem_from_diagnosis("mac_contention", "RM_A5", simulated=True)
+    problem = problem_from_diagnosis("mac_contention", "ER_03", simulated=True)
     results = {solver.__name__: checked_plan(problem, solver)
                for solver in (plan_with_gps, plan_with_astar)}
     assert all(r["cost"] == 11 for r in results.values())
@@ -63,11 +63,11 @@ def plan():
 
 
 def multifault():
-    problem = build_restoration_problem("RM_A5", ["mac-contention", "excess-path-loss"], simulated=True)
+    problem = build_restoration_problem("ER_03", ["mac-contention", "excess-path-loss"], simulated=True)
     result = checked_plan(problem, plan_with_astar)
     assert result["cost"] == 12
-    assert result["actions"].count("stop_run(RM_A5)") == 1
-    assert result["actions"].count("start_run(RM_A5)") == 1
+    assert result["actions"].count("stop_run(ER_03)") == 1
+    assert result["actions"].count("start_run(ER_03)") == 1
     return result
 
 
@@ -97,39 +97,59 @@ def checked_route(problem, result):
 
 
 def route():
-    problem = RoutingProblem(load_topology("simulated"), "LTE_ENB", "AP_B")
+    problem = RoutingProblem(load_topology("dual"), "NOC", "ER_03")
     results = {}
     for solver in (breadth_first, depth_first, uniform_cost, greedy_best_first, astar):
         result = solver(problem, problem.heuristic()) if solver in (astar, greedy_best_first) else solver(problem)
         results[result.algorithm] = checked_route(problem, result)
         print(result.describe("pt"))
     optimal = astar(problem, problem.heuristic())
-    assert optimal.path == ["LTE_ENB", "LTE_CORE", "NOC", "AP_B"]
-    assert round(optimal.cost, 2) == 70.51
+    assert optimal.path == ["NOC", "eNB_A", "RELAY_1", "RELAY_5", "CPE_03", "ER_03"]
+    assert round(optimal.cost, 2) == 360.35
+    # The point of this pair: the cheapest route has MORE hops than the
+    # shortest one, because the short route drops onto the slow 900 MHz mesh.
+    shortest = breadth_first(problem)
+    assert len(shortest.path) < len(optimal.path)
+    assert round(shortest.cost, 2) == 453.51
     print(problem.explain_path(optimal.path, "pt"))
     return results
 
 
 def reroute():
-    topology = load_topology("simulated")
-    topology.disable_link("LTE_ENB", "LTE_CORE")
-    problem = RoutingProblem(topology, "LTE_ENB", "AP_B")
+    """
+    Losing the pLTE side does not isolate the site: it fails over to the mesh.
+
+    That is what dual homing buys, and it is visible in the cost. Disabling the
+    fibre to eNB_A removes the whole private LTE path from the NOC, so the only
+    remaining route to ER_03 is the 900 MHz store-and-forward chain.
+    """
+    topology = load_topology("dual")
+    topology.disable_link("NOC", "eNB_A")
+    problem = RoutingProblem(topology, "NOC", "ER_03")
     result = astar(problem, problem.heuristic())
     checked = checked_route(problem, result)
-    assert round(result.cost, 2) == 345.80
+    assert result.path == ["NOC", "SAF_01", "SAF_02", "RM_03", "ER_03"]
+    assert round(result.cost, 2) == 453.51
     print(result.describe("pt"))
     return checked
 
 
 def benchmark():
-    topology = load_topology("simulated")
+    topology = load_topology("dual")
     nodes = sorted(topology.nodes)
     # Independent dynamic-programming oracle; does not invoke the search module.
+    # It honours the same stub rule the search does: a grid site is customer
+    # edge, so it may begin or end a route but never carry one. Floyd-Warshall
+    # expresses that in one guard, because its middle loop IS the choice of
+    # intermediate node. Without it the oracle finds cheaper routes across a
+    # site and disagrees with every algorithm under test.
     distances = {u: {v: (0.0 if u == v else math.inf) for v in nodes} for u in nodes}
     for u in nodes:
         for v, cost in topology.successors(u):
             distances[u][v] = min(distances[u][v], cost)
     for k in nodes:
+        if topology.node(k).stub:
+            continue
         for u in nodes:
             for v in nodes:
                 distances[u][v] = min(distances[u][v], distances[u][k] + distances[k][v])
@@ -151,7 +171,7 @@ def benchmark():
             pairs += 1
             informed_total += informed.expanded
             uniform_total += uniform.expanded
-    assert (pairs, informed_total, uniform_total) == (870, 10310, 13920)
+    assert (pairs, informed_total, uniform_total) == (3540, 99963, 109740)
     result = {"ordered_pairs": pairs, "astar_expanded": informed_total,
               "uniform_expanded": uniform_total, "savings_pct": 100 * (1 - informed_total / uniform_total),
               "independent_oracle": "Floyd-Warshall", "cost_mismatches": 0,
@@ -163,8 +183,8 @@ def benchmark():
 def integrated():
     diagnosis = diagnose_case("congestion").conclusions()["diagnosis"][0]
     assert diagnosis.value == "congestion"
-    topology = load_topology("simulated")
-    affected, source, target = "SAF_A1", "NOC", "FD_A"
+    topology = load_topology("dual")
+    affected, source, target = "SAF_02", "NOC", "ER_06"
     problem = problem_from_diagnosis(str(diagnosis.value), affected, topology=topology,
                                     reroute_target=target, simulated=True)
     assert f"run-active({affected})" in {str(p) for p in problem.initial}
@@ -174,7 +194,10 @@ def integrated():
     routing = RoutingProblem(topology, source, target, avoid=(affected,))
     result = astar(routing, routing.heuristic())
     route_result = checked_route(routing, result)
-    assert round(result.cost, 2) == 267.06
+    # Normally ER_06 is served by the 900 MHz mesh through SAF_02. Diverting
+    # around the congested relay moves the site onto pLTE, and the cost rises.
+    assert result.path == ["NOC", "eNB_A", "RELAY_1", "RELAY_5", "CPE_06", "ER_06"]
+    assert round(result.cost, 2) == 509.55
     print("Base: simulated; planejamento: simulated=True")
     print(f"Diagnóstico: {diagnosis.value}, CF {diagnosis.cf:+.3f}")
     print(result.describe("pt"))

@@ -117,26 +117,26 @@
     "plan_with_gps": {
       "cost": 11.0,
       "actions": [
-        "request_authorization(RM_A5)",
-        "stop_run(RM_A5)",
-        "separate_channels(RM_A5)",
-        "start_run(RM_A5)",
-        "verify_link(RM_A5)",
-        "record_logbook(RM_A5)",
-        "close_work_order(RM_A5)"
+        "request_authorization(ER_03)",
+        "stop_run(ER_03)",
+        "separate_channels(ER_03)",
+        "start_run(ER_03)",
+        "verify_link(ER_03)",
+        "record_logbook(ER_03)",
+        "close_work_order(ER_03)"
       ],
       "valid": true
     },
     "plan_with_astar": {
       "cost": 11.0,
       "actions": [
-        "request_authorization(RM_A5)",
-        "stop_run(RM_A5)",
-        "separate_channels(RM_A5)",
-        "start_run(RM_A5)",
-        "verify_link(RM_A5)",
-        "record_logbook(RM_A5)",
-        "close_work_order(RM_A5)"
+        "request_authorization(ER_03)",
+        "stop_run(ER_03)",
+        "separate_channels(ER_03)",
+        "start_run(ER_03)",
+        "verify_link(ER_03)",
+        "record_logbook(ER_03)",
+        "close_work_order(ER_03)"
       ],
       "valid": true
     }
@@ -161,92 +161,99 @@
   "multifault": {
     "cost": 12.0,
     "actions": [
-      "request_authorization(RM_A5)",
-      "stop_run(RM_A5)",
-      "restore_path_budget(RM_A5)",
-      "separate_channels(RM_A5)",
-      "start_run(RM_A5)",
-      "verify_link(RM_A5)",
-      "record_logbook(RM_A5)",
-      "close_work_order(RM_A5)"
+      "request_authorization(ER_03)",
+      "stop_run(ER_03)",
+      "restore_path_budget(ER_03)",
+      "separate_channels(ER_03)",
+      "start_run(ER_03)",
+      "verify_link(ER_03)",
+      "record_logbook(ER_03)",
+      "close_work_order(ER_03)"
     ],
     "valid": true
   },
   "route": {
     "Breadth-first": {
       "path": [
-        "LTE_ENB",
-        "RM_B4",
-        "AP_B"
+        "NOC",
+        "SAF_01",
+        "SAF_02",
+        "RM_03",
+        "ER_03"
       ],
-      "cost": 381.45684849843406,
-      "expanded": 7,
-      "hops": 2
+      "cost": 453.5112890660701,
+      "expanded": 15,
+      "hops": 4
     },
     "Depth-first": {
       "path": [
-        "LTE_ENB",
-        "FD_A",
-        "SAF_A2",
-        "SAF_A1",
-        "AP_A",
         "NOC",
-        "AP_B"
+        "SAF_01",
+        "SAF_02",
+        "RM_03",
+        "ER_03"
       ],
-      "cost": 694.777462303764,
+      "cost": 453.5112890660701,
       "expanded": 7,
-      "hops": 6
+      "hops": 4
     },
     "Uniform cost (Dijkstra)": {
       "path": [
-        "LTE_ENB",
-        "LTE_CORE",
         "NOC",
-        "AP_B"
+        "eNB_A",
+        "RELAY_1",
+        "RELAY_5",
+        "CPE_03",
+        "ER_03"
       ],
-      "cost": 70.50653464170772,
-      "expanded": 6,
-      "hops": 3
+      "cost": 360.34772386481194,
+      "expanded": 28,
+      "hops": 5
     },
     "Greedy best-first": {
       "path": [
-        "LTE_ENB",
-        "RM_B4",
-        "AP_B"
+        "NOC",
+        "eNB_A",
+        "RELAY_1",
+        "RELAY_5",
+        "CPE_03",
+        "ER_03"
       ],
-      "cost": 381.45684849843406,
-      "expanded": 3,
-      "hops": 2
+      "cost": 360.34772386481194,
+      "expanded": 7,
+      "hops": 5
     },
     "A*": {
       "path": [
-        "LTE_ENB",
-        "LTE_CORE",
         "NOC",
-        "AP_B"
+        "eNB_A",
+        "RELAY_1",
+        "RELAY_5",
+        "CPE_03",
+        "ER_03"
       ],
-      "cost": 70.50653464170772,
-      "expanded": 4,
-      "hops": 3
+      "cost": 360.34772386481194,
+      "expanded": 23,
+      "hops": 5
     }
   },
   "reroute": {
     "path": [
-      "LTE_ENB",
-      "RM_C4",
-      "AP_C",
       "NOC",
-      "AP_B"
+      "SAF_01",
+      "SAF_02",
+      "RM_03",
+      "ER_03"
     ],
-    "cost": 345.80197096233724,
-    "expanded": 13,
+    "cost": 453.5112890660701,
+    "expanded": 19,
     "hops": 4
   },
   "benchmark": {
-    "ordered_pairs": 870,
-    "astar_expanded": 10310,
-    "uniform_expanded": 13920,
-    "savings_pct": 25.933908045977017,
+    "ordered_pairs": 3540,
+    "astar_expanded": 99963,
+    "uniform_expanded": 109740,
+    "savings_pct": 8.90924002186988,
     "independent_oracle": "Floyd-Warshall",
     "cost_mismatches": 0,
     "heuristic_violations": 0
@@ -256,24 +263,26 @@
     "plan": {
       "cost": 6.0,
       "actions": [
-        "request_authorization(SAF_A1)",
-        "reroute_traffic(SAF_A1)",
-        "verify_link(SAF_A1)",
-        "record_logbook(SAF_A1)",
-        "close_work_order(SAF_A1)"
+        "request_authorization(SAF_02)",
+        "reroute_traffic(SAF_02)",
+        "verify_link(SAF_02)",
+        "record_logbook(SAF_02)",
+        "close_work_order(SAF_02)"
       ],
       "valid": true
     },
     "route": {
       "path": [
         "NOC",
-        "LTE_CORE",
-        "LTE_ENB",
-        "FD_A"
+        "eNB_A",
+        "RELAY_1",
+        "RELAY_5",
+        "CPE_06",
+        "ER_06"
       ],
-      "cost": 267.0605868299899,
-      "expanded": 20,
-      "hops": 3
+      "cost": 509.5492727674334,
+      "expanded": 32,
+      "hops": 5
     },
     "isolated_destination_plan": null
   }
