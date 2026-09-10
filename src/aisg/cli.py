@@ -26,6 +26,7 @@ from aisg import __version__
 from aisg.domain import BUNDLED_TOPOLOGIES, load_topology
 from aisg.expert_system import (
     CASES,
+    KNOWLEDGE_BASES,
     ConflictResolution,
     Consultation,
     InferenceEngine,
@@ -177,7 +178,8 @@ def _report_consultation(consultation: Consultation, lang: str, *, show_trace: b
 
 def cmd_diagnose(args: argparse.Namespace) -> int:
     lang = args.lang
-    kb = build_knowledge_base()
+    build_kb, cases = KNOWLEDGE_BASES[args.kb]
+    kb = build_kb()
     holder: dict = {}
     engine = InferenceEngine(
         kb,
@@ -189,10 +191,10 @@ def cmd_diagnose(args: argparse.Namespace) -> int:
     print(_header(f"{t('es_title', lang)}  [{kb.name(lang)}]"))
 
     if args.case:
-        if args.case not in CASES:
-            print(f"unknown case: {args.case}; available: {', '.join(sorted(CASES))}")
+        if args.case not in cases:
+            print(f"unknown case: {args.case}; available: {', '.join(sorted(cases))}")
             return 2
-        for variable, value in CASES[args.case].items():
+        for variable, value in cases[args.case].items():
             engine.given(variable, value)
         print(f"{t('es_known_facts', lang)}: {args.case}")
         for fact in engine.memory.all_facts():
@@ -411,7 +413,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     # diagnose
     d = sub.add_parser("diagnose", help="run the expert system / executar o sistema especialista")
-    d.add_argument("--case", help=f"preset case: {', '.join(sorted(CASES))}")
+    d.add_argument(
+        "--kb",
+        choices=sorted(KNOWLEDGE_BASES),
+        default="backhaul",
+        help=(
+            "knowledge base / base de conhecimento: 'backhaul' (field network) "
+            "or 'bench' (indoor conducted rig, no weather)"
+        ),
+    )
+    d.add_argument("--case", help="preset case; depends on --kb")
     d.add_argument("--interactive", action="store_true", help="ask the user for facts")
     d.add_argument("--mode", choices=("forward", "backward"), default="forward")
     d.add_argument("--goal", default="diagnosis", help="goal variable for backward chaining")
