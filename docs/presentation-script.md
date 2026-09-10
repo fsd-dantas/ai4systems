@@ -194,7 +194,7 @@ aisg diagnose --case interference --strategy recency --trace
 Feche pelos limites:
 
 > Os limiares sao **nominais e nao calibrados**, reunidos num unico bloco para que a calibracao futura
-> ajuste valores **sem reescrever regras**. O sistema **recomenda, nao atua**.
+> ajuste valores **sem reescrever regras**.
 
 ---
 
@@ -468,7 +468,7 @@ aisg pipeline --case congestion --node SAF_A2
 
 E encerre pelos limites, nao pelos resultados:
 
-> Limiares nominais e nao calibrados. Nenhum dado rotulado de falha. O sistema recomenda, nao atua. A
+> Limiares nominais e nao calibrados. Nenhum dado rotulado de falha. A
 > topologia e sintetica: uma conclusao obtida aqui vale para **este modelo**, nao para uma planta fisica.
 
 ---

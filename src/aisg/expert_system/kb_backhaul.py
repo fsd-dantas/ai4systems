@@ -55,18 +55,14 @@ VALIDITY_PT = (
     "LIMITE DE VALIDADE: os limiares desta base sao NOMINAIS e NAO CALIBRADOS. Nao "
     "existe, para este dominio, conjunto de dados rotulado de falhas: sem instrumento "
     "de degradacao controlada e sem linha de base de observabilidade autenticada, nao "
-    "ha rotulo de 'degradado' ou 'em falha' derivado de medicao. O sistema RECOMENDA, "
-    "alteracoes de cenario exigem uma janela autorizada "
-    "responsavel."
+    "ha rotulo de 'degradado' ou 'em falha' derivado de medicao."
 )
 
 VALIDITY_EN = (
     "VALIDITY LIMIT: the thresholds in this base are NOMINAL and UNCALIBRATED. No "
     "labelled fault dataset exists for this domain: without a controlled degradation "
     "instrument and an authenticated observability baseline, no 'degraded' or "
-    "'failed' label can be derived from measurement. The system RECOMMENDS, it does "
-    "not act: any change to the plant requires authorisation, a window, and an "
-    "accountable operator."
+    "'failed' label can be derived from measurement."
 )
 
 
