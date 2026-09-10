@@ -8,16 +8,16 @@
   <rect x="40" y="126" width="420" height="212" rx="10" fill="#ffffff" stroke="#009E73" stroke-width="2"/>
   <path d="M 50 126 H 450 A 10 10 0 0 1 460 136 V 158 H 40 V 136 A 10 10 0 0 1 50 126 Z" fill="#009E73"/>
   <text x="58" y="151" font-size="15" fill="#ffffff" font-weight="700"></text>
-  <text x="58" y="148" font-size="14" font-weight="700" fill="#ffffff" font-family="Consolas, SFMono-Regular, Menlo, monospace">realign_antenna(?n)</text>
+  <text x="58" y="148" font-size="14" font-weight="700" fill="#ffffff" font-family="Consolas, SFMono-Regular, Menlo, monospace">separate_channels(?n)</text>
   <text x="442" y="148" font-size="12.5" font-weight="600" fill="#ffffff" text-anchor="end">cost 3</text>
   <text x="58" y="182" font-size="12.5" fill="#8a6100" font-weight="700">PRECONDITIONS - what must hold</text>
   <text x="70" y="202" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">authorized(?n)</text>
-  <text x="70" y="219" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">crew-at(?n)</text>
-  <text x="70" y="236" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">misaligned(?n)</text>
+  <text x="70" y="219" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">mac-contention(?n)</text>
+  <text x="70" y="236" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">run-stopped(?n)</text>
   <text x="58" y="264" font-size="12.5" fill="#046c50" font-weight="700">ADD LIST - what becomes true</text>
-  <text x="70" y="284" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">+ fault-cleared(?n)</text>
+  <text x="70" y="284" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">+ cleared-mac-contention(?n)</text>
   <text x="58" y="310" font-size="12.5" fill="#a8442a" font-weight="700">DELETE LIST - what stops being true</text>
-  <text x="70" y="330" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">- misaligned(?n)</text>
+  <text x="70" y="330" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">- mac-contention(?n)</text>
   <rect x="40" y="352" width="420" height="66" rx="8" fill="#e6f5f0" stroke="#009E73" stroke-width="1.0"/>
   <text x="58" y="374" font-size="12.5" fill="#046c50" font-weight="700">GOVERNANCE AS A PRECONDITION</text>
   <text x="58" y="393" font-size="11.5" fill="#046c50">Every operator reaching the plant requires authorized(?n).</text>
@@ -26,7 +26,7 @@
   <text x="58" y="453" font-size="12.5" fill="#1f2933" font-weight="700">CLOSED-WORLD ASSUMPTION</text>
   <text x="58" y="472" font-size="11.5" fill="#52606d">A state is the set of TRUE literals.</text>
   <text x="58" y="488" font-size="11.5" fill="#52606d">Anything absent from the set is taken to be false.</text>
-  <text x="58" y="508" font-size="11.5" fill="#8a94a0">state = { diagnosed(N), crew-at(BASE), misaligned(N) }</text>
+  <text x="58" y="508" font-size="11.5" fill="#8a94a0">state = { diagnosed(N), run-active(N), mac-contention(N) }</text>
   <rect x="40" y="532" width="420" height="152" rx="8" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
   <text x="58" y="554" font-size="13" fill="#1f2933" font-weight="700">TWO SOLVERS OVER ONE REPRESENTATION</text>
   <text x="58" y="578" font-size="12" fill="#0072B2" font-weight="700">GPS - means-ends analysis</text>
@@ -49,9 +49,9 @@
   <rect x="500" y="382" width="300" height="34" rx="7" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.4"/>
   <text x="514" y="400" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">fault-cleared(N)</text>
   <rect x="500" y="442" width="300" height="34" rx="7" fill="#ffffff" stroke="#009E73" stroke-width="1.6"/>
-  <text x="514" y="460" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">realign_antenna(N)</text>
+  <text x="514" y="460" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">separate_channels(N)</text>
   <rect x="500" y="502" width="300" height="42" rx="7" fill="#e6f5f0" stroke="#009E73" stroke-width="1.4"/>
-  <text x="514" y="520" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">crew-at(BASE)  - already true</text>
+  <text x="514" y="520" font-size="12" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">run-active(N)  - already true</text>
   <text x="514" y="537" font-size="11" fill="#8a94a0">recursion ends: the difference is gone</text>
   <line x1="650" y1="170" x2="650.0" y2="179.0" stroke="#52606d" stroke-width="1.8"/>
   <polygon points="650,190 644.5,179.0 655.5,179.0" fill="#52606d"/>
@@ -75,14 +75,14 @@
   <rect x="500" y="562" width="580" height="122" rx="8" fill="#fdecea" stroke="#D55E00" stroke-width="1.6"/>
   <text x="518" y="584" font-size="13" fill="#a8442a" font-weight="700">THE WEAKNESS OF GPS, DEMONSTRATED</text>
   <text x="518" y="605" font-size="11.5" fill="#a8442a">GPS orders operators by their OWN cost - and never sees the cost of their PRECONDITIONS.</text>
-  <text x="518" y="628" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">GPS:  travel_crew (10) + cheap_local_fix (1)   =  cost 11</text>
+  <text x="518" y="628" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">GPS:  stop_run (10) + cheap_fix (1)   =  cost 11</text>
   <text x="518" y="648" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">A* :  remote_fix (3)                          =  cost  3</text>
   <text x="518" y="672" font-size="11.5" fill="#a8442a" font-style="italic">That is why both planners live in the same repository.</text>
   <rect x="820" y="126" width="260" height="120" rx="8" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
   <text x="836" y="148" font-size="12.5" fill="#1f2933" font-weight="700">WHY COST MATTERS</text>
   <text x="836" y="168" font-size="11.5" fill="#52606d">If every action cost 1,</text>
   <text x="836" y="183" font-size="11.5" fill="#52606d">planning would be counting steps.</text>
-  <text x="836" y="205" font-size="11.5" fill="#1f2933">dispatch_crew ....... 4</text>
-  <text x="836" y="221" font-size="11.5" fill="#1f2933">replace_power_unit .. 5</text>
-  <text x="836" y="237" font-size="11.5" fill="#1f2933">fix_vlan ............ 1</text>
+  <text x="836" y="205" font-size="11.5" fill="#1f2933">stop_run + start_run  4</text>
+  <text x="836" y="221" font-size="11.5" fill="#1f2933">separate_channels ... 3</text>
+  <text x="836" y="237" font-size="11.5" fill="#1f2933">fix_routing ......... 1</text>
 </svg>

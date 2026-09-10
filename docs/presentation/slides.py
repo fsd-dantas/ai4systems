@@ -318,10 +318,8 @@ não observada — é isso que torna a condição repetível, e rotulável.""",
     d.figure(
         "As 41 regras em cinco camadas",
         IMG_DIR / "02-expert-system.png",
-        """A figura mostra a ESTRUTURA em camadas com os identificadores da base de
-campo (R01-R43). Na base simulada eles são S01-S42 e o conteúdo é o desta
-apresentação; a estrutura de cinco camadas — que é o que a figura ilustra — é a
-mesma. Diga isso ao mostrá-la.
+        """A figura é a base simulada, S01 a S42 — as mesmas regras que rodaram nas
+demonstrações desta apresentação.
 
 Percorra as camadas de baixo para cima: medição vira qualidade de sinal,
 estado e desempenho viram sintoma, evidência vira diagnóstico, diagnóstico vira

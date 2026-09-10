@@ -172,7 +172,7 @@ def build_integration(t) -> str:
 
     cards = [
         (40, 320, "blue", "1 - EXPERT SYSTEM", [
-            ("43 production rules, 5 layers", "ink"),
+            ("41 production rules, 5 layers", "ink"),
             ("forward and backward chaining", "muted"),
             ("certainty factors (MYCIN)", "muted"),
             ("explanation: why / how", "muted"),
@@ -222,8 +222,8 @@ def build_integration(t) -> str:
     b.append(box(40, 474, 1100, 80, t, "panel", "rule", 1.6, 10))
     b.append(txt(60, 500, "SHARED DOMAIN - synthetic communication backhaul",
                  14, "ink", "700", t=t))
-    b.append(txt(60, 522, "17 nodes (base scenario) or 30 nodes (scale scenario) - fibre core "
-                          "- 900 MHz radio sectors - store-and-forward chain - private LTE overlay",
+    b.append(txt(60, 522, "Simulated ns-3 scenario: 30 nodes in three sectors - fibre core - "
+                          "900 MHz radio - store-and-forward chains - private LTE overlay",
                  12.5, "muted", t=t))
     b.append(txt(60, 541, "link cost = overhead(type) + distance / (speed(type) x quality)"
                           "     -     distances derived from the coordinates", 12.5, "muted", t=t))
@@ -233,9 +233,9 @@ def build_integration(t) -> str:
     # validity
     b.append(box(40, 572, 1100, 46, t, "red_fill", "red", 1.0, 8))
     b.append(txt(60, 592, "VALIDITY LIMIT", 12.5, "red_text", "700", t=t))
-    b.append(txt(60, 609, "Synthetic topology. Nominal, uncalibrated thresholds. No labelled "
-                          "fault dataset exists for this domain. The system RECOMMENDS, it does "
-                          "not act.", 12, "red_text", t=t))
+    b.append(txt(60, 609, "Topology MODEL, not simulation output. Nominal, uncalibrated thresholds. "
+                          "A result here holds for the simulated model, not for physical radio. "
+                          "The system RECOMMENDS, it does not act.", 12, "red_text", t=t))
 
     return document(1180, 640, "Integration of the three systems",
                     "The expert system produces a diagnosis that becomes the planner's initial "
@@ -248,21 +248,21 @@ def build_integration(t) -> str:
 # --------------------------------------------------------------------------
 def build_expert(t) -> str:
     b: List[str] = []
-    b.append(txt(40, 46, "Expert system - 43 rules in five layers", 23, "ink", "600", t=t))
+    b.append(txt(40, 46, "Expert system - 41 rules in five layers", 23, "ink", "600", t=t))
     b.append(txt(40, 72, "Diagnostic rules never read the raw measurement: they read the "
                          "previous layer's conclusion. Replacing the sensor changes ONE layer.",
                  14, "muted", t=t))
 
     layers = [
-        (100, 66, "border", 1.0, "LAYER 1 - R01-R04", "ink",
+        (100, 66, "border", 1.0, "LAYER 1 - S01-S04", "ink",
          ["RSSI, SNR  ->  signal quality  (good / marginal / poor)",
-          "R01: IF rssi < -95 AND snr < 8 THEN quality = poor   (CF +0.90)"]),
-        (182, 66, "border", 1.0, "LAYER 2 - R05-R09", "ink",
-         ["link state, loss, RTT  ->  link symptom",
-          "none / degraded / unstable / outage"]),
-        (264, 94, "blue", 2.0, "LAYER 3 - R10-R24  ->  DIAGNOSIS", "blue",
-         ["rf_interference - path_obstruction - rain_fade - congestion",
-          "node_power_failure - upstream_relay_failure - vlan_misconfiguration - healthy",
+          "S01: IF rssi < -95 AND snr < 8 THEN quality = poor   (CF +0.90)"]),
+        (182, 66, "border", 1.0, "LAYER 2 - S05-S08", "ink",
+         ["node responding, loss, delay  ->  link symptom",
+          "none / degraded / outage"]),
+        (264, 94, "blue", 2.0, "LAYER 3 - S10-S22  ->  DIAGNOSIS", "blue",
+         ["rf_interference - excess_path_loss - mac_contention - congestion",
+          "node_failure - upstream_relay_failure - routing_misconfiguration - healthy",
           "eight competing hypotheses, each with its own certainty factor"]),
     ]
     for y, h, stroke, sw, title, title_tone, rows in layers:
@@ -274,18 +274,18 @@ def build_expert(t) -> str:
             b.append(txt(248, y + 45 + i * 19, row, size, tone, t=t))
 
     b.append(box(230, 374, 470, 60, t, "red_fill", "red", 1.6))
-    b.append(txt(248, 396, "LAYER 3b - R25-R27 - COUNTER-EVIDENCE (negative CF)",
+    b.append(txt(248, 396, "LAYER 3b - S23-S26 - COUNTER-EVIDENCE (negative CF)",
                  13.5, "red_text", "700", t=t))
-    b.append(txt(248, 416, "R25: IF weather = clear THEN rain_fade  (CF -0.80)  - evidence "
-                           "AGAINST the hypothesis", 11.5, "red_text", t=t))
+    b.append(txt(248, 416, "S25: IF retry_rate_pct <= 30 THEN mac_contention  (CF -0.80)",
+                 11.5, "red_text", t=t))
 
     b.append(box(230, 450, 470, 60, t, "panel", "border"))
-    b.append(txt(248, 472, "LAYER 4 - R28-R35  ->  RECOMMENDED ACTION", 14, "ink", "700", t=t))
-    b.append(txt(248, 494, "change_channel - realign_antenna - wait_and_monitor - "
-                           "reroute_traffic - ...", 11.5, "faint", t=t))
+    b.append(txt(248, 472, "LAYER 4 - S27-S34  ->  RECOMMENDED ACTION", 14, "ink", "700", t=t))
+    b.append(txt(248, 494, "change_channel - separate_channels - restart_node - fix_routing - ...",
+                 11.5, "faint", t=t))
 
     b.append(box(230, 526, 470, 60, t, "green_fill", "green", 1.6))
-    b.append(txt(248, 548, "LAYER 5 - R36-R43  ->  AUTHORISATION REQUIRED?",
+    b.append(txt(248, 548, "LAYER 5 - S35-S42  ->  AUTHORISATION REQUIRED?",
                  14, "green_text", "700", t=t))
     b.append(txt(248, 570, "every action that reaches the plant: yes. observing: no.",
                  11.5, "green_text", t=t))
@@ -343,8 +343,9 @@ def build_expert(t) -> str:
     b.append(txt(56, 122, "EVIDENCE", 12.5, "ink", "700", t=t))
     b.append(txt(56, 142, "13 askable", 11, "muted", t=t))
     b.append(txt(56, 156, "variables", 11, "muted", t=t))
-    for i, name in enumerate(["rssi_dbm, snr_db,", "packet_loss_pct,", "rtt_ms, link_state,",
-                              "node_power, weather,", "spectrum_scan, ..."]):
+    for i, name in enumerate(["PHY: rssi_dbm, snr_db,", "excess_path_loss_db",
+                              "MAC: retry_rate_pct", "flow: loss, delay,",
+                              "offered load, route, ..."]):
         b.append(txt(56, 178 + i * 14, name, 10.5, "faint", t=t))
     b += arrow(194, 150, 228, 132, t, width=1.6)
 
@@ -374,17 +375,18 @@ def build_planning(t) -> str:
     b.append(box(40, 126, 420, 212, t, "panel", "green", 2, 10))
     b += header_band(40, 126, 420, t, "green", "", band_h=32)
     b.append(f'<text x="58" y="148" font-size="14" font-weight="700" '
-             f'fill="{t["header_text"]}" font-family="{MONO}">realign_antenna(?n)</text>')
+             f'fill="{t["header_text"]}" font-family="{MONO}">separate_channels(?n)</text>')
     b.append(f'<text x="442" y="148" font-size="12.5" font-weight="600" '
              f'fill="{t["header_text"]}" text-anchor="end">cost 3</text>')
 
     b.append(txt(58, 182, "PRECONDITIONS - what must hold", 12.5, "amber_text", "700", t=t))
-    for i, p in enumerate(["authorized(?n)", "crew-at(?n)", "misaligned(?n)"]):
+    for i, p in enumerate(["authorized(?n)", "mac-contention(?n)",
+                           "run-stopped(?n)"]):
         b.append(txt(70, 202 + i * 17, p, 12, "ink", mono=True, t=t))
     b.append(txt(58, 264, "ADD LIST - what becomes true", 12.5, "green_text", "700", t=t))
-    b.append(txt(70, 284, "+ fault-cleared(?n)", 12, "ink", mono=True, t=t))
+    b.append(txt(70, 284, "+ cleared-mac-contention(?n)", 12, "ink", mono=True, t=t))
     b.append(txt(58, 310, "DELETE LIST - what stops being true", 12.5, "red_text", "700", t=t))
-    b.append(txt(70, 330, "- misaligned(?n)", 12, "ink", mono=True, t=t))
+    b.append(txt(70, 330, "- mac-contention(?n)", 12, "ink", mono=True, t=t))
 
     b.append(box(40, 352, 420, 66, t, "green_fill", "green"))
     b.append(txt(58, 374, "GOVERNANCE AS A PRECONDITION", 12.5, "green_text", "700", t=t))
@@ -397,7 +399,7 @@ def build_planning(t) -> str:
     b.append(txt(58, 453, "CLOSED-WORLD ASSUMPTION", 12.5, "ink", "700", t=t))
     b.append(txt(58, 472, "A state is the set of TRUE literals.", 11.5, "muted", t=t))
     b.append(txt(58, 488, "Anything absent from the set is taken to be false.", 11.5, "muted", t=t))
-    b.append(txt(58, 508, "state = { diagnosed(N), crew-at(BASE), misaligned(N) }",
+    b.append(txt(58, 508, "state = { diagnosed(N), run-active(N), mac-contention(N) }",
                  11.5, "faint", t=t))
 
     b.append(box(40, 532, 420, 152, t, "panel", "border"))
@@ -419,8 +421,8 @@ def build_planning(t) -> str:
                                              ("logged(N)", 12, "ink", None, True)]),
         (322, 34, "panel", "green", 1.6, [("verify_link(N)", 12, "ink", None, True)]),
         (382, 34, "blue_fill", "blue", 1.4, [("fault-cleared(N)", 12, "ink", None, True)]),
-        (442, 34, "panel", "green", 1.6, [("realign_antenna(N)", 12, "ink", None, True)]),
-        (502, 42, "green_fill", "green", 1.4, [("crew-at(BASE)  - already true", 12, "ink", None, True),
+        (442, 34, "panel", "green", 1.6, [("separate_channels(N)", 12, "ink", None, True)]),
+        (502, 42, "green_fill", "green", 1.4, [("run-active(N)  - already true", 12, "ink", None, True),
                                                ("recursion ends: the difference is gone", 11, "faint", None, False)]),
     ]
     for y, h, fill, stroke, sw, rows in steps:
@@ -444,7 +446,7 @@ def build_planning(t) -> str:
     b.append(txt(518, 584, "THE WEAKNESS OF GPS, DEMONSTRATED", 13, "red_text", "700", t=t))
     b.append(txt(518, 605, "GPS orders operators by their OWN cost - and never sees the cost "
                            "of their PRECONDITIONS.", 11.5, "red_text", t=t))
-    b.append(txt(518, 628, "GPS:  travel_crew (10) + cheap_local_fix (1)   =  cost 11",
+    b.append(txt(518, 628, "GPS:  stop_run (10) + cheap_fix (1)   =  cost 11",
                  11.5, "ink", mono=True, t=t))
     b.append(txt(518, 648, "A* :  remote_fix (3)                          =  cost  3",
                  11.5, "ink", mono=True, t=t))
@@ -455,8 +457,8 @@ def build_planning(t) -> str:
     b.append(txt(836, 148, "WHY COST MATTERS", 12.5, "ink", "700", t=t))
     b.append(txt(836, 168, "If every action cost 1,", 11.5, "muted", t=t))
     b.append(txt(836, 183, "planning would be counting steps.", 11.5, "muted", t=t))
-    for i, row in enumerate(["dispatch_crew ....... 4", "replace_power_unit .. 5",
-                             "fix_vlan ............ 1"]):
+    for i, row in enumerate(["stop_run + start_run  4", "separate_channels ... 3",
+                             "fix_routing ......... 1"]):
         b.append(txt(836, 205 + i * 16, row, 11.5, "ink", t=t))
 
     return document(1120, 720, "STRIPS and GPS: operator anatomy and means-ends analysis",
@@ -474,51 +476,47 @@ def build_astar(t) -> str:
                          "uniform cost (optimal, blind). h alone is greedy (fast, no guarantee).",
                  14, "muted", t=t))
 
-    b.append(txt(40, 112, "Optimal path in the base scenario: NOC to RECLOSER_7",
+    b.append(txt(40, 112, "Optimal path in the simulated scenario: LTE_ENB to AP_B",
                  15, "ink", "700", t=t))
     b.append(box(40, 126, 530, 396, t, "panel", "border", 1.0, 10))
 
-    dashed = [((112, 188), (238, 168), "edge_radio", 2, "3 3"),
-              ((238, 168), (336, 206), "edge_radio", 2, "3 3"),
-              ((336, 206), (398, 282), "edge_saf", 2.6, "2 3"),
-              ((398, 282), (452, 352), "edge_saf", 2.6, "2 3"),
-              ((452, 352), (504, 292), "edge_radio", 2, "3 3")]
-    for (x1, y1), (x2, y2), colour, w, dash in dashed:
-        b.append(line(x1, y1, x2, y2, t, colour, w, dash))
+    # Two competing routes, both priced. The teaching point is that the CHEAPER
+    # route has MORE hops, so hop counting and cost minimisation disagree here.
+    #   breadth-first / greedy : LTE_ENB -> RM_B4 -> AP_B            2 hops, 381.46 ms
+    #   uniform cost / A*      : LTE_ENB -> LTE_CORE -> NOC -> AP_B  3 hops,  70.51 ms
+    b.append(line(120, 210, 300, 160, t, "edge_radio", 2.4, "4 4"))
+    b.append(line(300, 160, 500, 210, t, "edge_radio", 2.4, "4 4"))
 
-    b.append(f'<polyline points="112,188 170,262 296,326 448,388 504,292" fill="none" '
+    b.append(f'<polyline points="120,210 220,320 380,360 500,210" fill="none" '
              f'stroke="{t["red"]}" stroke-width="5" stroke-linejoin="round" '
              f'stroke-linecap="round" opacity="0.9"/>')
 
-    b.append(f'<rect x="100" y="176" width="24" height="24" rx="4" fill="{t["n_core"]}"/>')
-    b.append(txt(70, 172, "NOC", 11, "ink", "700", t=t))
-    b.append(f'<circle cx="170" cy="262" r="10" fill="{t["n_lte"]}"/>')
-    b.append(txt(96, 266, "LTE_CORE", 10.5, "ink", t=t))
-    b.append(f'<polygon points="296,316 306,334 286,334" fill="{t["n_lte"]}"/>')
-    b.append(txt(228, 332, "LTE_ENB", 10.5, "ink", t=t))
-    b.append(f'<circle cx="448" cy="388" r="10" fill="{t["n_rm"]}"/>')
-    b.append(txt(464, 404, "RM_A5", 10.5, "ink", t=t))
-    b.append(f'<polygon points="504,278 512,292 504,306 496,292" fill="{t["n_field"]}"/>')
-    b.append(txt(470, 268, "RECLOSER_7", 10.5, "ink", "700", t=t))
-    b.append(f'<polygon points="238,158 248,176 228,176" fill="{t["n_ap"]}"/>')
-    b.append(txt(214, 152, "AP_A", 10.5, "ink", t=t))
-    b.append(f'<circle cx="336" cy="206" r="9" fill="{t["n_rm"]}"/>')
-    b.append(txt(322, 196, "RM_A3", 10.5, "ink", t=t))
-    for cx, cy, label, lx in ((398, 282, "SAF_A1", 336), (452, 352, "SAF_A2", 392)):
-        b.append(f'<rect x="{cx - 8}" y="{cy - 8}" width="16" height="16" rx="3" '
-                 f'fill="{t["n_saf"]}" transform="rotate(45 {cx} {cy})"/>')
-        b.append(txt(lx, cy - 10, label, 10.5, "ink", t=t))
+    b.append(f'<polygon points="120,196 130,214 110,214" fill="{t["n_lte"]}"/>')
+    b.append(txt(56, 190, "LTE_ENB", 11, "ink", "700", t=t))
+    b.append(f'<circle cx="220" cy="320" r="10" fill="{t["n_lte"]}"/>')
+    b.append(txt(150, 326, "LTE_CORE", 10.5, "ink", t=t))
+    b.append(f'<rect x="368" y="348" width="24" height="24" rx="4" fill="{t["n_core"]}"/>')
+    b.append(txt(400, 368, "NOC", 10.5, "ink", t=t))
+    b.append(f'<polygon points="500,196 510,214 490,214" fill="{t["n_ap"]}"/>')
+    b.append(txt(514, 206, "AP_B", 11, "ink", "700", t=t))
+    b.append(f'<circle cx="300" cy="160" r="9" fill="{t["n_rm"]}"/>')
+    b.append(txt(280, 142, "RM_B4", 10.5, "ink", t=t))
 
-    for x, y, label in ((118, 232, "5.99"), (212, 304, "10.55"),
-                        (356, 372, "69.94"), (494, 344, "5.74")):
+    # the cheap route, hop by hop
+    for x, y, label in ((116, 274, "13.86"), (288, 386, "9.41"), (452, 292, "47.23")):
         b.append(txt(x, y, label, 10.5, "red_text", "600", t=t))
+    # the expensive two-hop route
+    for x, y, label in ((172, 176, "263.15"), (382, 176, "118.31")):
+        b.append(txt(x, y, label, 10.5, "muted", "600", t=t))
 
-    b.append(box(58, 428, 494, 76, t, "red_fill", "red", 1.0, 6))
-    b.append(txt(72, 450, "NOC -> LTE_CORE -> LTE_ENB -> RM_A5 -> RECLOSER_7",
-                 12, "red_text", "700", t=t))
-    b.append(txt(72, 470, "total cost = 92.22 ms", 13, "red_text", "700", t=t))
-    b.append(txt(72, 492, "the optimal path avoids the store-and-forward chain entirely (dashed)",
-                 11, "red_text", t=t))
+    b.append(box(58, 400, 494, 108, t, "red_fill", "red", 1.0, 6))
+    b.append(txt(72, 424, "A*:  LTE_ENB -> LTE_CORE -> NOC -> AP_B", 11.5,
+                 "red_text", "700", t=t))
+    b.append(txt(72, 446, "3 hops,  total cost = 70.51 ms", 13, "red_text", "700", t=t))
+    b.append(txt(72, 474, "breadth-first (dashed):  LTE_ENB -> RM_B4 -> AP_B",
+                 11, "muted", t=t))
+    b.append(txt(72, 494, "2 hops, 381.46 ms - fewer hops, five times the cost",
+                 11, "red_text", "600", t=t))
 
     # heuristic
     b.append(box(596, 126, 484, 150, t, "panel", "amber", 2, 10))
@@ -546,8 +544,8 @@ def build_astar(t) -> str:
 
     b.append(box(596, 464, 484, 58, t, "green_fill", "green"))
     b.append(txt(614, 486, "VERIFIED, NOT MERELY ARGUED", 12.5, "green_text", "700", t=t))
-    b.append(txt(614, 506, "Tests check both properties over EVERY source-goal pair, in both "
-                           "scenarios.", 11.5, "green_text", t=t))
+    b.append(txt(614, 506, "Checked over every ordered pair, in both scenarios, against "
+                           "Floyd-Warshall.", 11.5, "green_text", t=t))
 
     # table
     b.append(txt(40, 558, "Five strategies on one problem - three lessons", 15, "ink", "700", t=t))
@@ -558,35 +556,35 @@ def build_astar(t) -> str:
         b.append(txt(x, 592, label, 12, "muted", "700", t=t))
 
     rows = [
-        (620, "Breadth-first", "4", "357.35", "15", ("steps only", "red_text"),
-         "counts fibre and store-and-forward alike"),
-        (640, "Depth-first", "5", "343.06", "19", ("no", "red_text"),
+        (620, "Breadth-first", "2", "381.46", "7", ("steps only", "red_text"),
+         "fewest hops - and five times the cost"),
+        (640, "Depth-first", "6", "694.78", "7", ("no", "red_text"),
          "no guarantee at all"),
-        (660, "Uniform cost", "4", "92.22", "13", ("yes", "green_text"),
+        (660, "Uniform cost", "3", "70.51", "6", ("yes", "green_text"),
          "optimal, but blind"),
-        (680, "Greedy", "4", "357.35", "5", ("no", "red_text"),
+        (680, "Greedy", "2", "381.46", "3", ("no", "red_text"),
          "the fastest - and wrong"),
     ]
     for y, name, steps_, cost, exp, (opt, opt_tone), lesson in rows:
         b.append(txt(60, y, name, 12, "ink", t=t))
         b.append(txt(300, y, steps_, 12, "ink", t=t))
-        b.append(txt(400, y, cost, 12, "ink", "700" if cost == "92.22" else None, t=t))
-        b.append(txt(530, y, exp, 12, "ink", "700" if exp == "5" else None, t=t))
+        b.append(txt(400, y, cost, 12, "ink", "700" if cost == "70.51" else None, t=t))
+        b.append(txt(530, y, exp, 12, "ink", "700" if exp == "3" else None, t=t))
         b.append(txt(700, y, opt, 12, opt_tone, "700" if opt == "yes" else None, t=t))
         b.append(txt(820, y, lesson, 11, "red_text" if "wrong" in lesson else "muted", t=t))
 
-    for x, val in ((60, "A*"), (300, "4"), (400, "92.22"), (530, "11")):
+    for x, val in ((60, "A*"), (300, "3"), (400, "70.51"), (530, "4")):
         b.append(txt(x, 716, val, 12.5, "amber_text", "700", t=t))
     b.append(txt(700, 716, "yes", 12.5, "green_text", "700", t=t))
     b.append(txt(820, 716, "same optimum, less work", 11.5, "amber_text", "700", t=t))
 
     b.append(box(40, 726, 1040, 28, t, "amber_fill", "amber", 1.0, 6))
-    b.append(txt(60, 745, "The heuristic's advantage GROWS with the graph: summed over all "
-                          "node pairs, A* expands 9.0% fewer nodes than uniform cost at 17 "
-                          "nodes, and 27.2% fewer at 30.", 11.5, "amber_text", t=t))
+    b.append(txt(60, 745, "Summed over every ORDERED node pair, A* expands 9.4% fewer nodes "
+                          "than uniform cost at 17 nodes and 25.9% fewer at 30 - a larger "
+                          "saving here, not a scaling law.", 11.5, "amber_text", t=t))
 
     return document(1120, 770, "A* search: f = g + h, admissibility, and strategy comparison",
-                    "On the left, the optimal path A* finds in the base scenario. On the right, "
+                    "On the left, the cheapest route A* finds in the simulated scenario. On the right, "
                     "the heuristic, its admissibility and consistency proofs, and the comparison "
                     "table for five search strategies.", b, t)
 

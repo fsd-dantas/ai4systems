@@ -12,7 +12,7 @@
   <rect x="40" y="208" width="320" height="180" rx="10" fill="#ffffff" stroke="#0072B2" stroke-width="2"/>
   <path d="M 50 208 H 350 A 10 10 0 0 1 360 218 V 244 H 40 V 218 A 10 10 0 0 1 50 208 Z" fill="#0072B2"/>
   <text x="58" y="233" font-size="15" fill="#ffffff" font-weight="700">1 - EXPERT SYSTEM</text>
-  <text x="58" y="270" font-size="13" fill="#1f2933">43 production rules, 5 layers</text>
+  <text x="58" y="270" font-size="13" fill="#1f2933">41 production rules, 5 layers</text>
   <text x="58" y="290" font-size="13" fill="#52606d">forward and backward chaining</text>
   <text x="58" y="310" font-size="13" fill="#52606d">certainty factors (MYCIN)</text>
   <text x="58" y="330" font-size="13" fill="#52606d">explanation: why / how</text>
@@ -53,12 +53,12 @@
   <text x="795" y="433" font-size="12.5" fill="#5b3f86" font-weight="600" text-anchor="middle">the SAME astar() function, not a copy</text>
   <rect x="40" y="474" width="1100" height="80" rx="10" fill="#ffffff" stroke="#b6b0a6" stroke-width="1.6"/>
   <text x="60" y="500" font-size="14" fill="#1f2933" font-weight="700">SHARED DOMAIN - synthetic communication backhaul</text>
-  <text x="60" y="522" font-size="12.5" fill="#52606d">17 nodes (base scenario) or 30 nodes (scale scenario) - fibre core - 900 MHz radio sectors - store-and-forward chain - private LTE overlay</text>
+  <text x="60" y="522" font-size="12.5" fill="#52606d">Simulated ns-3 scenario: 30 nodes in three sectors - fibre core - 900 MHz radio - store-and-forward chains - private LTE overlay</text>
   <text x="60" y="541" font-size="12.5" fill="#52606d">link cost = overhead(type) + distance / (speed(type) x quality)     -     distances derived from the coordinates</text>
   <line x1="200" y1="470" x2="200" y2="390" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4"/>
   <line x1="600" y1="470" x2="600" y2="446" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4"/>
   <line x1="990" y1="470" x2="990" y2="446" stroke="#b6b0a6" stroke-width="1.4" stroke-dasharray="4 4"/>
   <rect x="40" y="572" width="1100" height="46" rx="8" fill="#fdecea" stroke="#D55E00" stroke-width="1.0"/>
   <text x="60" y="592" font-size="12.5" fill="#a8442a" font-weight="700">VALIDITY LIMIT</text>
-  <text x="60" y="609" font-size="12" fill="#a8442a">Synthetic topology. Nominal, uncalibrated thresholds. No labelled fault dataset exists for this domain. The system RECOMMENDS, it does not act.</text>
+  <text x="60" y="609" font-size="12" fill="#a8442a">Topology MODEL, not simulation output. Nominal, uncalibrated thresholds. A result here holds for the simulated model, not for physical radio. The system RECOMMENDS, it does not act.</text>
 </svg>
