@@ -1,0 +1,310 @@
+{
+  "slides": 57,
+  "speech_words": 8127,
+  "rehearsal_seconds": 5400,
+  "repository_head_at_build": "77041711d4fff79303634085acdb62c62fa08870",
+  "baseline_sha256": "5fa6824afff70d2b03700b5e093ad52aeb051a543eb7046cb2e4f393ad23f919",
+  "deck_sha256": "1a66be88860dd45c2beb6ffd8183a2377e2a6084da27d88078e11b0434785c6d",
+  "script_sha256": "8d3e41e23f5952efaa5f5f550c05ccd71b06756a08458423c10ea5ac9269e27e",
+  "source_sha256": {
+    "docs/presentation/academic_content.py": "8b75bf866ae0648b6cdfc2e2b8f2582f80fccb389e0984e6b27f09dbcaae6958",
+    "docs/presentation/build_academic_deck.py": "dc0a25ecfc3675094ef9eebf432866763ff9ff9e14df64146fb0f8232229a709",
+    "docs/presentation/presentation_demo.py": "446d089ff622a6c26fb29cd4e63aabb79ca322c804f4110c733b7f51814135fe",
+    "docs/presentation/presentation-evidence.json": "84b9aeb9f6275ecde0f53a52efbf58d46f0b45e081da5783ae5e2af2cf64123e",
+    "src/aisg/expert_system/engine.py": "845c1ff3684cd979892689ba9d47e925e465b825715fc475cfb04a7676c200c1",
+    "src/aisg/expert_system/kb_simulated.py": "f6964cef0819d1664b4eee258d32fd480e59edd2f1a88df64d8e296a8ac862f1",
+    "src/aisg/planning/domain_restoration.py": "8a755d7d52a890e851d0757dc60bad6833c0d43a122ec5b01aaa4e2c079f0254",
+    "src/aisg/planning/forward.py": "12ed1deaf8f42e390bcdc7fb6dc40655817fdba67e4103713944e6a73f091799",
+    "src/aisg/planning/gps.py": "3a220175aa2da975d93c545a67c1d9cc36fa99021bf99a2d83d2592da54a27be",
+    "src/aisg/search/algorithms.py": "099c0550dda6f4d042fc0359e25cf4588a3f951ebb5c8e57652d92e5e3cd2121",
+    "src/aisg/domain/topology.py": "276146e3a4409aa4015ab45170b49eeb6f8da30030a293438d43aa2a4443c450",
+    "src/aisg/domain/data/backhaul-topology-30.json": "7266a9083f82c75d5c1409f1c4c6eeaacf8a16b711a3fd68b981df97d505274d"
+  },
+  "slide_mapping": [
+    {
+      "number": 1,
+      "title": "Sistema especialista, planejamento automático e busca A*",
+      "notes_sha256": "0ec0b30100ca619e3bc419d4497da574acf783054b0a011b47fda8df28fa5bd6"
+    },
+    {
+      "number": 2,
+      "title": "Estrutura da apresentação",
+      "notes_sha256": "cdd5058d0e5b6a5a3af63e5044cd368e6e28d0dd6347c5c5e1cefc57b2f6e58c"
+    },
+    {
+      "number": 3,
+      "title": "Problema e questão de investigação",
+      "notes_sha256": "0796ff06fc11bc83e4a985f94b8f264b53a66352f6e3d1e47002e9ac0644c648"
+    },
+    {
+      "number": 4,
+      "title": "Escopo: testes internos representados em software",
+      "notes_sha256": "626cb96b8da6a7108a727c35ab6653abcaec639111dad1eabeacbf9f8eb9de6f"
+    },
+    {
+      "number": 5,
+      "title": "Topologia sintética e unidade de análise",
+      "notes_sha256": "739628fdf43c8598fe137045a343425d1251fd5ef81a72872074fe9072db326b"
+    },
+    {
+      "number": 6,
+      "title": "Grandezas físicas: definição e interpretação",
+      "notes_sha256": "fd4a6ef5a763a97ee2ac8db392a7b40e774572f067dae85f87da0e42759272e0"
+    },
+    {
+      "number": 7,
+      "title": "Indicadores de acesso ao meio e desempenho",
+      "notes_sha256": "f11ba4326ae967b6f3266ae4b17faa06f90cb168becf6c9cd9f10515b99eb8a9"
+    },
+    {
+      "number": 8,
+      "title": "Observações, intervenções e informação desconhecida",
+      "notes_sha256": "0919c533357ceb523de2b4121bd87e462b32905b3017c6dfedac9770cc3cd4cb"
+    },
+    {
+      "number": 9,
+      "title": "Três representações, três critérios de correção",
+      "notes_sha256": "89a9028ce2960b7977d5f4609bb8df69fb5bd31d06450164d23cddc26b8edc29"
+    },
+    {
+      "number": 10,
+      "title": "Escolha metodológica e alcance das evidências",
+      "notes_sha256": "21e06e79c889afc4d1afb3f41cec3ffcbdadb6aaebd2368cebed231b340d8fd7"
+    },
+    {
+      "number": 11,
+      "title": "Diagnóstico baseado em regras de produção",
+      "notes_sha256": "c01b3be391b6b84a9ad76b96eb4cba25db9d476486433a7ab652b26fd4636e0c"
+    },
+    {
+      "number": 12,
+      "title": "Arquitetura e separação de responsabilidades",
+      "notes_sha256": "2c3320dd2ebfc548d06f334c04cd9b81697b764fd94ee1363c076373f0c9854f"
+    },
+    {
+      "number": 13,
+      "title": "Organização da base de conhecimento",
+      "notes_sha256": "d801047406946bb6a3f002df063f43c41c147619ec57ec7c4712e981f9c3d40d"
+    },
+    {
+      "number": 14,
+      "title": "Variáveis observáveis e parâmetros do cenário",
+      "notes_sha256": "f4160fa56846037e78dfab955e7ccd420a6c6066781041106ccdff28514a279d"
+    },
+    {
+      "number": 15,
+      "title": "Regra de diagnóstico e contraevidência",
+      "notes_sha256": "0ff7604ce58d9ad414673ec52696ae84a76f747b8d91161738a99339f46f4669"
+    },
+    {
+      "number": 16,
+      "title": "Fatores de certeza: significado e limites",
+      "notes_sha256": "d4077003f20c62cd2f83245c357d2ad1a4b7495b1d4875dd455f0039dc44253c"
+    },
+    {
+      "number": 17,
+      "title": "Propagação e combinação de suporte",
+      "notes_sha256": "3b1f4db314de64d637499917571aa6fa9396a59c158a509e2aeefe0f35b28032"
+    },
+    {
+      "number": 18,
+      "title": "Contraevidência e dependência entre regras",
+      "notes_sha256": "2048c3113e41f8b40db0c5bdada707ad1b6bba7fedb7b2e55dda6babbbf51d62"
+    },
+    {
+      "number": 19,
+      "title": "Encadeamento progressivo e resolução de conflito",
+      "notes_sha256": "5e867c8cece7164d48a12a75558c6554a233fbd2a7d7bbb4f0655857c21b9a1a"
+    },
+    {
+      "number": 20,
+      "title": "Demonstração: hipótese de contenção MAC",
+      "notes_sha256": "81e7a6db673ee06c6c9ce6f3ff50eaf6ac497c49e629e97d0597c3a021759b40"
+    },
+    {
+      "number": 21,
+      "title": "Encadeamento regressivo e consulta orientada",
+      "notes_sha256": "b36efd5a0515baff4dff217f971773ff478e338c2ebdb37b5765e2be6912ed04"
+    },
+    {
+      "number": 22,
+      "title": "Explicação, hipótese e identificação causal",
+      "notes_sha256": "5a133cce1d1c62be8cd6c3356fb9f8bc76f2fdbb63639bb024d9943955798d47"
+    },
+    {
+      "number": 23,
+      "title": "Resultados dos oito casos ilustrativos",
+      "notes_sha256": "ab0e3fa1e91df1263ba412a6eb8ce1c2f9ef2b1d01164fab28d23f68454262db"
+    },
+    {
+      "number": 24,
+      "title": "Avaliação crítica do sistema especialista",
+      "notes_sha256": "781b9f2270d4cc99f6ad51a787c7befd45e1796bad07ccdc9862e7d84956c38b"
+    },
+    {
+      "number": 25,
+      "title": "Do diagnóstico à sequência de ações",
+      "notes_sha256": "322f620cf019dacfc93337285d983854a64f762b6941104a41266d192813371f"
+    },
+    {
+      "number": 26,
+      "title": "Modelo formal de planejamento STRIPS",
+      "notes_sha256": "a5b5c3d084fd698c074dcc26203e2dc97e8e26f3b9f1edd134c5bd2ba1b19bb5"
+    },
+    {
+      "number": 27,
+      "title": "Hipóteses de planejamento e suas consequências",
+      "notes_sha256": "25680781fd806850fbdbe38b65a4b923da93d31281e9cd20969965fcc6cbc112"
+    },
+    {
+      "number": 28,
+      "title": "Operador: separar canais no cenário simulado",
+      "notes_sha256": "c895c873efc60d4c710a8021d49a89205bc87139e064ee64fbce861b82690bb5"
+    },
+    {
+      "number": 29,
+      "title": "Operadores pertinentes à demonstração",
+      "notes_sha256": "d7bf7aac08b5878c57ea04b994e2242594011587e91c58bc4892358663cfc114"
+    },
+    {
+      "number": 30,
+      "title": "Autorização e validação pertencem ao modelo",
+      "notes_sha256": "c8b6f4e6ccd3fed39c698598e92feadae5761a741dd98c8547d3de803ccaf5e2"
+    },
+    {
+      "number": 31,
+      "title": "GPS: análise meios-fins",
+      "notes_sha256": "9eff5aeef4583847f42c0d912675fc1afbbe27a7c3531238dfd1f4c13a26b57d"
+    },
+    {
+      "number": 32,
+      "title": "Interação entre subobjetivos",
+      "notes_sha256": "095c8afe79eff4d8eea6a7d3df1ec50fe9d749a5dc8660945afe15d7d396ea33"
+    },
+    {
+      "number": 33,
+      "title": "Não otimalidade: custo local e custo total",
+      "notes_sha256": "2724a2a59bd74397115fdf1dc5f5439c15b4af13c6f008711e53ca4268d9bd73"
+    },
+    {
+      "number": 34,
+      "title": "Planejamento como busca progressiva",
+      "notes_sha256": "a9cfafb94e37ca6bd8f8da93a3295b64c291d5007f74883da26351fd42fca541"
+    },
+    {
+      "number": 35,
+      "title": "Heurística de objetivos não satisfeitos",
+      "notes_sha256": "a0ed33f150d00f656e084ba3e86b237ae83669cfb93878677cdb316236ea3fb9"
+    },
+    {
+      "number": 36,
+      "title": "Demonstração: plano para contenção MAC",
+      "notes_sha256": "2bfe7cdb49b4f26acc845caed98881849ea9d8c724f7ea8c3792247e0a95cd72"
+    },
+    {
+      "number": 37,
+      "title": "Falhas simultâneas e correção específica",
+      "notes_sha256": "14ff79cfebb07c0bfc32b77115aeb3b3080951e99ac205792358fe73332f0fa8"
+    },
+    {
+      "number": 38,
+      "title": "Rota alternativa como precondição verificável",
+      "notes_sha256": "33f8c99ee10deec78d4c3a849d0017d1d7bc97785cbdf123fe24824ced55f323"
+    },
+    {
+      "number": 39,
+      "title": "Busca de caminhos em um grafo ponderado",
+      "notes_sha256": "636d9c39f4f05e2d2eae835ff0a8bf41b3433c447401f9800942889a8ed695cb"
+    },
+    {
+      "number": 40,
+      "title": "Função de custo e significado dos parâmetros",
+      "notes_sha256": "ba18ace5aa6815c8681676e4f2afad2c5e3428aa2bd43bdd0666d99b1f54d74e"
+    },
+    {
+      "number": 41,
+      "title": "Função de avaliação e fronteira de busca",
+      "notes_sha256": "eca02fb08db5a99a0c1c374c7878fe16e68111c71ca4fa54cdb0baad89339cb2"
+    },
+    {
+      "number": 42,
+      "title": "Condições e decisões de implementação",
+      "notes_sha256": "2ec3d5182d14410abdd9397d61601cf52ce6e470a761085b96e33ccd942bca61"
+    },
+    {
+      "number": 43,
+      "title": "Admissibilidade da heurística geométrica",
+      "notes_sha256": "baeb055747e5de4b22045119d73d5e0bb92edd4579337a87eadf55a624bada65"
+    },
+    {
+      "number": 44,
+      "title": "Consistência e verificação independente",
+      "notes_sha256": "b73ab2e371dfe8e4a75bebaf34369be455cae6aa0d1a264f43f99cdb217545bd"
+    },
+    {
+      "number": 45,
+      "title": "Comparação: LTE_ENB → AP_B",
+      "notes_sha256": "e62ec5ddb2e8505df7321353997be53c3b60b7b2dcd9608f82d0c97cc134a870"
+    },
+    {
+      "number": 46,
+      "title": "Caminho ótimo e decomposição do custo",
+      "notes_sha256": "1dc8f20cfe1b518f3e724adaa6fc882a933de8d6138835c188bed3b7d0ca820f"
+    },
+    {
+      "number": 47,
+      "title": "Falha de enlace e recálculo de rota",
+      "notes_sha256": "4f6addf5189ffe4f0254c4e50220a1b1daf72ac0ae5f1ef5969ed6fceb009429"
+    },
+    {
+      "number": 48,
+      "title": "Esforço de busca no cenário de 30 nós",
+      "notes_sha256": "f67a7f3966407bb66cc6d06ed5d7dfb9cac419036f9ef192dc82b13c4f323d37"
+    },
+    {
+      "number": 49,
+      "title": "Aprendizagem de heurísticas: possibilidade e cautela",
+      "notes_sha256": "a97db7c86e1afc60251589cd178fd1fe8d569163ea820c73dc570cc1eca969a7"
+    },
+    {
+      "number": 50,
+      "title": "Contrato entre diagnóstico, planejamento e busca",
+      "notes_sha256": "209294840bc6c3771f07572c91a3742e78732c70536e0a3e68f8ee1b2423722a"
+    },
+    {
+      "number": 51,
+      "title": "Demonstração integrada: congestionamento",
+      "notes_sha256": "dde9bf5e170c1432ecec5ac9f74c751620ff3d227c04274307b9e0b601785e21"
+    },
+    {
+      "number": 52,
+      "title": "Procedimento experimental proposto",
+      "notes_sha256": "3c511d29a52eed6cb74ea29f942a3c22d19513a2c2a2ac0c13265d235af11cc0"
+    },
+    {
+      "number": 53,
+      "title": "O que cada evidência permite concluir",
+      "notes_sha256": "7c3d83118a065adc6096b5852eb9e0176d10412e9c3561dd38fae77daa7556d9"
+    },
+    {
+      "number": 54,
+      "title": "Contribuições e limitações do trabalho",
+      "notes_sha256": "8907a112e7869ec35f5d0ead47a22f10dede402d629e4fbaf2b721f84a2bd599"
+    },
+    {
+      "number": 55,
+      "title": "Agenda de investigação e critérios de avanço",
+      "notes_sha256": "e91a6d208c5b635b59fdfc5656e09ac85588442c77b949459a39619091370450"
+    },
+    {
+      "number": 56,
+      "title": "Referências e procedência dos resultados",
+      "notes_sha256": "a59ee4b7ca7da2126bd8cd9cfa407027d29b67ac2ed8be4bdacd7618724eeccb"
+    },
+    {
+      "number": 57,
+      "title": "Discussão",
+      "notes_sha256": "a2f22c758d9603b207ea6a2a27cfb23804a1ee08b5758ff7f9a71442ec213d93"
+    }
+  ]
+}

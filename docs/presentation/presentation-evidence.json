@@ -1,0 +1,280 @@
+{
+  "diagnose": {
+    "rf_interference": {
+      "diagnosis": {
+        "value": "rf_interference",
+        "cf": 0.9295
+      },
+      "recommended_action": {
+        "value": "change_channel",
+        "cf": 0.83655
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.83655
+      }
+    },
+    "excess_path_loss": {
+      "diagnosis": {
+        "value": "excess_path_loss",
+        "cf": 0.924
+      },
+      "recommended_action": {
+        "value": "restore_path_budget",
+        "cf": 0.7854
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.7854
+      }
+    },
+    "mac_contention": {
+      "diagnosis": {
+        "value": "mac_contention",
+        "cf": 0.94125
+      },
+      "recommended_action": {
+        "value": "separate_channels",
+        "cf": 0.8000625
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.8000625
+      }
+    },
+    "node_failure": {
+      "diagnosis": {
+        "value": "node_failure",
+        "cf": 0.8
+      },
+      "recommended_action": {
+        "value": "restart_node",
+        "cf": 0.7200000000000001
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.7200000000000001
+      }
+    },
+    "upstream_relay_failure": {
+      "diagnosis": {
+        "value": "upstream_relay_failure",
+        "cf": 0.975
+      },
+      "recommended_action": {
+        "value": "restore_upstream_relay",
+        "cf": 0.8775
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.9657
+      }
+    },
+    "routing_misconfiguration": {
+      "diagnosis": {
+        "value": "routing_misconfiguration",
+        "cf": 0.9
+      },
+      "recommended_action": {
+        "value": "fix_routing",
+        "cf": 0.81
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.81
+      }
+    },
+    "congestion": {
+      "diagnosis": {
+        "value": "congestion",
+        "cf": 0.888
+      },
+      "recommended_action": {
+        "value": "reroute_traffic",
+        "cf": 0.7104
+      },
+      "authorization_required": {
+        "value": "yes",
+        "cf": 0.7104
+      }
+    },
+    "healthy": {
+      "diagnosis": {
+        "value": "healthy",
+        "cf": 0.81
+      },
+      "recommended_action": {
+        "value": "no_action",
+        "cf": 0.7290000000000001
+      },
+      "authorization_required": {
+        "value": "no",
+        "cf": 0.7290000000000001
+      }
+    }
+  },
+  "plan": {
+    "plan_with_gps": {
+      "cost": 11.0,
+      "actions": [
+        "request_authorization(RM_A5)",
+        "stop_run(RM_A5)",
+        "separate_channels(RM_A5)",
+        "start_run(RM_A5)",
+        "verify_link(RM_A5)",
+        "record_logbook(RM_A5)",
+        "close_work_order(RM_A5)"
+      ],
+      "valid": true
+    },
+    "plan_with_astar": {
+      "cost": 11.0,
+      "actions": [
+        "request_authorization(RM_A5)",
+        "stop_run(RM_A5)",
+        "separate_channels(RM_A5)",
+        "start_run(RM_A5)",
+        "verify_link(RM_A5)",
+        "record_logbook(RM_A5)",
+        "close_work_order(RM_A5)"
+      ],
+      "valid": true
+    }
+  },
+  "gps-counterexample": {
+    "plan_with_gps": {
+      "cost": 11,
+      "actions": [
+        "prepare",
+        "correction_a"
+      ],
+      "valid": true
+    },
+    "plan_with_astar": {
+      "cost": 3,
+      "actions": [
+        "correction_b"
+      ],
+      "valid": true
+    }
+  },
+  "multifault": {
+    "cost": 12.0,
+    "actions": [
+      "request_authorization(RM_A5)",
+      "stop_run(RM_A5)",
+      "restore_path_budget(RM_A5)",
+      "separate_channels(RM_A5)",
+      "start_run(RM_A5)",
+      "verify_link(RM_A5)",
+      "record_logbook(RM_A5)",
+      "close_work_order(RM_A5)"
+    ],
+    "valid": true
+  },
+  "route": {
+    "Breadth-first": {
+      "path": [
+        "LTE_ENB",
+        "RM_B4",
+        "AP_B"
+      ],
+      "cost": 381.45684849843406,
+      "expanded": 7,
+      "hops": 2
+    },
+    "Depth-first": {
+      "path": [
+        "LTE_ENB",
+        "FD_A",
+        "SAF_A2",
+        "SAF_A1",
+        "AP_A",
+        "NOC",
+        "AP_B"
+      ],
+      "cost": 694.777462303764,
+      "expanded": 7,
+      "hops": 6
+    },
+    "Uniform cost (Dijkstra)": {
+      "path": [
+        "LTE_ENB",
+        "LTE_CORE",
+        "NOC",
+        "AP_B"
+      ],
+      "cost": 70.50653464170772,
+      "expanded": 6,
+      "hops": 3
+    },
+    "Greedy best-first": {
+      "path": [
+        "LTE_ENB",
+        "RM_B4",
+        "AP_B"
+      ],
+      "cost": 381.45684849843406,
+      "expanded": 3,
+      "hops": 2
+    },
+    "A*": {
+      "path": [
+        "LTE_ENB",
+        "LTE_CORE",
+        "NOC",
+        "AP_B"
+      ],
+      "cost": 70.50653464170772,
+      "expanded": 4,
+      "hops": 3
+    }
+  },
+  "reroute": {
+    "path": [
+      "LTE_ENB",
+      "RM_C4",
+      "AP_C",
+      "NOC",
+      "AP_B"
+    ],
+    "cost": 345.80197096233724,
+    "expanded": 13,
+    "hops": 4
+  },
+  "benchmark": {
+    "ordered_pairs": 870,
+    "astar_expanded": 10310,
+    "uniform_expanded": 13920,
+    "savings_pct": 25.933908045977017,
+    "independent_oracle": "Floyd-Warshall",
+    "cost_mismatches": 0,
+    "heuristic_violations": 0
+  },
+  "integrated": {
+    "diagnosis_cf": 0.888,
+    "plan": {
+      "cost": 6.0,
+      "actions": [
+        "request_authorization(SAF_A1)",
+        "reroute_traffic(SAF_A1)",
+        "verify_link(SAF_A1)",
+        "record_logbook(SAF_A1)",
+        "close_work_order(SAF_A1)"
+      ],
+      "valid": true
+    },
+    "route": {
+      "path": [
+        "NOC",
+        "LTE_CORE",
+        "LTE_ENB",
+        "FD_A"
+      ],
+      "cost": 267.0605868299899,
+      "expanded": 20,
+      "hops": 3
+    },
+    "isolated_destination_plan": null
+  }
+}
