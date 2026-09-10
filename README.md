@@ -89,15 +89,23 @@ aisg pipeline --case congestion --node SAF_A2
 Sem instalar / without installing: `PYTHONPATH=src python -m aisg ...`
 Em ingles / in English: acrescente `--lang en` / add `--lang en`.
 
-Testes / tests: `python -m pytest` (108 testes / 108 tests).
+Testes / tests: `python -m pytest` (155 testes / 155 tests).
 
 Apresentacao / presentation:
 [`docs/presentation/ai-for-smartgrids-apresentacao.pptx`](docs/presentation/ai-for-smartgrids-apresentacao.pptx)
-(51 slides, 90 min, com notas do apresentador / 51 slides, 90 min, with speaker notes)
+(54 slides principais + 2 apendices ocultos, 90 min, com notas do apresentador /
+54 main slides + 2 hidden appendices, 90 min, with speaker notes)
 · [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) (executavel / executable)
 
 Wiki com a teoria da disciplina / course theory wiki:
 [github.com/fsd-dantas/ai-for-smartgrids/wiki](https://github.com/fsd-dantas/ai-for-smartgrids/wiki)
+
+Avaliacao / Assessment:
+[protocolo e proposta de rubrica](docs/assessment-protocol.md) — requisitos,
+pesos 30/30/25/15, evidencias e procedimento para apreciacao docente.
+Proposta de autoavaliacao, sem endosso docente registrado; a nota oficial cabe ao professor.
+Proposed self-assessment rubric and reproducible evidence procedure; instructor
+endorsement has not been recorded, and the instructor assigns the official grade.
 
 ---
 

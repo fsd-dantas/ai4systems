@@ -26,7 +26,7 @@ def build_slides(d: Deck) -> None:
 método. Os três trabalhos partilham um único domínio, e isso é proposital —
 permite mostrar que os sistemas se integram, em vez de apenas coexistirem.
 
-Antes de começar, deixe rodando "python -m pytest": 108 testes verdes na tela
+Antes de começar, deixe rodando "python -m pytest": 155 testes verdes na tela
 são um bom cartão de visita.""",
     )
 
@@ -43,7 +43,13 @@ são um bom cartão de visita.""",
 
 O ponto a plantar já aqui: os três não são exercícios separados. O diagnóstico
 produzido pelo trabalho 1 é a entrada do trabalho 2, e o trabalho 2 chama a
-função do trabalho 3. Ao final voltaremos a isso com um comando só.""",
+função do trabalho 3. Ao final voltaremos a isso com um comando só.
+
+Em cerca de 20 segundos, explique a avaliação: requisitos, correção e evidência
+reproduzível; pesos propostos 30/30/25/15, ainda sem endosso docente registrado.
+O exemplo principal usa um diagnóstico selecionado por nó. Falhas simultâneas
+são uma extensão avaliada separadamente. Consulte docs/assessment-protocol.md
+e os dois slides de apêndice, ocultos para preservar os 90 minutos autorizados.""",
         accent=BLUE,
     )
 
@@ -105,7 +111,7 @@ disciplina — eles são as três partes de uma pergunta só.""",
             "Diagnóstico: fator de certeza (CF) da conclusão",
             "Plano: custo total, e validade (executável + atinge o objetivo)",
             "Busca: nós expandidos, custo do caminho, otimalidade",
-            "Transversal: 108 testes; admissibilidade verificada em todos os pares",
+            "Transversal: 155 testes; admissibilidade verificada em todos os pares",
         ],
         """Distinga os dois níveis com clareza — eles respondem a perguntas diferentes.
 
@@ -1147,13 +1153,65 @@ honesta: dizer o que sabe, dizer o que não verificou, e oferecer verificar.""",
 
     d.statement(
         "Obrigado",
-        "github.com/fsd-dantas/ai-for-smartgrids   ·   108 testes   ·   wiki com a teoria da disciplina",
+        "github.com/fsd-dantas/ai-for-smartgrids   ·   155 testes   ·   wiki com a teoria da disciplina",
         """Encerramento.
 
-O repositório é público, tem 108 testes verdes em integração contínua para
+O repositório é público, tem 155 testes verdes em integração contínua para
 Python 3.10 a 3.13, documentação bilíngue, e uma wiki que liga cada conceito da
 disciplina ao ponto do código que o implementa.
 
 Convide perguntas.""",
         accent=BLUE,
     )
+
+    # Optional reference material: hidden in the timed slide show.
+    rubric = d.table(
+        "Apêndice — proposta de avaliação",
+        ["Área", "Pontos", "Evidência principal"],
+        [
+            ["Sistema especialista", "30", "Regras, encadeamento, CF e explicação"],
+            ["Planejamento", "30", "Modelo, plano executável e integração"],
+            ["Busca A*", "25", "Caminho, custo, heurística e comparação"],
+            ["Documentação e defesa", "15", "Reprodução, clareza e limites"],
+        ],
+        """Material de consulta; não adiciona tempo à apresentação de 90 minutos.
+Esta é uma proposta de autoavaliação, não uma rubrica oficial.
+
+Procedimento: relacionar requisitos à evidência; identificar o commit e qualquer
+diff local; executar as verificações; justificar a pontuação por critério;
+registrar eventual manifestação explícita do professor. Sem resposta, manter o
+status de proposta. O endosso dos critérios não endossa automaticamente a nota.
+
+Detalhamento, matriz de evidências e texto sugerido para solicitar apreciação:
+docs/assessment-protocol.md. A revisão preliminar de 85/100 pertence ao commit
+8d47ced, anterior a esta rubrica detalhada, e não é nota docente. Defesa oral
+ainda não observada permanece pendente.""",
+        accent=BLUE, widths=[3.2, 1.0, 7.6],
+        subtitle="Autoavaliação proposta • sem endosso docente registrado",
+    )
+    rubric._element.set("show", "0")
+
+    scope = d.bullets(
+        "Apêndice — escopo das falhas",
+        [
+            "Demonstração principal: um diagnóstico selecionado por nó",
+            "Hipóteses concorrentes não confirmam falhas simultâneas",
+            "Extensão: um predicado de reparo para cada falha fornecida",
+            "Só verificar e encerrar após resolver todas as falhas do escopo",
+            "Validar a extensão separadamente; resultados valem para o modelo",
+        ],
+        """A simplificação é uma escolha didática: permite concentrar a defesa em
+regras, estados, precondições e busca. Não descreve todas as falhas de uma rede.
+
+Para a extensão, demonstrar interferência com falha de alimentação; preservar os
+casos de falha única e saudável; rejeitar falhas desconhecidas; impedir fechamento
+quando uma falha não puder ser resolvida. Considerar interações e restrições das
+ações. Planejar várias falhas fornecidas não demonstra diagnóstico multicausal.
+
+Autorização e verificação são efeitos assumidos no modelo determinístico;
+o planejador não obtém aprovação humana nem mede recuperação física.
+Os 90 minutos foram confirmados pelo autor como autorizados pelo professor.
+Este apêndice é opcional; não amplia a duração.""",
+        accent=GREEN,
+    )
+    scope._element.set("show", "0")

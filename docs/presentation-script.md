@@ -4,13 +4,21 @@ Tres temas, **30 minutos cada**: sistema especialista, geracao automatica de pla
 Com esse tempo, cada tema comporta teoria, demonstracao ao vivo e discussao de limitacoes — nao apenas
 uma corrida pela demo.
 
-**Antes de comecar:** `python -m pytest` — 108 testes verdes na tela sao um bom cartao de visita.
+**Antes de comecar:** `python -m pytest` — 155 testes verdes na tela sao um bom cartao de visita.
 
 **Diagramas prontos para os slides:** [`docs/assets/`](assets/) — integracao dos tres sistemas, camadas de regras, anatomia STRIPS com a recursao do GPS, e f = g + h com a prova e a tabela comparativa. Cada um em variante clara e escura; use a que combinar com o tema dos seus slides. Regenere com `python docs/assets/src/build_diagrams.py`.
 
 **Material de apoio:** [`notebooks/apresentacao.ipynb`](../notebooks/apresentacao.ipynb) executa tudo o que
 esta abaixo, com as figuras. Rode os comandos de terminal quando quiser mostrar o sistema como ferramenta;
 use o notebook quando quiser mostrar o raciocinio.
+
+**Avaliacao e escopo:** consultar o [protocolo de avaliacao](assessment-protocol.md).
+Os pesos 30/30/25/15 sao uma proposta de autoavaliacao, sem endosso docente
+registrado. A duracao de 90 minutos foi confirmada pelo autor como autorizada.
+Na abertura, reservar cerca de 20 segundos do tempo existente para explicar que
+a demonstracao principal usa um diagnostico selecionado por no e que planejamento
+de falhas simultaneas e uma extensao avaliada separadamente. Dois slides de
+apendice ficam ocultos na exibicao normal; nao acrescentam tempo ao roteiro.
 
 ---
 
@@ -55,7 +63,7 @@ E decomponha, porque e a frase que amarra a apresentacao inteira:
 | RSSI, SNR, perda, RTT, utilizacao | CF do diagnostico |
 | Custo de transporte (derivado) | Custo e validade do plano |
 | **Limiares nominais e nao calibrados** | Nos expandidos, otimalidade |
-| | 108 testes; admissibilidade em todos os pares |
+| | 155 testes; admissibilidade em todos os pares |
 
 O ponto a fazer em voz alta e a **assimetria entre as duas colunas**:
 
