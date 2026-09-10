@@ -168,6 +168,75 @@ def test_every_plan_records_the_logbook_before_closing(topology):
         assert names.index("record_logbook") < names.index("close_work_order"), diagnosis
 
 
+# --- multiple faults on one node ------------------------------------------
+def _remaining_faults(problem, plan):
+    """Fault literals still true after executing the plan."""
+    from aisg.planning.domain_restoration import KNOWN_FAULTS
+
+    state = problem.initial
+    for action in plan.actions:
+        state = action.apply(state)
+    return sorted(str(p) for p in state if p.name in KNOWN_FAULTS)
+
+
+@pytest.mark.parametrize(
+    "faults",
+    [
+        ["interference", "power-failed"],
+        ["misaligned", "vlan-wrong"],
+        ["misaligned", "vlan-wrong", "relay-down"],
+        ["congested", "interference"],
+    ],
+)
+def test_a_plan_never_closes_the_work_order_with_a_fault_still_present(faults):
+    """
+    PT-BR: Regressao. Com um sinalizador unico 'fault-cleared', reparar UMA falha
+           entre varias liberava a verificacao e o plano fechava a ordem de servico
+           com o defeito ainda presente — e a validacao passava, porque o objetivo
+           realmente estava satisfeito.
+    EN:    Regression. With a single shared 'fault-cleared' flag, repairing ONE
+           fault among several unlocked verification and the plan closed the work
+           order with the defect still in place — and validation passed, because
+           the goal genuinely was satisfied.
+    """
+    problem = build_restoration_problem("N1", faults, alternate_route=True)
+    plan, _ = plan_with_astar(problem)
+
+    assert plan is not None
+    assert plan.validate()[0]
+    assert _remaining_faults(problem, plan) == []
+
+
+def test_verification_is_blocked_until_every_fault_is_cleared():
+    """verify_link must not be applicable while any diagnosed fault remains."""
+    problem = build_restoration_problem("N1", ["interference", "power-failed"])
+    verify = next(a for a in problem.ground_actions() if a.name == "verify_link(N1)")
+
+    # Clear only the interference, exactly as the shared-flag version did.
+    state = problem.initial
+    for name in ("request_authorization(N1)", "change_channel(N1)"):
+        action = next(a for a in problem.ground_actions() if a.name == name)
+        state = action.apply(state)
+
+    assert Predicate.parse("power-failed(N1)") in state
+    assert not verify.applicable(state), "verification unlocked with a fault outstanding"
+
+
+def test_gps_and_astar_agree_on_multiple_faults():
+    problem = build_restoration_problem("N1", ["interference", "power-failed"])
+    gps_plan, _ = plan_with_gps(problem, lang="en")
+    astar_plan, _ = plan_with_astar(problem)
+
+    assert gps_plan is not None and astar_plan is not None
+    assert _remaining_faults(problem, gps_plan) == []
+    assert _remaining_faults(problem, astar_plan) == []
+
+
+def test_unknown_fault_is_rejected_rather_than_silently_unplannable():
+    with pytest.raises(ValueError, match="unknown fault"):
+        build_restoration_problem("N1", ["gremlins"])
+
+
 # --- integration with A* routing ------------------------------------------
 def test_rerouting_is_only_planned_when_a_real_alternative_route_exists(topology):
     """The planner's option depends on an actual A* result over the topology."""

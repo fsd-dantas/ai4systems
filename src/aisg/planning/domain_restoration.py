@@ -41,10 +41,39 @@ DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "healthy": None,  # nothing to repair; the link is already clear
 }
 
+#: Every fault the domain can repair. A fault outside this set would have no
+#: operator able to clear it, and the planner would fail with no explanation.
+KNOWN_FAULTS = frozenset(f for f in DIAGNOSIS_TO_FAULT.values() if f)
 
-def build_operators() -> List[Operator]:
-    """The twelve restoration operators, in STRIPS form."""
+
+def cleared(fault: str) -> str:
+    """
+    The literal asserting that one specific fault has been repaired.
+
+    PT-BR: Um literal POR FALHA, e nao um sinalizador unico. Com um sinalizador
+           compartilhado, reparar uma falha entre varias marcaria o no como
+           verificavel enquanto as outras permanecem — e o plano fecharia a ordem
+           de servico com o defeito ainda presente.
+    EN:    One literal PER FAULT, not a single shared flag. With a shared flag,
+           repairing one fault among several would mark the node verifiable while
+           the others remain, and the plan would close the work order with the
+           defect still in place.
+    """
+    return f"cleared-{fault}(?n)"
+
+
+def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
+    """
+    The twelve restoration operators, in STRIPS form.
+
+    ``faults`` are the fault names present in the problem being built. They
+    determine what ``verify_link`` demands: the link counts as verified only once
+    *every* fault diagnosed on it has its own ``cleared-…`` literal. STRIPS has no
+    negative preconditions, so "no fault remains" is expressed as the conjunction
+    of the specific repairs the instance requires.
+    """
     build = Operator.build
+    verify_preconditions = ("diagnosed(?n)",) + tuple(cleared(f) for f in faults)
     return [
         build(
             "request_authorization",
@@ -69,7 +98,7 @@ def build_operators() -> List[Operator]:
             "change_channel",
             parameters=("?n",),
             preconditions=("authorized(?n)", "interference(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-interference(?n)",),
             delete=("interference(?n)",),
             cost=2.0,
             description_pt="Mudar o canal de ?n para sair da emissao interferente.",
@@ -79,7 +108,7 @@ def build_operators() -> List[Operator]:
             "realign_antenna",
             parameters=("?n",),
             preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-misaligned(?n)",),
             delete=("misaligned(?n)",),
             cost=3.0,
             description_pt="Realinhar a antena de ?n (exige equipe no local).",
@@ -89,7 +118,7 @@ def build_operators() -> List[Operator]:
             "replace_power_unit",
             parameters=("?n",),
             preconditions=("authorized(?n)", "crew-at(?n)", "power-failed(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-power-failed(?n)",),
             delete=("power-failed(?n)",),
             cost=5.0,
             description_pt="Substituir a fonte de alimentacao de ?n (exige equipe no local).",
@@ -99,7 +128,7 @@ def build_operators() -> List[Operator]:
             "restore_relay",
             parameters=("?n",),
             preconditions=("authorized(?n)", "relay-down(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-relay-down(?n)",),
             delete=("relay-down(?n)",),
             cost=2.0,
             description_pt="Recuperar o repetidor a montante de ?n.",
@@ -109,7 +138,7 @@ def build_operators() -> List[Operator]:
             "fix_vlan",
             parameters=("?n",),
             preconditions=("authorized(?n)", "vlan-wrong(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-vlan-wrong(?n)",),
             delete=("vlan-wrong(?n)",),
             cost=1.0,
             description_pt="Corrigir a lista de VLANs permitidas no tronco de ?n.",
@@ -119,7 +148,7 @@ def build_operators() -> List[Operator]:
             "reroute_traffic",
             parameters=("?n",),
             preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)"),
-            add=("fault-cleared(?n)", "traffic-rerouted(?n)"),
+            add=("cleared-congested(?n)", "traffic-rerouted(?n)"),
             delete=("congested(?n)",),
             cost=2.0,
             description_pt="Desviar o trafego de ?n pela rota alternativa calculada por A*.",
@@ -129,7 +158,7 @@ def build_operators() -> List[Operator]:
             "monitor_and_wait",
             parameters=("?n",),
             preconditions=("diagnosed(?n)", "transient(?n)"),
-            add=("fault-cleared(?n)",),
+            add=("cleared-transient(?n)",),
             delete=("transient(?n)",),
             cost=1.0,
             description_pt="Acompanhar ?n: causa transitoria, nenhuma intervencao na planta.",
@@ -138,7 +167,7 @@ def build_operators() -> List[Operator]:
         build(
             "verify_link",
             parameters=("?n",),
-            preconditions=("fault-cleared(?n)",),
+            preconditions=verify_preconditions,
             add=("link-up(?n)",),
             cost=1.0,
             description_pt="Verificar o enlace de ?n apos a correcao.",
@@ -186,18 +215,24 @@ def build_restoration_problem(
     :param faults: fault predicate names, e.g. ``["interference"]``.
     :param alternate_route: whether A* confirmed an alternative route exists.
     """
+    unknown = [f for f in faults if f not in KNOWN_FAULTS]
+    if unknown:
+        raise ValueError(
+            f"unknown fault(s): {', '.join(unknown)}; expected one or more of "
+            f"{', '.join(sorted(KNOWN_FAULTS))}"
+        )
+
     initial: List[str] = [f"diagnosed({node})", f"crew-at({crew_base})"]
     initial += [f"{fault}({node})" for fault in faults]
     if alternate_route:
         initial.append(f"alternate-route({node})")
-    if not faults:
-        # Nothing to repair: the link is already clear, only closure remains.
-        initial.append(f"fault-cleared({node})")
     initial += list(extra_initial)
 
+    # With no faults the link needs only verification and closure: verify_link's
+    # preconditions reduce to diagnosed(?n).
     return Problem(
         name=f"restore-service-{node}",
-        operators=build_operators(),
+        operators=build_operators(faults),
         initial=make_state(initial),
         goal=make_state([f"service-restored({node})", f"logged({node})"]),
         objects={"node": [node], "location": [crew_base, node]},
