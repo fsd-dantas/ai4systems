@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 750" width="1180" height="750" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>The restoration domain as a state machine</title>
+  <desc>On the left, the trajectory the planner returns for a single fault: each arrow is one operator, labelled with its cost and its effect on the literal set. On the right, why a second fault makes the goal unreachable until it too is cleared.</desc>
+  <rect width="1180" height="750" fill="#fbfaf7"/>
+  <text x="40" y="46" font-size="23" fill="#1f2933" font-weight="600">The restoration domain as a state machine</text>
+  <text x="40" y="72" font-size="14" fill="#52606d">A STRIPS state IS a set of true literals, so a plan is a walk through a state space. Each arrow is one operator, priced, with its add and delete lists.</text>
+  <text x="40" y="116" font-size="15" fill="#1f2933" font-weight="700">One fault: mac-contention(N)</text>
+  <rect x="40" y="130" width="560" height="590" rx="10" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
+  <rect x="60" y="156" width="520" height="40" rx="8" fill="#e8f2f8" stroke="#0072B2" stroke-width="1.6"/>
+  <text x="74" y="181" font-size="11.5" fill="#0b5c8a" font-weight="700">s0  initial</text>
+  <text x="150" y="181" font-size="11.5" fill="#0b5c8a" font-family="Consolas, SFMono-Regular, Menlo, monospace">diagnosed(N), run-active(N), mac-contention(N)</text>
+  <line x1="120" y1="200" x2="120.0" y2="209.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,220 114.5,209.0 125.5,209.0" fill="#52606d"/>
+  <text x="140" y="204" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">request_authorization</text>
+  <text x="140" y="217" font-size="10" fill="#8a94a0">cost 1    adds authorized</text>
+  <rect x="60" y="226" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="251" font-size="11.5" fill="#1f2933" font-weight="700">s1</text>
+  <text x="150" y="251" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + authorized(N)</text>
+  <line x1="120" y1="270" x2="120.0" y2="279.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,290 114.5,279.0 125.5,279.0" fill="#52606d"/>
+  <text x="140" y="274" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">stop_run</text>
+  <text x="140" y="287" font-size="10" fill="#8a94a0">cost 2    adds run-stopped, removes run-active</text>
+  <rect x="60" y="296" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="321" font-size="11.5" fill="#1f2933" font-weight="700">s2</text>
+  <text x="150" y="321" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + run-stopped(N)</text>
+  <line x1="120" y1="340" x2="120.0" y2="349.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,360 114.5,349.0 125.5,349.0" fill="#52606d"/>
+  <text x="140" y="344" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">separate_channels</text>
+  <text x="140" y="357" font-size="10" fill="#8a94a0">cost 3    adds cleared-mac-contention, removes mac-contention</text>
+  <rect x="60" y="366" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="391" font-size="11.5" fill="#1f2933" font-weight="700">s3</text>
+  <text x="150" y="391" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + cleared-mac-contention(N)</text>
+  <line x1="120" y1="410" x2="120.0" y2="419.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,430 114.5,419.0 125.5,419.0" fill="#52606d"/>
+  <text x="140" y="414" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">start_run</text>
+  <text x="140" y="427" font-size="10" fill="#8a94a0">cost 2    adds run-active, removes run-stopped</text>
+  <rect x="60" y="436" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="461" font-size="11.5" fill="#1f2933" font-weight="700">s4</text>
+  <text x="150" y="461" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + run-active(N)</text>
+  <line x1="120" y1="480" x2="120.0" y2="489.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,500 114.5,489.0 125.5,489.0" fill="#52606d"/>
+  <text x="140" y="484" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">verify_link</text>
+  <text x="140" y="497" font-size="10" fill="#8a94a0">cost 1    adds link-up</text>
+  <rect x="60" y="506" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="531" font-size="11.5" fill="#1f2933" font-weight="700">s5</text>
+  <text x="150" y="531" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + link-up(N)</text>
+  <line x1="120" y1="550" x2="120.0" y2="559.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,570 114.5,559.0 125.5,559.0" fill="#52606d"/>
+  <text x="140" y="554" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">record_logbook</text>
+  <text x="140" y="567" font-size="10" fill="#8a94a0">cost 1    adds logged</text>
+  <rect x="60" y="576" width="520" height="40" rx="8" fill="#eef1f4" stroke="#c3ccd5" stroke-width="1.0"/>
+  <text x="74" y="601" font-size="11.5" fill="#1f2933" font-weight="700">s6</text>
+  <text x="150" y="601" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + logged(N)</text>
+  <line x1="120" y1="620" x2="120.0" y2="629.0" stroke="#52606d" stroke-width="2.0"/>
+  <polygon points="120,640 114.5,629.0 125.5,629.0" fill="#52606d"/>
+  <text x="140" y="624" font-size="11.5" fill="#1f2933" font-weight="600" font-family="Consolas, SFMono-Regular, Menlo, monospace">close_work_order</text>
+  <text x="140" y="637" font-size="10" fill="#8a94a0">cost 1    adds service-restored</text>
+  <rect x="60" y="646" width="520" height="40" rx="8" fill="#e6f5f0" stroke="#009E73" stroke-width="1.6"/>
+  <text x="74" y="671" font-size="11.5" fill="#046c50" font-weight="700">s7  goal</text>
+  <text x="150" y="671" font-size="11.5" fill="#046c50" font-family="Consolas, SFMono-Regular, Menlo, monospace">... + service-restored(N)</text>
+  <text x="60" y="700" font-size="11" fill="#52606d">Each box names the literal that DISTINGUISHES the state; the rest persist</text>
+  <text x="60" y="716" font-size="11" fill="#52606d">unless a delete list removes them. Total cost 11 - the plan is the edge sequence.</text>
+  <text x="632" y="116" font-size="15" fill="#1f2933" font-weight="700">Two faults: the goal becomes unreachable until BOTH clear</text>
+  <rect x="632" y="130" width="508" height="250" rx="10" fill="#fdecea" stroke="#D55E00" stroke-width="1.6"/>
+  <text x="650" y="156" font-size="12.5" fill="#a8442a" font-weight="700">verify_link is the gate, and it reads one literal PER FAULT</text>
+  <text x="650" y="182" font-size="11.5" fill="#a8442a">preconditions:</text>
+  <text x="666" y="202" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">diagnosed(?n)</text>
+  <text x="666" y="220" font-size="11.5" fill="#1f2933" font-family="Consolas, SFMono-Regular, Menlo, monospace">run-active(?n)</text>
+  <text x="666" y="238" font-size="11.5" fill="#a8442a" font-weight="700" font-family="Consolas, SFMono-Regular, Menlo, monospace">cleared-mac-contention(?n)</text>
+  <text x="666" y="256" font-size="11.5" fill="#a8442a" font-weight="700" font-family="Consolas, SFMono-Regular, Menlo, monospace">cleared-node-stopped(?n)</text>
+  <line x1="650" y1="288" x2="1122" y2="288" stroke="#D55E00" stroke-width="1.0" stroke-dasharray="4 3"/>
+  <text x="650" y="310" font-size="11.5" fill="#a8442a">Clear only ONE fault and verify_link is not applicable:</text>
+  <text x="650" y="330" font-size="11.5" fill="#a8442a">link-up is unreachable, so logged and service-restored are too.</text>
+  <text x="650" y="356" font-size="11.5" fill="#a8442a" font-weight="700" font-style="italic">Not a warning in the code - an absent edge in the graph.</text>
+  <rect x="632" y="400" width="508" height="132" rx="10" fill="#ffffff" stroke="#c9c2b8" stroke-width="1.0"/>
+  <text x="650" y="426" font-size="12.5" fill="#1f2933" font-weight="700">THE DEFECT THIS REPLACED</text>
+  <text x="650" y="448" font-size="11.5" fill="#52606d">One shared fault-cleared(N) literal, added by EVERY repair.</text>
+  <text x="650" y="468" font-size="11.5" fill="#52606d">Clearing either fault opened the gate, and the plan reported</text>
+  <text x="650" y="486" font-size="11.5" fill="#52606d">service restored with the other fault still live.</text>
+  <text x="650" y="512" font-size="11.5" fill="#1f2933" font-weight="600" font-style="italic">Reported from use, then reproduced, then made impossible.</text>
+  <rect x="632" y="552" width="508" height="168" rx="10" fill="#e6f5f0" stroke="#009E73" stroke-width="1.6"/>
+  <text x="650" y="578" font-size="12.5" fill="#046c50" font-weight="700">CONFIRMED BY THE PLANNING GRAPH</text>
+  <text x="650" y="602" font-size="11.5" fill="#046c50">At the fixpoint, service-restored(N) must be mutually</text>
+  <text x="650" y="620" font-size="11.5" fill="#046c50">exclusive with every fault literal still live.</text>
+  <text x="650" y="648" font-size="11" fill="#52606d">pre-fix domain:</text>
+  <text x="650" y="666" font-size="10.5" fill="#a8442a" font-family="Consolas, SFMono-Regular, Menlo, monospace">service-restored NOT mutex with fault-a, fault-b</text>
+  <text x="650" y="686" font-size="10.5" fill="#a8442a" font-family="Consolas, SFMono-Regular, Menlo, monospace">fault-cleared &lt;- fix_a, fix_b     one literal, two producers</text>
+  <text x="650" y="708" font-size="10.5" fill="#046c50" font-weight="700" font-family="Consolas, SFMono-Regular, Menlo, monospace">after the fix: both lists empty</text>
+</svg>

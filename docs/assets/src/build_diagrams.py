@@ -591,6 +591,120 @@ def build_astar(t) -> str:
 
 
 # --------------------------------------------------------------------------
+# 07 — restoration state machine
+# --------------------------------------------------------------------------
+def build_state_machine(t) -> str:
+    """
+    The STRIPS restoration domain drawn as the state machine it already is.
+
+    Every state, transition and cost below was read out of the planner, not
+    composed for the picture: the left-hand chain is the trajectory returned for
+    a single mac-contention fault, and the guard on the right is verify_link's
+    real precondition set for a two-fault problem.
+    """
+    b: List[str] = []
+    b.append(txt(40, 46, "The restoration domain as a state machine", 23, "ink", "600", t=t))
+    b.append(txt(40, 72, "A STRIPS state IS a set of true literals, so a plan is a walk "
+                         "through a state space. Each arrow is one operator, priced, with "
+                         "its add and delete lists.",
+                 14, "muted", t=t))
+
+    # ---------------------------------------------------------- the walk
+    b.append(txt(40, 116, "One fault: mac-contention(N)", 15, "ink", "700", t=t))
+    b.append(box(40, 130, 560, 590, t, "panel", "border", 1.0, 10))
+
+    #: (state label, the literal that names it, operator into it, cost, delta)
+    steps = [
+        ("s0  initial", "diagnosed(N), run-active(N), mac-contention(N)", None, None, None),
+        ("s1", "... + authorized(N)", "request_authorization", 1, "adds authorized"),
+        ("s2", "... + run-stopped(N)", "stop_run", 2,
+         "adds run-stopped, removes run-active"),
+        ("s3", "... + cleared-mac-contention(N)", "separate_channels", 3,
+         "adds cleared-mac-contention, removes mac-contention"),
+        ("s4", "... + run-active(N)", "start_run", 2,
+         "adds run-active, removes run-stopped"),
+        ("s5", "... + link-up(N)", "verify_link", 1, "adds link-up"),
+        ("s6", "... + logged(N)", "record_logbook", 1, "adds logged"),
+        ("s7  goal", "... + service-restored(N)", "close_work_order", 1,
+         "adds service-restored"),
+    ]
+
+    y = 156
+    for i, (label, literal, op, cost, delta) in enumerate(steps):
+        if op is not None:
+            b += arrow(120, y - 26, 120, y - 6, t, "muted", 2.0)
+            b.append(txt(140, y - 22, f"{op}", 11.5, "ink", "600", mono=True, t=t))
+            b.append(txt(140, y - 9, f"cost {cost}    {delta}", 10, "faint", t=t))
+        first, last = i == 0, i == len(steps) - 1
+        fill = "blue_fill" if first else ("green_fill" if last else "neutral_fill")
+        edge = "blue" if first else ("green" if last else "neutral_border")
+        tone = "blue_text" if first else ("green_text" if last else "ink")
+        b.append(box(60, y, 520, 40, t, fill, edge, 1.6 if (first or last) else 1.0, 8))
+        b.append(txt(74, y + 25, label, 11.5, tone, "700", t=t))
+        b.append(txt(150, y + 25, literal, 11.5, tone, mono=True, t=t))
+        y += 40 + 30
+
+    b.append(txt(60, 700, "Each box names the literal that DISTINGUISHES the state; "
+                          "the rest persist", 11, "muted", t=t))
+    b.append(txt(60, 716, "unless a delete list removes them. Total cost 11 - the plan "
+                          "is the edge sequence.", 11, "muted", t=t))
+
+    # ------------------------------------------------------- the guard
+    b.append(txt(632, 116, "Two faults: the goal becomes unreachable until BOTH clear",
+                 15, "ink", "700", t=t))
+    b.append(box(632, 130, 508, 250, t, "red_fill", "red", 1.6, 10))
+    b.append(txt(650, 156, "verify_link is the gate, and it reads one literal PER FAULT",
+                 12.5, "red_text", "700", t=t))
+    b.append(txt(650, 182, "preconditions:", 11.5, "red_text", t=t))
+    for i, pre in enumerate(["diagnosed(?n)", "run-active(?n)",
+                             "cleared-mac-contention(?n)", "cleared-node-stopped(?n)"]):
+        strong = pre.startswith("cleared")
+        b.append(txt(666, 202 + i * 18, pre, 11.5,
+                     "red_text" if strong else "ink", "700" if strong else None,
+                     mono=True, t=t))
+
+    b.append(line(650, 288, 1122, 288, t, "red", 1.0, "4 3"))
+    b.append(txt(650, 310, "Clear only ONE fault and verify_link is not applicable:",
+                 11.5, "red_text", t=t))
+    b.append(txt(650, 330, "link-up is unreachable, so logged and service-restored are too.",
+                 11.5, "red_text", t=t))
+    b.append(txt(650, 356, "Not a warning in the code - an absent edge in the graph.",
+                 11.5, "red_text", "700", italic=True, t=t))
+
+    # blocked transition, drawn
+    b.append(box(632, 400, 508, 132, t, "panel", "border", 1.0, 10))
+    b.append(txt(650, 426, "THE DEFECT THIS REPLACED", 12.5, "ink", "700", t=t))
+    b.append(txt(650, 448, "One shared fault-cleared(N) literal, added by EVERY repair.",
+                 11.5, "muted", t=t))
+    b.append(txt(650, 468, "Clearing either fault opened the gate, and the plan reported",
+                 11.5, "muted", t=t))
+    b.append(txt(650, 486, "service restored with the other fault still live.", 11.5,
+                 "muted", t=t))
+    b.append(txt(650, 512, "Reported from use, then reproduced, then made impossible.",
+                 11.5, "ink", "600", italic=True, t=t))
+
+    # planning-graph confirmation
+    b.append(box(632, 552, 508, 168, t, "green_fill", "green", 1.6, 10))
+    b.append(txt(650, 578, "CONFIRMED BY THE PLANNING GRAPH", 12.5, "green_text", "700", t=t))
+    b.append(txt(650, 602, "At the fixpoint, service-restored(N) must be mutually",
+                 11.5, "green_text", t=t))
+    b.append(txt(650, 620, "exclusive with every fault literal still live.", 11.5,
+                 "green_text", t=t))
+    b.append(txt(650, 648, "pre-fix domain:", 11, "muted", t=t))
+    b.append(txt(650, 666, "service-restored NOT mutex with fault-a, fault-b", 10.5,
+                 "red_text", mono=True, t=t))
+    b.append(txt(650, 686, "fault-cleared <- fix_a, fix_b     one literal, two producers",
+                 10.5, "red_text", mono=True, t=t))
+    b.append(txt(650, 708, "after the fix: both lists empty", 10.5, "green_text",
+                 "700", mono=True, t=t))
+
+    return document(1180, 750, "The restoration domain as a state machine",
+                    "On the left, the trajectory the planner returns for a single fault: "
+                    "each arrow is one operator, labelled with its cost and its effect on "
+                    "the literal set. On the right, why a second fault makes the goal "
+                    "unreachable until it too is cleared.", b, t)
+
+# --------------------------------------------------------------------------
 # banner
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------
@@ -601,6 +715,7 @@ BUILDERS = {
     "02-expert-system": build_expert,
     "03-planning": build_planning,
     "04-astar": build_astar,
+    "07-state-machine": build_state_machine,
 }
 
 
