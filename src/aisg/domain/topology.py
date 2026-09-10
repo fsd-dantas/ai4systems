@@ -53,6 +53,9 @@ BUNDLED_TOPOLOGIES: Dict[str, Path] = {
     # Kept as an alias: the 30-node scenario was introduced as the "scale" case
     # before it was framed as the simulated bench extension.
     "scale": DATA_DIR / "backhaul-topology-30.json",
+    # 60 nodes: 15 grid sites each reached by BOTH a private LTE star and a
+    # 900 MHz store-and-forward mesh, so a route has a choice of medium.
+    "dual": DATA_DIR / "backhaul-topology-60.json",
 }
 
 
@@ -104,6 +107,9 @@ class Node:
     sector: str
     x: float
     y: float
+    #: Customer edge. A route may begin or end at a stub, but never pass through
+    #: one: a grid site does not carry a neighbouring site's backhaul.
+    stub: bool = False
 
     def label(self, lang: str = "pt") -> str:
         return self.label_pt if lang == "pt" else self.label_en
@@ -171,6 +177,7 @@ class Topology:
                 sector=n["sector"],
                 x=float(n["x"]),
                 y=float(n["y"]),
+                stub=bool(n.get("stub", False)),
             )
             if node.id in topo.nodes:
                 raise TopologyError(f"duplicate node id: {node.id}")

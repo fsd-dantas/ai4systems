@@ -46,6 +46,18 @@ class RoutingProblem:
         return state == self.goal
 
     def successors(self, state: str) -> Iterable[Tuple[str, str, float]]:
+        """
+        PT-BR: Um nó marcado como STUB e borda do cliente: uma rota pode comecar
+               ou terminar nele, mas nunca atravessá-lo. Sem esta regra, a busca
+               encaminha o trafego de um site pelo roteador de borda de outro --
+               um caminho que o grafo permite, mas não ocorre na realidade.
+        EN:    A node marked STUB is customer edge: a route may begin or end
+               there, but never cross it. Without this rule the search carries
+               one site's traffic through a neighbouring site's edge router -- a
+               path the graph allows and the real network does not.
+        """
+        if state != self.start and self.topology.node(state).stub:
+            return
         for neighbour, cost in self.topology.successors(state):
             if neighbour in self.avoid:
                 continue

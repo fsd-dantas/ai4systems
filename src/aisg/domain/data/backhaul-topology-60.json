@@ -1,0 +1,1011 @@
+{
+  "id": "SGB-DUAL-60",
+  "title_pt": "Cenario sintetico de 60 nos - 15 sites com duplo acesso",
+  "title_en": "Synthetic 60-node scenario - 15 dual-homed grid sites",
+  "provenance": "SYNTHETIC MODEL. Two independent access networks reach the same 15 grid sites: a private LTE star, with two eNodeBs and a short relay tier, and a 900 MHz store-and-forward mesh fed by fibre from the operations centre. Each site's CPE and remote master cable into that site's edge router, which is the smart-grid boundary and the only point downstream where the two networks meet. The edge router is a STUB: a route may begin or end there but never cross it, because a grid site is customer edge and does not carry a neighbouring site's backhaul. Access link quality falls off with distance - sharply for LTE, which collapses at cell edge, and gently for 900 MHz, which propagates further; that contrast is the engineering reason both networks exist. Backhaul links use fixed directional antennas and do not degrade with distance. Identifiers, coordinates and link qualities are invented for this exercise and contain nothing from any laboratory's inventory, addressing or configuration.",
+  "coordinate_system": "Local planar grid in metres; origin at the operations centre. Distances are Euclidean and DERIVED from these coordinates, which is what keeps a straight-line heuristic admissible.",
+  "nodes": [
+    {
+      "id": "NOC",
+      "label_pt": "Centro de Operacao",
+      "label_en": "Operations Centre",
+      "kind": "control_centre",
+      "sector": "core",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "eNB_A",
+      "label_pt": "eNodeB LTE privativo A",
+      "label_en": "Private LTE eNodeB A",
+      "kind": "lte_enb",
+      "sector": "plte",
+      "x": 4500,
+      "y": 7500
+    },
+    {
+      "id": "eNB_B",
+      "label_pt": "eNodeB LTE privativo B",
+      "label_en": "Private LTE eNodeB B",
+      "kind": "lte_enb",
+      "sector": "plte",
+      "x": 4500,
+      "y": -7500
+    },
+    {
+      "id": "RELAY_1",
+      "label_pt": "Repetidor LTE 1",
+      "label_en": "LTE relay 1",
+      "kind": "lte_relay",
+      "sector": "plte",
+      "x": 11000,
+      "y": 8000
+    },
+    {
+      "id": "RELAY_2",
+      "label_pt": "Repetidor LTE 2",
+      "label_en": "LTE relay 2",
+      "kind": "lte_relay",
+      "sector": "plte",
+      "x": 19000,
+      "y": 7500
+    },
+    {
+      "id": "RELAY_3",
+      "label_pt": "Repetidor LTE 3",
+      "label_en": "LTE relay 3",
+      "kind": "lte_relay",
+      "sector": "plte",
+      "x": 11000,
+      "y": -8000
+    },
+    {
+      "id": "RELAY_4",
+      "label_pt": "Repetidor LTE 4",
+      "label_en": "LTE relay 4",
+      "kind": "lte_relay",
+      "sector": "plte",
+      "x": 19000,
+      "y": -7500
+    },
+    {
+      "id": "RELAY_5",
+      "label_pt": "Repetidor LTE 5",
+      "label_en": "LTE relay 5",
+      "kind": "lte_relay",
+      "sector": "plte",
+      "x": 11500,
+      "y": 3800
+    },
+    {
+      "id": "SAF_01",
+      "label_pt": "Repetidor armazena-e-encaminha 01",
+      "label_en": "Store-and-forward relay 01",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 4000,
+      "y": 200
+    },
+    {
+      "id": "SAF_02",
+      "label_pt": "Repetidor armazena-e-encaminha 02",
+      "label_en": "Store-and-forward relay 02",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 8000,
+      "y": -300
+    },
+    {
+      "id": "SAF_03",
+      "label_pt": "Repetidor armazena-e-encaminha 03",
+      "label_en": "Store-and-forward relay 03",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 12000,
+      "y": 300
+    },
+    {
+      "id": "SAF_04",
+      "label_pt": "Repetidor armazena-e-encaminha 04",
+      "label_en": "Store-and-forward relay 04",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 16000,
+      "y": -300
+    },
+    {
+      "id": "SAF_05",
+      "label_pt": "Repetidor armazena-e-encaminha 05",
+      "label_en": "Store-and-forward relay 05",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 20000,
+      "y": 300
+    },
+    {
+      "id": "SAF_06",
+      "label_pt": "Repetidor armazena-e-encaminha 06",
+      "label_en": "Store-and-forward relay 06",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 24000,
+      "y": -200
+    },
+    {
+      "id": "SAF_07",
+      "label_pt": "Repetidor armazena-e-encaminha 07",
+      "label_en": "Store-and-forward relay 07",
+      "kind": "saf_relay",
+      "sector": "radio900",
+      "x": 7000,
+      "y": -4300
+    },
+    {
+      "id": "ER_01",
+      "label_pt": "Roteador de borda do site 01",
+      "label_en": "Site edge router 01",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 10500,
+      "y": 6200,
+      "stub": true
+    },
+    {
+      "id": "CPE_01",
+      "label_pt": "CPE LTE do site 01",
+      "label_en": "Site LTE CPE 01",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 9800,
+      "y": 6900
+    },
+    {
+      "id": "RM_01",
+      "label_pt": "Unidade remota 900 MHz 01",
+      "label_en": "900 MHz remote master 01",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 9800,
+      "y": 5500
+    },
+    {
+      "id": "ER_02",
+      "label_pt": "Roteador de borda do site 02",
+      "label_en": "Site edge router 02",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 18500,
+      "y": 5800,
+      "stub": true
+    },
+    {
+      "id": "CPE_02",
+      "label_pt": "CPE LTE do site 02",
+      "label_en": "Site LTE CPE 02",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 17800,
+      "y": 6500
+    },
+    {
+      "id": "RM_02",
+      "label_pt": "Unidade remota 900 MHz 02",
+      "label_en": "900 MHz remote master 02",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 17800,
+      "y": 5100
+    },
+    {
+      "id": "ER_03",
+      "label_pt": "Roteador de borda do site 03",
+      "label_en": "Site edge router 03",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 9500,
+      "y": 4000,
+      "stub": true
+    },
+    {
+      "id": "CPE_03",
+      "label_pt": "CPE LTE do site 03",
+      "label_en": "Site LTE CPE 03",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 8800,
+      "y": 4700
+    },
+    {
+      "id": "RM_03",
+      "label_pt": "Unidade remota 900 MHz 03",
+      "label_en": "900 MHz remote master 03",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 8800,
+      "y": 3300
+    },
+    {
+      "id": "ER_04",
+      "label_pt": "Roteador de borda do site 04",
+      "label_en": "Site edge router 04",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 10800,
+      "y": 2600,
+      "stub": true
+    },
+    {
+      "id": "CPE_04",
+      "label_pt": "CPE LTE do site 04",
+      "label_en": "Site LTE CPE 04",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 10100,
+      "y": 3300
+    },
+    {
+      "id": "RM_04",
+      "label_pt": "Unidade remota 900 MHz 04",
+      "label_en": "900 MHz remote master 04",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 10100,
+      "y": 1900
+    },
+    {
+      "id": "ER_05",
+      "label_pt": "Roteador de borda do site 05",
+      "label_en": "Site edge router 05",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 4500,
+      "y": 600,
+      "stub": true
+    },
+    {
+      "id": "CPE_05",
+      "label_pt": "CPE LTE do site 05",
+      "label_en": "Site LTE CPE 05",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 3800,
+      "y": 1300
+    },
+    {
+      "id": "RM_05",
+      "label_pt": "Unidade remota 900 MHz 05",
+      "label_en": "900 MHz remote master 05",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 3800,
+      "y": -100
+    },
+    {
+      "id": "ER_06",
+      "label_pt": "Roteador de borda do site 06",
+      "label_en": "Site edge router 06",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 8500,
+      "y": -1200,
+      "stub": true
+    },
+    {
+      "id": "CPE_06",
+      "label_pt": "CPE LTE do site 06",
+      "label_en": "Site LTE CPE 06",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 7800,
+      "y": -500
+    },
+    {
+      "id": "RM_06",
+      "label_pt": "Unidade remota 900 MHz 06",
+      "label_en": "900 MHz remote master 06",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 7800,
+      "y": -1900
+    },
+    {
+      "id": "ER_07",
+      "label_pt": "Roteador de borda do site 07",
+      "label_en": "Site edge router 07",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 16500,
+      "y": -400,
+      "stub": true
+    },
+    {
+      "id": "CPE_07",
+      "label_pt": "CPE LTE do site 07",
+      "label_en": "Site LTE CPE 07",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 15800,
+      "y": 300
+    },
+    {
+      "id": "RM_07",
+      "label_pt": "Unidade remota 900 MHz 07",
+      "label_en": "900 MHz remote master 07",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 15800,
+      "y": -1100
+    },
+    {
+      "id": "ER_08",
+      "label_pt": "Roteador de borda do site 08",
+      "label_en": "Site edge router 08",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 10500,
+      "y": -6200,
+      "stub": true
+    },
+    {
+      "id": "CPE_08",
+      "label_pt": "CPE LTE do site 08",
+      "label_en": "Site LTE CPE 08",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 9800,
+      "y": -5500
+    },
+    {
+      "id": "RM_08",
+      "label_pt": "Unidade remota 900 MHz 08",
+      "label_en": "900 MHz remote master 08",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 9800,
+      "y": -6900
+    },
+    {
+      "id": "ER_09",
+      "label_pt": "Roteador de borda do site 09",
+      "label_en": "Site edge router 09",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 18500,
+      "y": -5800,
+      "stub": true
+    },
+    {
+      "id": "CPE_09",
+      "label_pt": "CPE LTE do site 09",
+      "label_en": "Site LTE CPE 09",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 17800,
+      "y": -5100
+    },
+    {
+      "id": "RM_09",
+      "label_pt": "Unidade remota 900 MHz 09",
+      "label_en": "900 MHz remote master 09",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 17800,
+      "y": -6500
+    },
+    {
+      "id": "ER_10",
+      "label_pt": "Roteador de borda do site 10",
+      "label_en": "Site edge router 10",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 8000,
+      "y": -3300,
+      "stub": true
+    },
+    {
+      "id": "CPE_10",
+      "label_pt": "CPE LTE do site 10",
+      "label_en": "Site LTE CPE 10",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 7300,
+      "y": -2600
+    },
+    {
+      "id": "RM_10",
+      "label_pt": "Unidade remota 900 MHz 10",
+      "label_en": "900 MHz remote master 10",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 7300,
+      "y": -4000
+    },
+    {
+      "id": "ER_11",
+      "label_pt": "Roteador de borda do site 11",
+      "label_en": "Site edge router 11",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 24500,
+      "y": 3600,
+      "stub": true
+    },
+    {
+      "id": "CPE_11",
+      "label_pt": "CPE LTE do site 11",
+      "label_en": "Site LTE CPE 11",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 23800,
+      "y": 4300
+    },
+    {
+      "id": "RM_11",
+      "label_pt": "Unidade remota 900 MHz 11",
+      "label_en": "900 MHz remote master 11",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 23800,
+      "y": 2900
+    },
+    {
+      "id": "ER_12",
+      "label_pt": "Roteador de borda do site 12",
+      "label_en": "Site edge router 12",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 25000,
+      "y": -3200,
+      "stub": true
+    },
+    {
+      "id": "CPE_12",
+      "label_pt": "CPE LTE do site 12",
+      "label_en": "Site LTE CPE 12",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 24300,
+      "y": -2500
+    },
+    {
+      "id": "RM_12",
+      "label_pt": "Unidade remota 900 MHz 12",
+      "label_en": "900 MHz remote master 12",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 24300,
+      "y": -3900
+    },
+    {
+      "id": "ER_13",
+      "label_pt": "Roteador de borda do site 13",
+      "label_en": "Site edge router 13",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 21500,
+      "y": -5200,
+      "stub": true
+    },
+    {
+      "id": "CPE_13",
+      "label_pt": "CPE LTE do site 13",
+      "label_en": "Site LTE CPE 13",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 20800,
+      "y": -4500
+    },
+    {
+      "id": "RM_13",
+      "label_pt": "Unidade remota 900 MHz 13",
+      "label_en": "900 MHz remote master 13",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 20800,
+      "y": -5900
+    },
+    {
+      "id": "ER_14",
+      "label_pt": "Roteador de borda do site 14",
+      "label_en": "Site edge router 14",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 21000,
+      "y": 2400,
+      "stub": true
+    },
+    {
+      "id": "CPE_14",
+      "label_pt": "CPE LTE do site 14",
+      "label_en": "Site LTE CPE 14",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 20300,
+      "y": 3100
+    },
+    {
+      "id": "RM_14",
+      "label_pt": "Unidade remota 900 MHz 14",
+      "label_en": "900 MHz remote master 14",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 20300,
+      "y": 1700
+    },
+    {
+      "id": "ER_15",
+      "label_pt": "Roteador de borda do site 15",
+      "label_en": "Site edge router 15",
+      "kind": "edge_router",
+      "sector": "grid_edge",
+      "x": 14500,
+      "y": -3200,
+      "stub": true
+    },
+    {
+      "id": "CPE_15",
+      "label_pt": "CPE LTE do site 15",
+      "label_en": "Site LTE CPE 15",
+      "kind": "cpe",
+      "sector": "plte",
+      "x": 13800,
+      "y": -2500
+    },
+    {
+      "id": "RM_15",
+      "label_pt": "Unidade remota 900 MHz 15",
+      "label_en": "900 MHz remote master 15",
+      "kind": "remote_master",
+      "sector": "radio900",
+      "x": 13800,
+      "y": -3900
+    }
+  ],
+  "links": [
+    {
+      "a": "NOC",
+      "b": "eNB_A",
+      "type": "fiber",
+      "quality": 0.98
+    },
+    {
+      "a": "NOC",
+      "b": "eNB_B",
+      "type": "fiber",
+      "quality": 0.97
+    },
+    {
+      "a": "NOC",
+      "b": "SAF_01",
+      "type": "fiber",
+      "quality": 0.96
+    },
+    {
+      "a": "NOC",
+      "b": "SAF_07",
+      "type": "fiber",
+      "quality": 0.95
+    },
+    {
+      "a": "SAF_01",
+      "b": "SAF_02",
+      "type": "radio_900mhz_saf",
+      "quality": 0.85
+    },
+    {
+      "a": "SAF_02",
+      "b": "SAF_03",
+      "type": "radio_900mhz_saf",
+      "quality": 0.85
+    },
+    {
+      "a": "SAF_03",
+      "b": "SAF_04",
+      "type": "radio_900mhz_saf",
+      "quality": 0.85
+    },
+    {
+      "a": "SAF_04",
+      "b": "SAF_05",
+      "type": "radio_900mhz_saf",
+      "quality": 0.85
+    },
+    {
+      "a": "SAF_05",
+      "b": "SAF_06",
+      "type": "radio_900mhz_saf",
+      "quality": 0.85
+    },
+    {
+      "a": "RELAY_1",
+      "b": "eNB_A",
+      "type": "lte",
+      "quality": 0.9
+    },
+    {
+      "a": "RELAY_2",
+      "b": "RELAY_1",
+      "type": "lte",
+      "quality": 0.9
+    },
+    {
+      "a": "RELAY_3",
+      "b": "eNB_B",
+      "type": "lte",
+      "quality": 0.9
+    },
+    {
+      "a": "RELAY_4",
+      "b": "RELAY_3",
+      "type": "lte",
+      "quality": 0.9
+    },
+    {
+      "a": "RELAY_5",
+      "b": "RELAY_1",
+      "type": "lte",
+      "quality": 0.9
+    },
+    {
+      "a": "CPE_01",
+      "b": "RELAY_1",
+      "type": "lte",
+      "quality": 0.802
+    },
+    {
+      "a": "CPE_02",
+      "b": "RELAY_2",
+      "type": "lte",
+      "quality": 0.808
+    },
+    {
+      "a": "CPE_03",
+      "b": "RELAY_5",
+      "type": "lte",
+      "quality": 0.691
+    },
+    {
+      "a": "CPE_04",
+      "b": "RELAY_5",
+      "type": "lte",
+      "quality": 0.815
+    },
+    {
+      "a": "CPE_05",
+      "b": "eNB_A",
+      "type": "lte",
+      "quality": 0.383
+    },
+    {
+      "a": "CPE_06",
+      "b": "RELAY_5",
+      "type": "lte",
+      "quality": 0.434
+    },
+    {
+      "a": "CPE_07",
+      "b": "RELAY_5",
+      "type": "lte",
+      "quality": 0.446
+    },
+    {
+      "a": "CPE_08",
+      "b": "RELAY_3",
+      "type": "lte",
+      "quality": 0.698
+    },
+    {
+      "a": "CPE_09",
+      "b": "RELAY_4",
+      "type": "lte",
+      "quality": 0.706
+    },
+    {
+      "a": "CPE_10",
+      "b": "eNB_B",
+      "type": "lte",
+      "quality": 0.437
+    },
+    {
+      "a": "CPE_11",
+      "b": "RELAY_2",
+      "type": "lte",
+      "quality": 0.426
+    },
+    {
+      "a": "CPE_12",
+      "b": "RELAY_4",
+      "type": "lte",
+      "quality": 0.288
+    },
+    {
+      "a": "CPE_13",
+      "b": "RELAY_4",
+      "type": "lte",
+      "quality": 0.632
+    },
+    {
+      "a": "CPE_14",
+      "b": "RELAY_2",
+      "type": "lte",
+      "quality": 0.533
+    },
+    {
+      "a": "CPE_15",
+      "b": "RELAY_3",
+      "type": "lte",
+      "quality": 0.389
+    },
+    {
+      "a": "RM_01",
+      "b": "SAF_03",
+      "type": "radio_900mhz",
+      "quality": 0.712
+    },
+    {
+      "a": "RM_02",
+      "b": "SAF_05",
+      "type": "radio_900mhz",
+      "quality": 0.724
+    },
+    {
+      "a": "RM_03",
+      "b": "SAF_02",
+      "type": "radio_900mhz",
+      "quality": 0.777
+    },
+    {
+      "a": "RM_04",
+      "b": "SAF_03",
+      "type": "radio_900mhz",
+      "quality": 0.817
+    },
+    {
+      "a": "RM_05",
+      "b": "SAF_01",
+      "type": "radio_900mhz",
+      "quality": 0.888
+    },
+    {
+      "a": "RM_06",
+      "b": "SAF_02",
+      "type": "radio_900mhz",
+      "quality": 0.846
+    },
+    {
+      "a": "RM_07",
+      "b": "SAF_04",
+      "type": "radio_900mhz",
+      "quality": 0.873
+    },
+    {
+      "a": "RM_08",
+      "b": "SAF_07",
+      "type": "radio_900mhz",
+      "quality": 0.773
+    },
+    {
+      "a": "RM_09",
+      "b": "SAF_04",
+      "type": "radio_900mhz",
+      "quality": 0.685
+    },
+    {
+      "a": "RM_10",
+      "b": "SAF_07",
+      "type": "radio_900mhz",
+      "quality": 0.886
+    },
+    {
+      "a": "RM_11",
+      "b": "SAF_06",
+      "type": "radio_900mhz",
+      "quality": 0.796
+    },
+    {
+      "a": "RM_12",
+      "b": "SAF_06",
+      "type": "radio_900mhz",
+      "quality": 0.776
+    },
+    {
+      "a": "RM_13",
+      "b": "SAF_05",
+      "type": "radio_900mhz",
+      "quality": 0.692
+    },
+    {
+      "a": "RM_14",
+      "b": "SAF_05",
+      "type": "radio_900mhz",
+      "quality": 0.852
+    },
+    {
+      "a": "RM_15",
+      "b": "SAF_04",
+      "type": "radio_900mhz",
+      "quality": 0.759
+    },
+    {
+      "a": "CPE_01",
+      "b": "ER_01",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_01",
+      "b": "ER_01",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_02",
+      "b": "ER_02",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_02",
+      "b": "ER_02",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_03",
+      "b": "ER_03",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_03",
+      "b": "ER_03",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_04",
+      "b": "ER_04",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_04",
+      "b": "ER_04",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_05",
+      "b": "ER_05",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_05",
+      "b": "ER_05",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_06",
+      "b": "ER_06",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_06",
+      "b": "ER_06",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_07",
+      "b": "ER_07",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_07",
+      "b": "ER_07",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_08",
+      "b": "ER_08",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_08",
+      "b": "ER_08",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_09",
+      "b": "ER_09",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_09",
+      "b": "ER_09",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_10",
+      "b": "ER_10",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_10",
+      "b": "ER_10",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_11",
+      "b": "ER_11",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_11",
+      "b": "ER_11",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_12",
+      "b": "ER_12",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_12",
+      "b": "ER_12",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_13",
+      "b": "ER_13",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_13",
+      "b": "ER_13",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_14",
+      "b": "ER_14",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_14",
+      "b": "ER_14",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "CPE_15",
+      "b": "ER_15",
+      "type": "ethernet",
+      "quality": 1.0
+    },
+    {
+      "a": "RM_15",
+      "b": "ER_15",
+      "type": "ethernet",
+      "quality": 1.0
+    }
+  ],
+  "validity": "VALIDITY LIMIT: a topology MODEL, not the output of any simulation or measurement. Link qualities are nominal and uncalibrated. Costs are transport-time estimates in milliseconds, not measured latency."
+}

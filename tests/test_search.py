@@ -144,6 +144,12 @@ def _floyd_warshall(topology):
            path reconstruction would corrupt both identically and the test would
            still pass. Floyd-Warshall is a different algorithm, written here, and
            therefore an outside reference.
+
+    The stub rule is honoured here too, and Floyd-Warshall expresses it more
+    directly than any other algorithm would: its middle loop IS the choice of
+    intermediate node, so refusing a stub as an intermediate is one guard clause.
+    Without it the reference would find cheaper routes that cross a grid site,
+    which the search deliberately refuses.
     """
     nodes = sorted(topology.nodes)
     index = {n: i for i, n in enumerate(nodes)}
@@ -157,6 +163,8 @@ def _floyd_warshall(topology):
             dist[i][j] = min(dist[i][j], step)
 
     for k in range(size):
+        if topology.node(nodes[k]).stub:
+            continue          # customer edge: never an intermediate
         dk = dist[k]
         for i in range(size):
             via = dist[i][k]
