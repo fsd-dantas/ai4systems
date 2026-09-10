@@ -49,6 +49,9 @@ DEFAULT_TOPOLOGY_FILE = DATA_DIR / "backhaul-topology.json"
 #:        behave as the graph grows.
 BUNDLED_TOPOLOGIES: Dict[str, Path] = {
     "base": DEFAULT_TOPOLOGY_FILE,
+    "simulated": DATA_DIR / "backhaul-topology-30.json",
+    # Kept as an alias: the 30-node scenario was introduced as the "scale" case
+    # before it was framed as the simulated bench extension.
     "scale": DATA_DIR / "backhaul-topology-30.json",
 }
 

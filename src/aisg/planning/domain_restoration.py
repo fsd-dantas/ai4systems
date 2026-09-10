@@ -41,7 +41,16 @@ DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "healthy": None,  # nothing to repair; the link is already clear
     # From the bench knowledge base. Not a service fault: a stop condition.
     "containment_breach": "containment-breached",
+    # Indoor conducted bench: the two conditions that replace the outdoor
+    # propagation faults.
+    "excess_attenuation": "excess-attenuation",
+    "cabling_fault": "cabling-fault",
 }
+
+#: Diagnoses that exist only on the indoor conducted bench. Asking to plan one
+#: implies that scenario: their repairs are bench operators, and in the field
+#: domain there would be no operator able to clear them.
+INDOOR_ONLY_DIAGNOSES = frozenset({"excess_attenuation", "cabling_fault"})
 
 #: Every fault the domain can repair. A fault outside this set would have no
 #: operator able to clear it, and the planner would fail with no explanation.
@@ -64,7 +73,7 @@ def cleared(fault: str) -> str:
     return f"cleared-{fault}(?n)"
 
 
-def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
+def build_operators(faults: Sequence[str] = (), *, indoor: bool = False) -> List[Operator]:
     """
     The twelve restoration operators, in STRIPS form.
 
@@ -76,6 +85,10 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
     """
     build = Operator.build
     verify_preconditions = ("diagnosed(?n)",) + tuple(cleared(f) for f in faults)
+    if indoor:
+        # A link is only verifiable with the rig transmitting again, which is
+        # what makes powering down a cost rather than a free precaution.
+        verify_preconditions += ("rig-live(?n)",)
 
     # Safety gate. While containment is breached the rig is radiating above the
     # test's acceptance criterion, so nothing may touch the plant and no crew may
@@ -136,7 +149,11 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
         build(
             "replace_power_unit",
             parameters=("?n",),
-            preconditions=("authorized(?n)", "crew-at(?n)", "power-failed(?n)") + gate,
+            preconditions=(
+                ("authorized(?n)", "rig-powered-down(?n)", "power-failed(?n)")
+                if indoor
+                else ("authorized(?n)", "crew-at(?n)", "power-failed(?n)")
+            ) + gate,
             add=("cleared-power-failed(?n)",),
             delete=("power-failed(?n)",),
             cost=5.0,
@@ -182,6 +199,55 @@ def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
             cost=1.0,
             description_pt="Acompanhar ?n: causa transitoria, nenhuma intervencao na planta.",
             description_en="Monitor ?n: transient cause, no intervention on the plant.",
+        ),
+        # ---- indoor conducted bench -----------------------------------
+        # Indoors nobody travels, so crew dispatch is not the cost that matters.
+        # What matters is that physical work on the RF harness requires the rig
+        # powered down, and verification requires it live again. That restores a
+        # real trade-off: batch the physical repairs into one power cycle, or pay
+        # for another.
+        build(
+            "power_down_rig",
+            parameters=("?n",),
+            preconditions=("authorized(?n)", "rig-live(?n)"),
+            add=("rig-powered-down(?n)",),
+            delete=("rig-live(?n)",),
+            cost=2.0,
+            description_pt="Desenergizar a bancada de ?n para intervencao fisica.",
+            description_en="Power the bench at ?n down for physical work.",
+        ),
+        build(
+            "power_up_rig",
+            parameters=("?n",),
+            preconditions=("rig-powered-down(?n)",),
+            add=("rig-live(?n)",),
+            delete=("rig-powered-down(?n)",),
+            cost=2.0,
+            description_pt="Reenergizar a bancada de ?n.",
+            description_en="Power the bench at ?n back up.",
+        ),
+        build(
+            "restore_path_budget",
+            parameters=("?n",),
+            # A remote attenuator setting: no power cycle, no hands on the rig.
+            preconditions=("authorized(?n)", "excess-attenuation(?n)") + gate,
+            add=(cleared("excess-attenuation"),),
+            delete=("excess-attenuation(?n)",),
+            cost=1.0,
+            description_pt="Restaurar a atenuacao pretendida no percurso de ?n.",
+            description_en="Restore the intended path attenuation at ?n.",
+        ),
+        build(
+            "inspect_connectors",
+            parameters=("?n",),
+            # Hands on the RF harness: only with the rig powered down.
+            preconditions=("authorized(?n)", "cabling-fault(?n)",
+                           "rig-powered-down(?n)") + gate,
+            add=(cleared("cabling-fault"),),
+            delete=("cabling-fault(?n)",),
+            cost=3.0,
+            description_pt="Inspecionar e refazer conectores e cabos de ?n.",
+            description_en="Inspect and remake the connectors and cables at ?n.",
         ),
         build(
             "halt_transmission",
@@ -237,6 +303,7 @@ def build_restoration_problem(
     node: str,
     faults: Sequence[str],
     *,
+    indoor: bool = False,
     alternate_route: bool = False,
     crew_base: str = CREW_BASE,
     extra_initial: Iterable[str] = (),
@@ -254,7 +321,11 @@ def build_restoration_problem(
             f"{', '.join(sorted(KNOWN_FAULTS))}"
         )
 
-    initial: List[str] = [f"diagnosed({node})", f"crew-at({crew_base})"]
+    initial: List[str] = [f"diagnosed({node})"]
+    if indoor:
+        initial.append(f"rig-live({node})")
+    else:
+        initial.append(f"crew-at({crew_base})")
     initial += [f"{fault}({node})" for fault in faults]
     if alternate_route:
         initial.append(f"alternate-route({node})")
@@ -264,7 +335,7 @@ def build_restoration_problem(
     # preconditions reduce to diagnosed(?n).
     return Problem(
         name=f"restore-service-{node}",
-        operators=build_operators(faults),
+        operators=build_operators(faults, indoor=indoor),
         initial=make_state(initial),
         goal=make_state([f"service-restored({node})", f"logged({node})"]),
         objects={"node": [node], "location": [crew_base, node]},
@@ -280,6 +351,7 @@ def problem_from_diagnosis(
     topology: Optional[Topology] = None,
     reroute_target: Optional[str] = None,  # the destination, not the source
     crew_base: str = CREW_BASE,
+    indoor: bool = False,
 ) -> Problem:
     """
     Turn an expert-system diagnosis into a planning problem.
@@ -299,6 +371,9 @@ def problem_from_diagnosis(
             f"{', '.join(sorted(DIAGNOSIS_TO_FAULT))}"
         )
 
+    # The diagnosis selects the scenario when it can only belong to one.
+    indoor = indoor or diagnosis in INDOOR_ONLY_DIAGNOSES
+
     fault = DIAGNOSIS_TO_FAULT[diagnosis]
     faults = [fault] if fault else []
 
@@ -315,7 +390,7 @@ def problem_from_diagnosis(
             alternate = shortest_route(topology, source, target, avoid=(node,)) is not None
 
     return build_restoration_problem(
-        node, faults, alternate_route=alternate, crew_base=crew_base
+        node, faults, indoor=indoor, alternate_route=alternate, crew_base=crew_base
     )
 
 

@@ -376,3 +376,77 @@ def test_halting_needs_no_authorisation():
     halt = next(a for a in problem.ground_actions() if a.name == "halt_transmission(N1)")
 
     assert halt.applicable(problem.initial), "halting waited for an authorised window"
+
+
+# --- indoor conducted bench ------------------------------------------------
+@pytest.mark.parametrize(
+    "fault,repair",
+    [("excess-attenuation", "restore_path_budget"), ("cabling-fault", "inspect_connectors")],
+)
+def test_the_indoor_diagnoses_have_planning_semantics(fault, repair):
+    """Both bench-only conditions must produce an executable plan."""
+    problem = build_restoration_problem("N1", [fault], indoor=True)
+    plan, _ = plan_with_astar(problem)
+
+    assert plan is not None
+    assert repair in [a.operator.name for a in plan.actions]
+    assert plan.validate()[0]
+    assert _remaining_faults(problem, plan) == []
+
+
+def test_hands_on_the_harness_require_the_rig_powered_down():
+    """Working the RF harness live is the unsafe act the model must exclude."""
+    problem = build_restoration_problem("N1", ["cabling-fault"], indoor=True)
+    inspect = next(
+        a for a in problem.ground_actions() if a.name == "inspect_connectors(N1)"
+    )
+    assert not inspect.applicable(problem.initial), "inspection allowed on a live rig"
+
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+    assert names.index("power_down_rig") < names.index("inspect_connectors")
+
+
+def test_verification_requires_the_rig_live_again():
+    """Powering down is a cost, not a free precaution: the link must be re-verified."""
+    problem = build_restoration_problem("N1", ["cabling-fault"], indoor=True)
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+    assert names.index("power_up_rig") < names.index("verify_link")
+
+
+def test_physical_repairs_share_one_power_cycle():
+    """
+    PT-BR: Indoors nao ha deslocamento, mas ha o ciclo de energia. Duas correcoes
+           fisicas devem caber num unico ciclo — e o compromisso que substitui a
+           viagem da equipe.
+    EN:    Indoors nobody travels, but there is the power cycle. Two physical
+           repairs must fit inside one - the trade-off that replaces crew travel.
+    """
+    problem = build_restoration_problem(
+        "N1", ["cabling-fault", "power-failed"], indoor=True
+    )
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+
+    assert names.count("power_down_rig") == 1
+    assert names.count("power_up_rig") == 1
+    assert _remaining_faults(problem, plan) == []
+
+
+def test_a_remote_fix_needs_no_power_cycle():
+    """Changing a remote attenuator setting must not power the bench down."""
+    problem = build_restoration_problem("N1", ["excess-attenuation"], indoor=True)
+    plan, _ = plan_with_astar(problem)
+    names = [a.operator.name for a in plan.actions]
+    assert "power_down_rig" not in names
+
+
+def test_the_field_domain_is_unchanged_by_the_indoor_option(topology):
+    """Tomorrow's demonstration must not shift under an option it does not set."""
+    for diagnosis in ("rf_interference", "node_power_failure", "rain_fade"):
+        problem = problem_from_diagnosis(diagnosis, "RM_A5", topology=topology)
+        plan, _ = plan_with_astar(problem)
+        names = [a.operator.name for a in plan.actions]
+        assert "power_down_rig" not in names
+        assert "rig-live(RM_A5)" not in {str(p) for p in problem.initial}

@@ -323,7 +323,9 @@ def cmd_plan(args: argparse.Namespace) -> int:
     topology = load_topology(getattr(args, "topology", "base"))
     node = args.node or _default_repair_node(topology)
     try:
-        problem = problem_from_diagnosis(args.diagnosis, node, topology=topology)
+        problem = problem_from_diagnosis(
+            args.diagnosis, node, topology=topology, indoor=args.indoor
+        )
     except (ValueError, KeyError) as exc:
         print(exc)
         return 2
@@ -502,6 +504,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("plan", help="automated planning / planejamento automatico")
     p.add_argument("--diagnosis", default="rf_interference")
     p.add_argument("--node", help="default: a store-and-forward relay")
+    p.add_argument(
+        "--indoor", action="store_true",
+        help="plan for the indoor conducted bench instead of the field network",
+    )
     p.add_argument("--solver", choices=("gps", "astar", "both"), default="both")
     p.add_argument("--heuristic", choices=("goal_count", "zero"), default="goal_count")
     p.add_argument("--trace", action="store_true", help="show the means-ends trace")

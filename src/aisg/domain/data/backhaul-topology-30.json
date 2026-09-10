@@ -1,8 +1,8 @@
 {
-  "id": "SGB-DEMO-30",
-  "title_pt": "Backhaul sintetico de comunicacao \u2014 cenario de escala (30 nos)",
-  "title_en": "Synthetic communication backhaul \u2014 scale scenario (30 nodes)",
-  "provenance": "SYNTHETIC. Structure only: three radio sectors, each a star around an access point with a store-and-forward chain reaching a distant field device, tied together by a fibre backbone and a private LTE overlay. Node identifiers, coordinates, link qualities and RF parameters are invented for this exercise. Nothing here is taken from the inventory, addressing, equipment identification, configuration or field topology of any laboratory or utility.",
+  "id": "SGB-SIM-30",
+  "title_pt": "Extensao simulada da bancada \u2014 30 nos em tres setores",
+  "title_en": "Simulated bench extension - 30 nodes in three sectors",
+  "provenance": "SYNTHETIC MODEL of the simulated extension to an indoor bench: three radio sectors, each a star around an access point with a store-and-forward chain reaching a field device, over a fibre backbone and a private LTE overlay. Simulated nodes carry explicit coordinates, which is why a distance-based heuristic remains admissible here and would not be on the conducted rig, where cable length does not bound transport cost. Identifiers, coordinates and link qualities are invented for this exercise and contain nothing from any laboratory's inventory, addressing or configuration.",
   "coordinate_system": "Local planar grid in metres; origin at the operations centre. Distances are Euclidean and DERIVED from these coordinates, never stored separately, so the geometry and the A* heuristic can never disagree.",
   "nodes": [
     {
@@ -541,5 +541,6 @@
       "type": "lte",
       "quality": 0.7
     }
-  ]
+  ],
+  "validity": "These are MODEL figures, not simulation output. No discrete-event run produced them, and none is claimed: the scenario is a topology and a nominal cost model. Costs are uncalibrated."
 }
