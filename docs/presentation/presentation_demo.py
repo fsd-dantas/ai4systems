@@ -213,7 +213,63 @@ def integrated():
             "isolated_destination_plan": None}
 
 
-DEMOS = {"diagnose": diagnose, "plan": plan, "gps-counterexample": gps_counterexample,
+def planning_graph():
+    """
+    Interrogate the STRIPS domain through its planning graph.
+
+    Two domains are analysed: the restoration domain as it ships, and a minimal
+    reconstruction of the shape it had before the multi-fault fix, where a single
+    shared fault-cleared literal was satisfied by ANY repair. The second must
+    reproduce the reported defect, and name its cause.
+    """
+    from aisg.planning.planning_graph import analyse
+    from aisg.planning.strips import Operator, Problem, Predicate, make_state
+
+    def two_fault(shared):
+        cleared = (lambda f: "fault-cleared(?n)") if shared else (lambda f: f"cleared-{f}(?n)")
+        ops = [
+            Operator.build("fix_a", parameters=("?n",), preconditions=("fault-a(?n)",),
+                           add=(cleared("fault-a"),), delete=("fault-a(?n)",)),
+            Operator.build("fix_b", parameters=("?n",), preconditions=("fault-b(?n)",),
+                           add=(cleared("fault-b"),), delete=("fault-b(?n)",)),
+            Operator.build("verify", parameters=("?n",),
+                           preconditions=tuple({cleared("fault-a"), cleared("fault-b")}),
+                           add=("service-restored(?n)",)),
+        ]
+        return Problem(name=f"dois-defeitos(compartilhado={shared})", operators=ops,
+                       initial=make_state(["fault-a(N)", "fault-b(N)"]),
+                       goal=make_state(["service-restored(N)"]),
+                       objects={"node": ["N"]}, parameter_types={"?n": "node"})
+
+    success = Predicate("service-restored", ("N",))
+    faults = [Predicate("fault-a", ("N",)), Predicate("fault-b", ("N",))]
+    out = {}
+    for shared in (True, False):
+        result = analyse(two_fault(shared), success=success, fault_literals=faults)
+        print(result.render("pt"))
+        print()
+        out["antes" if shared else "depois"] = {
+            "choice_points": {k: list(v) for k, v in result.choice_points.items()},
+            "violations": list(result.success_invariant_violations)}
+
+    # the shipped domain: no choice points, no violations, crew operators dead
+    live = build_restoration_problem("ER_03", ["mac-contention", "node-stopped"], simulated=True)
+    shipped = analyse(live, success=Predicate("service-restored", ("ER_03",)),
+                      fault_literals=[Predicate("mac-contention", ("ER_03",)),
+                                      Predicate("node-stopped", ("ER_03",))])
+    assert shipped.choice_points == {}
+    assert shipped.success_invariant_violations == ()
+    assert {"dispatch_crew", "realign_antenna"} <= set(shipped.dead_operators)
+    assert out["antes"]["violations"] and not out["depois"]["violations"]
+    assert out["antes"]["choice_points"] == {"fault-cleared(N)": ["fix_a", "fix_b"]}
+    print(shipped.render("pt"))
+    out["dominio_atual"] = {"dead_operators": list(shipped.dead_operators),
+                            "choice_points": shipped.choice_points,
+                            "violations": list(shipped.success_invariant_violations)}
+    return out
+
+
+DEMOS = {"diagnose": diagnose, "planning-graph": planning_graph, "plan": plan, "gps-counterexample": gps_counterexample,
          "multifault": multifault, "route": route, "reroute": reroute,
          "benchmark": benchmark, "integrated": integrated}
 

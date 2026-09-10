@@ -113,6 +113,40 @@
       }
     }
   },
+  "planning-graph": {
+    "antes": {
+      "choice_points": {
+        "fault-cleared(N)": [
+          "fix_a",
+          "fix_b"
+        ]
+      },
+      "violations": [
+        "service-restored(N) is not mutex with fault-a(N)",
+        "service-restored(N) is not mutex with fault-b(N)"
+      ]
+    },
+    "depois": {
+      "choice_points": {},
+      "violations": []
+    },
+    "dominio_atual": {
+      "dead_operators": [
+        "change_channel",
+        "dispatch_crew",
+        "fix_routing",
+        "fix_vlan",
+        "monitor_and_wait",
+        "realign_antenna",
+        "replace_power_unit",
+        "reroute_traffic",
+        "restore_path_budget",
+        "restore_relay"
+      ],
+      "choice_points": {},
+      "violations": []
+    }
+  },
   "plan": {
     "plan_with_gps": {
       "cost": 11.0,

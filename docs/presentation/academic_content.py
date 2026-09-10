@@ -474,6 +474,52 @@ O modelo utiliza um predicado de correção para cada falha declarada. A verific
 Entretanto, o conjunto de falhas é uma entrada da instância. A presença de várias hipóteses na memória do sistema especialista não demonstra automaticamente que elas ocorram simultaneamente. É necessária uma política para selecionar quais hipóteses serão tratadas como condições do planejamento. Além disso, verificar todas as falhas fornecidas não garante que falhas desconhecidas ou omitidas tenham sido eliminadas.""",
     "Executar presentation_demo.py multifault; verificar custo 12 e uma única parada/retomada.")
 
+add("3 · PLANEJAMENTO AUTOMÁTICO", "Validação do domínio por grafo de planejamento", "table", {
+    "headers": ["Pergunta ao domínio", "O que o grafo devolve", "Consequência"],
+    "rows": [["Operadores mortos", "dispatch_crew, realign_antenna",
+              "Nunca disparam: nada estabelece crew-at"],
+             ["Pontos de escolha", "nenhum, nos dois domínios",
+              "Meios-fins não tem escolha para errar"],
+             ["Invariante de sucesso", "nenhuma violação",
+              "Sucesso é incompatível com falha viva"],
+             ["Limite inferior do plano", "nível do objetivo sem exclusão mútua",
+              "Verificação que não usa planejador"]],
+    "widths": [3.6, 4.3, 4.5], "size": 17,
+    "takeaway": "O grafo é instrumento de análise do domínio, não um quarto planejador."},
+    """Um domínio de planejamento escrito à mão é uma hipótese sobre o mundo, não um fato. Cada precondição afirma que algo é necessário e cada lista de remoção afirma que algo deixa de valer. Nenhuma dessas afirmações se verifica sozinha.
+
+O grafo de planejamento de Blum e Furst alterna níveis de proposições e níveis de ações e propaga relações de exclusão mútua. Construí esse grafo e o utilizo para interrogar o domínio. Não implementei a extração de solução, porque o objetivo aqui é validação do domínio e não planejamento. Por isso a afirmação correta é que utilizo o grafo de planejamento, e não que implementei o Graphplan completo.
+
+A primeira pergunta identifica operadores que jamais podem disparar. No cenário simulado não existe equipe em campo, logo nada estabelece a precondição de deslocamento, e dois operadores ficam inalcançáveis. São inofensivos para a correção, mas o grafo os aponta sem que seja preciso ler a lista de operadores.
+
+A segunda pergunta é a mais informativa. Nenhuma proposição do domínio tem mais de um operador que a produza. Essa é a explicação estrutural de um resultado que eu havia observado empiricamente: o GPS nunca devolve custo maior que o A* neste domínio. A análise meios-fins não perde porque não há escolha a fazer.
+
+A quarta pergunta devolve um limite inferior para o número de passos paralelos, obtido sem executar nenhum dos dois planejadores. É uma verificação externa, no mesmo espírito da comparação com Floyd–Warshall na busca.""",
+    "Executar presentation_demo.py planning-graph; ler as três análises impressas.")
+
+add("3 · PLANEJAMENTO AUTOMÁTICO", "O defeito reencontrado como exclusão mútua ausente", "code", {
+    "code": "python docs/presentation/presentation_demo.py planning-graph\n\n"
+            "# domínio ANTES da correção: um único fault-cleared\n"
+            "pontos de escolha:\n"
+            "  fault-cleared(N) <- fix_a, fix_b\n"
+            "violacoes do invariante de sucesso:\n"
+            "  service-restored(N) is not mutex with fault-a(N)\n"
+            "  service-restored(N) is not mutex with fault-b(N)\n\n"
+            "# domínio DEPOIS: um literal cleared por falha\n"
+            "pontos de escolha: nenhum\n"
+            "violacoes do invariante de sucesso: nenhuma",
+    "takeaway": "O grafo não só detecta o defeito: nomeia a causa, um literal com dois produtores."},
+    """Este é o resultado que justifica o esforço. Reconstruí o domínio na forma que ele tinha antes da correção, com um único literal de falha corrigida que qualquer reparo satisfazia, e submeti as duas versões à mesma análise.
+
+Na versão anterior, o grafo relata que service-restored não é mutuamente exclusivo com nenhuma das duas falhas. Em linguagem comum: o domínio permitia declarar serviço restaurado com uma falha ainda ativa. É exatamente o defeito que havia sido relatado a partir do uso.
+
+E o grafo faz mais do que detectar. Ele nomeia a causa na linha seguinte: um literal, dois produtores. Um literal compartilhado por vários operadores é um ponto de escolha disfarçado de invariante. Com um literal por falha, ambas as listas ficam vazias.
+
+O ganho metodológico é a mudança de estatuto do defeito. Antes, era um plano ruim que alguém precisou ler com atenção para perceber. Agora é uma propriedade que um teste verifica a cada execução, e que voltaria a falhar se alguém reintroduzisse o literal compartilhado.
+
+Registro também a limitação. O grafo é uma relaxação: ele ignora listas de remoção ao propagar alcançabilidade, de modo que ausência no grafo prova inalcançabilidade, mas presença não prova alcançabilidade. E o Graphplan minimiza níveis, não custo, razão pela qual ele não substitui o planejador progressivo por A*.""",
+    "Executar presentation_demo.py planning-graph; comparar as duas análises.")
+
 add("3 · PLANEJAMENTO AUTOMÁTICO", "Rota alternativa como precondição verificável", "cards", [
     ["Consulta", "A* procura um caminho entre a origem e o destino, excluindo o nó afetado."],
     ["Contrato", "A existência desse caminho sustenta alternate-route(N) para o incidente considerado."],

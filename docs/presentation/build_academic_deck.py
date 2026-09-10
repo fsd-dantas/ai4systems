@@ -322,6 +322,19 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def slide_by_title(fragment):
+    """
+    Look a slide up by title rather than by position.
+
+    Positional constants silently attach themselves to the wrong slide the first
+    time anyone inserts one, and the assertions below would then verify the
+    wrong table while still passing.
+    """
+    matches = [item for item in SLIDES if fragment in item["title"]]
+    assert len(matches) == 1, f"expected exactly one slide matching {fragment!r}"
+    return matches[0]
+
+
 def verify_bundle():
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert sha(OUTPUT) == manifest["deck_sha256"], "Presentation changed after the synchronized build"
@@ -344,19 +357,20 @@ def verify_bundle():
     evidence = json.loads((HERE / "presentation-evidence.json").read_text(encoding="utf-8"))
     keys = ["rf_interference", "excess_path_loss", "mac_contention", "node_failure",
             "upstream_relay_failure", "routing_misconfiguration", "congestion", "healthy"]
-    for row, key in zip(SLIDES[22]["content"]["rows"], keys):
+    for row, key in zip(slide_by_title("oito casos ilustrativos")["content"]["rows"], keys):
         expected = evidence["diagnose"][key]
         assert abs(float(row[1].replace(",", ".")) - expected["diagnosis"]["cf"]) <= .000051
         assert row[2] == expected["recommended_action"]["value"]
     algorithms = ["Breadth-first", "Depth-first", "Uniform cost (Dijkstra)", "Greedy best-first", "A*"]
-    for row, algorithm in zip(SLIDES[44]["content"]["rows"], algorithms):
+    for row, algorithm in zip(slide_by_title("Comparação: NOC")["content"]["rows"], algorithms):
         expected = evidence["route"][algorithm]
         assert int(row[1]) == expected["hops"] and int(row[3]) == expected["expanded"]
         assert abs(float(row[2].replace(" ms", "").replace(",", ".")) - expected["cost"]) <= .0051
     benchmark_data = evidence["benchmark"]
-    assert SLIDES[47]["content"]["values"][0][1] == benchmark_data["uniform_expanded"]
-    assert SLIDES[47]["content"]["values"][1][1] == benchmark_data["astar_expanded"]
-    print("Synchronization verified: 57 titles, 57 complete notes, script, source hashes and displayed result tables.")
+    bars = slide_by_title("Esforço de busca")["content"]["values"]
+    assert bars[0][1] == benchmark_data["uniform_expanded"]
+    assert bars[1][1] == benchmark_data["astar_expanded"]
+    print(f"Synchronization verified: {len(SLIDES)} titles, {len(SLIDES)} complete notes, script, source hashes and displayed result tables.")
 
 
 def main():
@@ -367,7 +381,7 @@ def main():
     if args.check:
         verify_bundle()
         return
-    assert len(SLIDES) == 57
+    assert len(SLIDES) == 59
     prs = Presentation(BASELINE)
     # Keep the original cover, master, layout relationships and embedded branding.
     for slide_id in list(prs.slides._sldIdLst)[1:]:
