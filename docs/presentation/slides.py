@@ -36,7 +36,7 @@ são um bom cartão de visita.""",
             "Sistema especialista: 43 regras, encadeamento nos dois sentidos, fatores de certeza",
             "Geração automática de planos: STRIPS, resolvido por GPS e por A* progressivo",
             "Busca A*: caminho exato, com prova de admissibilidade",
-            "Domínio comum: a rede de comunicação de um sistema elétrico inteligente",
+            "Domínio comum: o cenário SIMULADO em ns-3 — 30 nós, três setores",
             ("Os três se integram: o diagnóstico vira o estado inicial do plano, e o plano consulta a busca", 1),
         ],
         """Diga o roteiro: 30 minutos por tema, com demonstração ao vivo em cada um.
@@ -54,18 +54,23 @@ e os dois slides de apêndice, ocultos para preservar os 90 minutos autorizados.
     )
 
     d.figure(
-        "O domínio: backhaul de comunicação",
-        IMG_DIR / "01-integration.png",
-        """Descreva o domínio em uma frase: a rede que liga ativos distribuídos de um
-sistema elétrico ao centro de operação — núcleo em fibra, setores de rádio de
-900 MHz, uma cadeia de repetidores armazena-e-encaminha e uma sobreposição LTE.
+        "O domínio: o cenário simulado (ns-3)",
+        IMG_DIR / "05-simulated-30.png",
+        """O cenário: 30 nós sem fio em três setores, cada um com estrela de rádio de
+900 MHz e uma cadeia armazena-e-encaminha até um dispositivo de campo, sobre um
+núcleo em fibra e uma sobreposição LTE.
 
-Diga explicitamente que a topologia é SINTÉTICA: um modelo didático da classe de
-cenários estudada em laboratórios de backhaul sem fio. Não há inventário real,
-endereçamento nem identificação de equipamento. Dizer isso antes que perguntem
-vale mais do que responder depois.""",
+Duas coisas a dizer antes que perguntem, porque as duas seriam perguntadas:
+
+A topologia é SINTÉTICA — não contém inventário, endereçamento nem identificação
+de equipamento de laboratório algum.
+
+E isto é um MODELO de topologia, não saída de simulação. Nenhuma execução
+produziu estes números: o cenário ns-3 para esta banda ainda não está construído,
+porque o ns-3.48 de estoque não sintetiza espectro em 902-928 MHz com lr-wpan.
+Dizer isso é mais forte do que deixar alguém descobrir.""",
         accent=BLUE,
-        caption="17 nós no cenário base, 30 no cenário de escala. Topologia sintética.",
+        caption="Modelo de topologia — 30 nós, três setores. Nao e saida de simulacao.",
     )
 
     d.statement(
@@ -98,12 +103,53 @@ disciplina — eles são as três partes de uma pergunta só.""",
         accent=BLUE, kicker="PERGUNTA DE PESQUISA",
     )
 
+    d.table(
+        "Antes dos KPIs: o que cada grandeza significa",
+        ["Grandeza", "Em linguagem simples", "Quando piora"],
+        [
+            ["RSSI (dBm)", "Quão FORTE o sinal chega", "o receptor mal escuta o transmissor"],
+            ["SNR (dB)", "Quão LIMPO o sinal chega, acima do ruído",
+             "o sinal existe, mas o ruído o encobre"],
+            ["Perda de percurso (dB)", "Quanto o sinal enfraquece no caminho",
+             "distância, obstáculo ou atenuação comandada"],
+            ["Retransmissão MAC (%)", "Quantas vezes é preciso repetir o envio",
+             "vários rádios falam ao mesmo tempo e colidem"],
+            ["Perda de pacotes (%)", "Quanta informação não chega", "consequência, não causa"],
+            ["Atraso / RTT (ms)", "Quanto tempo a informação leva para ir e voltar",
+             "fila cheia, ou caminho longo"],
+            ["Carga oferecida (%)", "Quanto se pede do enlace, em relação ao que ele aguenta",
+             "acima de 100 % pede-se mais do que existe"],
+        ],
+        """Este slide existe porque nem todos na sala são engenheiros de redes, e sem
+ele os próximos vinte minutos viram vocabulário.
+
+Use uma analogia só, e mantenha-a: uma conversa numa sala.
+
+RSSI é o VOLUME da voz que chega. SNR é quanto essa voz se destaca do barulho de
+fundo — dá para ter volume alto e ainda assim não entender nada, se o barulho for
+maior. Perda de percurso é o quanto a voz enfraquece pela distância ou por uma
+parede no meio.
+
+Retransmissão é quantas vezes você precisa REPETIR a frase — e é a grandeza que
+distingue as duas situações que mais se confundem: se você repete muito mas sua
+voz chega alta e limpa, o problema não é a voz, é que várias pessoas falam ao
+mesmo tempo.
+
+Perda de pacotes e atraso são CONSEQUÊNCIAS: a informação não chegou, ou demorou.
+Elas dizem que algo está errado, nunca o quê. É por isso que o sistema precisa
+das três primeiras para diagnosticar, e não só destas duas.
+
+Carga oferecida é quanto se está pedindo do enlace. Acima de 100 % pede-se mais
+do que ele comporta — e a fila cresce por definição, não por defeito.""",
+        accent=BLUE, widths=[3.0, 5.2, 4.4],
+    )
+
     d.two_up(
         "Como isto é medido: dois níveis de KPI",
         "KPIs do domínio — a entrada", [
-            "RSSI (dBm) e SNR (dB) — qualidade do enlace",
-            "Perda de pacotes (%) e RTT (ms) — sintoma",
-            "Utilização do enlace (%) — congestionamento",
+            "PHY: RSSI (dBm), SNR (dB), perda de percurso comandada (dB)",
+            "MAC: taxa de retransmissão (%) — o discriminador",
+            "Fluxo: perda (%), atraso (ms), carga oferecida (%)",
             "Custo de transporte (ms) — derivado, alimenta a busca",
             "⚠ Limiares NOMINAIS e NÃO calibrados",
         ],
@@ -115,9 +161,13 @@ disciplina — eles são as três partes de uma pergunta só.""",
         ],
         """Distinga os dois níveis com clareza — eles respondem a perguntas diferentes.
 
-Os KPIs do DOMÍNIO são as grandezas que um operador de rede realmente observa, e
-são a entrada dos sistemas: alimentam as regras do sistema especialista e, no
-caso do custo de transporte, a função de custo da busca.
+Os KPIs do DOMÍNIO são as grandezas que o simulador realmente produz: PHY pelo
+espectro, MAC pelo contador de retransmissão, e fluxo pelo FlowMonitor.
+
+Destaque a taxa de retransmissão do MAC. Sem ela, perda por meio disputado e
+perda por sinal fraco parecem idênticas no nível de fluxo — as duas aparecem como
+perda. A retransmissão é o que separa um meio ocupado de um sinal fraco, e é uma
+grandeza que só existe em rede sem fio.
 
 Os KPIs de AVALIAÇÃO são como julgamos se os sistemas funcionam. Note que cada
 trabalho tem um critério próprio e verificável: o fator de certeza diz quanta
@@ -138,22 +188,26 @@ declarados, e declarados como não calibrados.""",
 
     d.statement(
         "Por que o DIAGNÓSTICO não é aprendido?",
-        "Não existe, para este domínio, conjunto de dados rotulado de falhas.",
-        """Este é o argumento mais forte da apresentação — mas repare no escopo do
-título: DIAGNÓSTICO. Não diga "não usamos aprendizado de máquina" como se valesse
-para os três sistemas; a afirmação é sobre a tarefa de classificar a causa de uma
-falha, e só sobre ela.
+        "No simulador os rótulos são gratuitos. O problema não é o rótulo — é o que "
+        "o modelo aprenderia.",
+        """Este argumento mudou quando o cenário passou a ser simulado, e a versão
+nova é mais interessante. Não repita a antiga.
 
-Para rotular um enlace como "degradado" ou "em falha" seriam precisas duas
-coisas: um instrumento de degradação controlada, capaz de produzir a falha de
-forma reprodutível, e uma linha de base de observabilidade autenticada contra a
-qual comparar. Sem as duas, nenhum rótulo vem de medição. E um modelo treinado
-apenas em estado normal não infere degradação de modo confiável — ele nunca viu
-a classe que deveria reconhecer.
+No simulador, o operador COMANDA a condição: sobe a perda de percurso, injeta um
+emissor, para um nó. Portanto conhece o rótulo por construção, e pode repetir a
+execução quantas vezes quiser. Rótulos não faltam — são gratuitos e ilimitados.
 
-Se alguém perguntar "e aprender a heurística da busca?", a resposta é que essa é
-uma tarefa DIFERENTE, com supervisão gratuita — e temos um slide sobre ela no
-tema 3.""",
+O problema é outro: um modelo treinado assim aprende O SIMULADOR, não a planta.
+O MAC simulado é CSMA-CA do 802.15.4; o rádio real usa o MAC proprietário do
+fabricante. Um classificador treinado nos rótulos do simulador aprenderia a
+assinatura do modelo — e não há evidência de que ela transfira.
+
+O sistema especialista faz o inverso: codifica conhecimento de engenharia que
+vale para a planta, e que pode ser contestado regra a regra. Onde há rótulos, a
+indução é possível; onde eles não representam o alvo, ela é apenas confiante.
+
+Para a rede de CAMPO o argumento antigo continua valendo, e por isso a segunda
+base de conhecimento existe: lá não há rótulo algum.""",
         accent=RED,
     )
 
@@ -231,35 +285,45 @@ trabalho multiespecialista de 25/09.""",
     )
 
     d.table(
-        "As variáveis observáveis",
-        ["Variável", "Tipo", "Domínio"],
+        "As variáveis observáveis — o que o simulador produz",
+        ["Variável", "Nível", "Domínio"],
         [
-            ["rssi_dbm", "numérica", "[-120, -30] dBm"],
-            ["snr_db", "numérica", "[-5, 40] dB"],
-            ["packet_loss_pct", "numérica", "[0, 100] %"],
-            ["rtt_ms", "numérica", "[0, 5000] ms"],
-            ["traffic_load_pct", "numérica", "[0, 100] %"],
-            ["link_state", "categórica", "up | down | flapping"],
-            ["node_power", "categórica", "ok | on-battery | failed"],
-            ["weather", "categórica", "clear | rain | storm"],
-            ["spectrum_scan", "categórica", "clean | occupied"],
-            ["neighbours_affected", "categórica", "none | one | many"],
-            ["recent_change", "categórica", "none | config | firmware | antenna"],
-            ["vlan_trunk_ok / upstream_relay_reachable", "booleana", "yes | no"],
+            ["rssi_dbm", "PHY", "[-120, -30] dBm"],
+            ["snr_db", "PHY", "[-5, 40] dB"],
+            ["excess_path_loss_db", "PHY (comandado)", "[0, 80] dB"],
+            ["retry_rate_pct", "MAC", "[0, 100] %  <- o discriminador"],
+            ["packet_loss_pct", "fluxo", "[0, 100] %"],
+            ["rtt_ms", "fluxo", "[0, 5000] ms"],
+            ["offered_load_pct", "fluxo", "[0, 200] %"],
+            ["node_responding", "cenário", "yes | no"],
+            ["upstream_relay_reachable", "cenário", "yes | no"],
+            ["route_present", "cenário", "yes | no"],
+            ["co_channel_emitter", "cenário", "yes | no"],
+            ["nodes_sharing_channel", "cenário", "few | many"],
+            ["neighbours_affected", "cenário", "none | one | many"],
         ],
-        """Treze variáveis perguntáveis. Não leia a tabela inteira — aponte três ou
-quatro e diga que são grandezas que um operador de rede realmente observa.
+        """Treze variáveis em três níveis: PHY pelo espectro, MAC pelo contador de
+retransmissão, fluxo pelo FlowMonitor. Não leia a tabela — aponte a estrutura.
 
-Note que há dois tipos: medições numéricas com faixa declarada, e categóricas
-com domínio fechado. A validação recusa valor fora da faixa e rótulo não
-declarado, antes de qualquer inferência.""",
+A linha a destacar é retry_rate_pct. É o único valor que separa "o meio está
+disputado" de "o sinal está fraco": no nível de fluxo as duas causas produzem
+perda e ficam indistinguíveis. E é uma grandeza que só existe porque a rede é
+sem fio e o meio é compartilhado.
+
+Note também excess_path_loss_db: no simulador a perda de percurso é COMANDADA,
+não observada — é isso que torna a condição repetível, e rotulável.""",
         accent=BLUE, widths=[4, 2, 4],
     )
 
     d.figure(
-        "As 43 regras em cinco camadas",
+        "As 41 regras em cinco camadas",
         IMG_DIR / "02-expert-system.png",
-        """Percorra as camadas de baixo para cima: medição vira qualidade de sinal,
+        """A figura mostra a ESTRUTURA em camadas com os identificadores da base de
+campo (R01-R43). Na base simulada eles são S01-S42 e o conteúdo é o desta
+apresentação; a estrutura de cinco camadas — que é o que a figura ilustra — é a
+mesma. Diga isso ao mostrá-la.
+
+Percorra as camadas de baixo para cima: medição vira qualidade de sinal,
 estado e desempenho viram sintoma, evidência vira diagnóstico, diagnóstico vira
 ação, ação vira exigência de autorização.
 
@@ -274,26 +338,30 @@ sensor de RF muda a camada 1 e nada mais. Isso é modularidade do conhecimento, 
     d.code(
         "Três regras, três papéis",
         [
-            "R10:  SE  qualidade_do_sinal = poor",
-            "      E   varredura_de_espectro = occupied",
-            "      ENTÃO diagnóstico = rf_interference          (CF +0,85)",
+            "S14:  SE  retransmissão_MAC > 30 %",
+            "      E   qualidade_do_sinal != poor",
+            "      E   emissor_co_canal = no",
+            "      ENTÃO diagnóstico = mac_contention           (CF +0,85)",
+            "      <- perda COM sinal saudável: o meio está disputado",
             "",
-            "R25:  SE  clima = clear",
-            "      ENTÃO diagnóstico = rain_fade                (CF -0,80)",
+            "S25:  SE  retransmissão_MAC <= 30 %",
+            "      ENTÃO diagnóstico = mac_contention           (CF -0,80)",
             "      <- contra-evidência: torna a hipótese MENOS provável",
             "",
-            "R36:  SE  ação_recomendada = change_channel",
+            "S37:  SE  ação_recomendada = separate_channels",
             "      ENTÃO exige_autorização = yes                (CF +1,00)",
         ],
-        """R10 é uma regra de diagnóstico comum: duas condições, uma conclusão, uma
-confiança.
+        """S14 é a regra mais própria deste domínio: perda alta COM sinal saudável e sem
+emissor concorrente não é propagação — é disputa pelo meio. Num enlace com fio
+essa hipótese não existiria; é o CSMA-CA que a cria.
 
-R25 é a mais interessante. O fator de certeza negativo diz "tempo limpo é
-evidência CONTRA atenuação por chuva". Regras booleanas obrigariam a escolher
-entre ignorar essa evidência e afirmar demais. E o especialista real raciocina
-assim: certas observações reduzem a suspeita sem eliminá-la.
+S25 é a contra-evidência. O fator de certeza negativo diz "retransmissão baixa é
+evidência CONTRA contenção". Regras booleanas obrigariam a escolher entre ignorar
+essa evidência e afirmar demais. O especialista real raciocina assim: certas
+observações reduzem a suspeita sem eliminá-la.
 
-R36 é a porta de governança, e prepara o tema 2.""",
+S37 é a porta de governança, e prepara o tema 2: alterar o cenário durante uma
+campanha invalida a execução, portanto exige janela autorizada.""",
         accent=BLUE,
     )
 
@@ -347,23 +415,27 @@ real: a telemetria chega, o motor conclui sozinho.""",
     d.code(
         "Demonstração: encadeamento progressivo",
         [
-            "$ aisg diagnose --case interference --trace --explain",
+            "$ aisg diagnose --kb simulated --case mac_contention --trace --explain",
             "",
-            "* R01: premissa CF +1,00 × regra CF +0,90 => signal_quality = poor",
-            "* R10: premissa CF +0,90 × regra CF +0,85 => diagnosis = rf_interference",
-            "* R28: premissa CF +0,93 × regra CF +0,90 => ação = change_channel",
-            "* R36: premissa CF +0,84 × regra CF +1,00 => autorização = yes",
+            "* S04: premissa CF +1,00 × regra CF +0,90 => signal_quality = good",
+            "* S14: premissa CF +1,00 × regra CF +0,85 => diagnosis = mac_contention",
+            "* S29: premissa CF +0,94 × regra CF +0,85 => ação = separate_channels",
+            "* S37: premissa CF +0,80 × regra CF +1,00 => autorização = yes",
             "",
             "diagnóstico:",
-            "  rf_interference        CF +0,93  ###################",
-            "  rain_fade              CF -0,80  -################",
+            "  mac_contention         CF +0,94  ###################",
+            "  excess_path_loss       CF -0,85  -#################",
         ],
         """Rode ao vivo. Percorra o trace regra a regra com o dedo na tela: a cadeia
 inteira é legível, da medição até a exigência de autorização.
 
-Aponte a última linha: rain_fade aparece com CF NEGATIVO. O sistema não apenas
-escolheu uma hipótese — ele registrou evidência contra outra. Isso é o que
-distingue um sistema com incerteza de um classificador que só devolve um rótulo.""",
+Aponte a última linha: excess_path_loss aparece com CF NEGATIVO. O sistema não
+apenas escolheu uma hipótese — registrou evidência contra outra. Isso é o que
+distingue um sistema com incerteza de um classificador que só devolve um rótulo.
+
+E note o que a conclusão significa: o sinal está BOM e mesmo assim há perda. Um
+diagnóstico de propagação estaria errado aqui, e a retransmissão do MAC é o que
+impede o sistema de cometer esse erro.""",
         accent=BLUE,
     )
 
@@ -391,20 +463,21 @@ verifica que os dois sentidos, com a mesma evidência, concluem o mesmo.""",
     d.code(
         "Demonstração: consulta guiada por objetivo",
         [
-            "$ aisg diagnose --interactive --mode backward",
+            "$ aisg diagnose --kb simulated --interactive --mode backward",
             "",
-            "Qual o estado do enlace [up, down, flapping]?",
+            "O nó responde [yes, no]?",
             "  (Enter = não sei)   ('?' = por quê)",
-            "> down",
+            "> no",
             "",
-            "Qual a situação de alimentação do nó [ok, on-battery, failed]?",
+            "O repetidor a montante responde [yes, no]?",
             "> ?",
             "",
             "Por que esta pergunta está sendo feita:",
-            "  R16: SE alimentação_do_nó = failed ENTÃO node_power_failure (CF +0,95)",
-            "> failed",
+            "  S17: SE repetidor_a_montante = no E nó_responde = no",
+            "       ENTÃO upstream_relay_failure (CF +0,90)",
+            "> no",
             "",
-            "diagnóstico: node_power_failure (CF +0,95)  —  6 de 13 perguntas",
+            "diagnóstico: upstream_relay_failure (CF +0,97)  —  poucas perguntas",
         ],
         """Este é o único momento não roteirizado da apresentação. Ensaie antes.
 
@@ -412,8 +485,8 @@ Digite "?" numa das perguntas para mostrar o "por quê": o motor exibe a cadeia
 de regras que o levou até ali. Um sistema que só responde não é utilizável em
 operação crítica; um que mostra o caminho pode ser auditado e contestado.
 
-Aceita também uma certeza junto da resposta: "rain 0.6" informa chuva com
-confiança 0,6.""",
+Aceita também uma certeza junto da resposta: "no 0.6" informa a resposta com
+confiança 0,6 em vez de certeza.""",
         accent=BLUE,
     )
 
@@ -459,26 +532,28 @@ regra e o fato que a sustentam. É a diferença entre parecer e poder mostrar.""
     )
 
     d.table(
-        "Os oito casos de demonstração",
-        ["Caso", "Diagnóstico", "CF", "Ação recomendada", "Autoriza?"],
+        "Os oito casos comandáveis no simulador",
+        ["Caso comandado", "Diagnóstico", "CF", "Ação recomendada", "Autoriza?"],
         [
-            ["interference", "rf_interference", "+0,93", "change_channel", "sim"],
-            ["obstruction", "path_obstruction", "+0,91", "realign_antenna", "sim"],
-            ["rain_fade", "rain_fade", "+0,66", "wait_and_monitor", "não"],
-            ["power_failure", "node_power_failure", "+0,95", "dispatch_power_team", "sim"],
-            ["relay_failure", "upstream_relay_failure", "+0,95", "restore_upstream_relay", "sim"],
-            ["vlan", "vlan_misconfiguration", "+0,96", "fix_vlan_allowlist", "sim"],
+            ["rf_interference", "rf_interference", "+0,93", "change_channel", "sim"],
+            ["excess_path_loss", "excess_path_loss", "+0,92", "restore_path_budget", "sim"],
+            ["mac_contention", "mac_contention", "+0,94", "separate_channels", "sim"],
+            ["node_failure", "node_failure", "+0,80", "restart_node", "sim"],
+            ["upstream_relay_failure", "upstream_relay_failure", "+0,97", "restore_upstream_relay", "sim"],
+            ["routing_misconfiguration", "routing_misconfiguration", "+0,90", "fix_routing", "sim"],
             ["congestion", "congestion", "+0,89", "reroute_traffic", "sim"],
             ["healthy", "healthy", "+0,81", "no_action", "não"],
         ],
-        """Oito casos, oito diagnósticos corretos. Mas o número a apontar é o de
-rain_fade: CF +0,66, nitidamente mais baixo que os demais.
+        """Oito casos, oito diagnósticos corretos. Mas o ponto não é o acerto — é que
+o nome do caso É o rótulo verdadeiro, porque o operador comandou a condição
+antes de executar.
 
-Isso não é um defeito — é o sistema admitindo que a evidência é fraca. Chuva com
-margem estreita é mesmo evidência fraca. Um sistema que devolvesse +0,95 nesse
-caso estaria mentindo.
+Isso é o que a bancada de campo não pode oferecer: no campo ninguém sabe, no
+momento da medição, o que causou a perda. Aqui sabe-se por construção, e a
+execução pode ser repetida.
 
-Note também as duas linhas que não exigem autorização: observar, e não agir.""",
+Aponte node_failure: CF +0,80, o mais baixo. Não é defeito — é o sistema
+admitindo que um nó calado tem mais de uma explicação possível.""",
         accent=BLUE, widths=[2.2, 3.2, 1.1, 3.3, 1.5], highlight=2,
     )
 
@@ -541,17 +616,17 @@ neste trabalho ela é resolvida de duas maneiras.""",
     d.code(
         "Um operador STRIPS",
         [
-            "realign_antenna(?n)                                custo 3",
+            "separate_channels(?n)                              custo 3",
             "",
             "  precondições:   authorized(?n)",
-            "                  crew-at(?n)",
-            "                  misaligned(?n)",
+            "                  mac-contention(?n)",
+            "                  run-stopped(?n)",
             "",
-            "  adiciona:     + fault-cleared(?n)",
+            "  adiciona:     + cleared-mac-contention(?n)",
             "",
-            "  remove:       - misaligned(?n)",
+            "  remove:       - mac-contention(?n)",
             "",
-            "  estado = { diagnosed(N), crew-at(BASE), misaligned(N) }",
+            "  estado = { diagnosed(N), run-active(N), mac-contention(N) }",
             "  hipótese do mundo fechado: o que não está no conjunto é falso",
         ],
         """Leia os três conjuntos. Depois explique a hipótese do mundo fechado: o estado
@@ -565,29 +640,31 @@ Isso é o que torna o estado finito e a busca tratável.""",
 
     d.table(
         "Os doze operadores",
-        ["Operador", "Custo", "Equipe no local?", "Autorização?"],
+        ["Operador", "Custo", "Exige execução parada?", "Autorização?"],
         [
             ["request_authorization(?n)", "1", "não", "—"],
-            ["dispatch_crew(?from, ?to)", "4", "—", "sim"],
-            ["change_channel(?n)", "2", "não", "sim"],
-            ["realign_antenna(?n)", "3", "SIM", "sim"],
-            ["replace_power_unit(?n)", "5", "SIM", "sim"],
+            ["stop_run(?n)", "2", "SIM", "sim"],
+            ["start_run(?n)", "2", "—", "—"],
+            ["restore_path_budget(?n)", "1", "SIM", "sim"],
+            ["separate_channels(?n)", "3", "SIM", "sim"],
+            ["restart_node(?n)", "1", "não", "sim"],
+            ["fix_routing(?n)", "1", "não", "sim"],
             ["restore_relay(?n)", "2", "não", "sim"],
-            ["fix_vlan(?n)", "1", "não", "sim"],
             ["reroute_traffic(?n)", "2", "não", "sim + rota alternativa"],
-            ["monitor_and_wait(?n)", "1", "não", "NÃO"],
-            ["verify_link / record_logbook / close_work_order", "1", "não", "—"],
+            ["verify_link / record_logbook / close_work_order", "1", "—", "—"],
         ],
         """Não leia a tabela inteira. Aponte três coisas:
 
-Primeiro, dispatch_crew custa 4 e replace_power_unit custa 5. Se toda ação
-custasse 1, planejar seria contar passos — com custos diferentes, o planejador
-precisa realmente pesar, e uma correção remota barata pode vencer uma correção
-local aparentemente mais simples.
+Primeiro: ninguém se desloca até um simulador, então o custo que importa não é
+a viagem da equipe — é a EXECUÇÃO. Alterar um parâmetro do cenário (o orçamento
+de percurso, o plano de canais) invalida a execução em curso, logo exige pará-la
+e retomá-la: 2 + 2 antes de qualquer reparo desse tipo.
 
-Segundo, quase toda linha exige autorização.
+Segundo: reparos de tempo de execução — reativar um nó, corrigir uma rota — não
+exigem nada disso.
 
-Terceiro, monitor_and_wait é a única exceção — e isso é deliberado.""",
+Terceiro, e é o ponto: dois reparos de parâmetro cabem numa MESMA parada. O
+planejador agrupa. É a mesma decisão que a viagem da equipe forçava antes.""",
         accent=GREEN, widths=[5.2, 1.2, 2.2, 3.0], highlight=8,
     )
 
@@ -603,7 +680,7 @@ não fazê-lo, mas porque esse plano não existe no espaço de estados.
 
 Há um teste que verifica essa invariante em todos os oito diagnósticos.
 
-A única exceção é monitor_and_wait, porque observar não altera a planta.""",
+A exceção é start_run: retomar a execução não altera o cenário, apenas o repõe.""",
         accent=GREEN,
     )
 
@@ -637,10 +714,10 @@ ali.""",
             "    DIFERENÇA a reduzir: link-up(RM_A5)",
             "      operador candidato: verify_link(RM_A5)",
             "        DIFERENÇA a reduzir: fault-cleared(RM_A5)",
-            "          operador candidato: replace_power_unit(RM_A5)",
-            "            DIFERENÇA a reduzir: crew-at(RM_A5)",
-            "              APLICA dispatch_crew(BASE, RM_A5)",
-            "            já satisfeito: crew-at(BASE)",
+            "          operador candidato: separate_channels(RM_A5)",
+            "            DIFERENÇA a reduzir: run-stopped(RM_A5)",
+            "              APLICA stop_run(RM_A5)",
+            "            já satisfeito: run-active(RM_A5)",
         ],
         """Percorra o trace com o dedo. Cada linha "DIFERENÇA a reduzir" é uma pergunta;
 cada "operador candidato" é uma tentativa de resposta; e a recursão termina
@@ -649,7 +726,7 @@ base.
 
 O plano final é a pilha desfeita na ordem inversa.
 
-$ aisg plan --diagnosis node_power_failure --node RM_A5 --solver gps --trace""",
+$ aisg plan --simulated --diagnosis mac_contention --node RM_A5 --solver gps --trace""",
         accent=GREEN,
     )
 
@@ -739,20 +816,22 @@ admissibilidade se demonstra, não se presume.""",
     d.code(
         "Demonstração: os dois planejadores",
         [
-            "$ aisg plan --diagnosis node_power_failure --node RM_A5 --solver both",
+            "$ aisg plan --simulated --diagnosis mac_contention --node RM_A5 --solver both",
             "",
             " 1. request_authorization(RM_A5)   [1]",
-            " 2. dispatch_crew(BASE, RM_A5)     [4]",
-            " 3. replace_power_unit(RM_A5)      [5]",
-            " 4. verify_link(RM_A5)             [1]",
-            " 5. record_logbook(RM_A5)          [1]",
-            " 6. close_work_order(RM_A5)        [1]",
-            "    custo total: 13",
+            " 2. stop_run(RM_A5)                [2]",
+            " 3. separate_channels(RM_A5)       [3]",
+            " 4. start_run(RM_A5)               [2]",
+            " 5. verify_link(RM_A5)             [1]",
+            " 6. record_logbook(RM_A5)          [1]",
+            " 7. close_work_order(RM_A5)        [1]",
+            "    custo total: 11",
             "",
             "Validação: o plano é executável e atinge o objetivo.",
         ],
-        """Rode ao vivo. Note a ordem: autorização primeiro, deslocamento depois, reparo,
-verificação, registro, encerramento.
+        """Rode ao vivo. Note a ordem: autorização, parar a execução, alterar o parâmetro,
+retomar, verificar, registrar, encerrar. A verificação só é possível com a
+execução ativa — por isso parar é um custo, e não uma precaução gratuita.
 
 Sobre validação: um plano só vale se for executável passo a passo E atingir o
 objetivo. Plan.validate() reexecuta o plano desde o estado inicial e aponta o
@@ -764,18 +843,22 @@ remove o encerramento — para provar que a validação apanha os dois defeitos.
     )
 
     d.statement(
-        "O sistema também sabe quando NÃO agir",
-        "Para atenuação por chuva, o plano correto não toca a planta e não desloca equipe.",
-        """Rode: aisg plan --diagnosis rain_fade --solver astar
+        "O sistema também sabe quando NÃO prometer",
+        "Se uma das falhas não tem reparo disponível, ele não devolve um plano parcial.",
+        """Rode o caso de congestionamento com um destino inalcançável:
 
-O plano tem quatro ações e nenhuma delas alcança a planta: monitorar, verificar,
-registrar, encerrar. Não há deslocamento de equipe e não há autorização, porque
-observar não altera nada.
+  aisg pipeline --case congestion --node AP_A --target SUB_S1
 
-A causa é transitória. Intervir seria tratar o clima.
+O diagnóstico sai, a ação recomendada sai — e o planejador responde "nenhum plano
+encontrado". Porque não existe rota alternativa até aquele destino evitando o nó
+congestionado, e desviar é a única forma de resolver congestionamento.
 
-Saber quando não agir é tão importante quanto saber agir — e num sistema de
-recomendação operacional, é a diferença entre útil e perigoso.""",
+Ele poderia ter reparado outra coisa e declarado serviço restaurado. Não o faz.
+
+Este é o comportamento que mais custa a construir e que menos se nota: recusar-se
+a prometer. Num sistema de recomendação operacional é a diferença entre útil e
+perigoso — e há teste que o verifica, porque foi um defeito real antes de ser uma
+garantia.""",
         accent=GREEN,
     )
 
@@ -916,20 +999,20 @@ prova e o teste concordam em mais de mil pares.""",
     )
 
     d.table(
-        "Cinco estratégias, o mesmo problema: NOC → RECLOSER_7",
+        "Cinco estratégias, o mesmo problema: LTE_ENB → AP_B",
         ["Estratégia", "Passos", "Custo (ms)", "Expandidos", "Ótimo?"],
         [
-            ["Largura (BFS)", "4", "357,35", "15", "só em passos"],
-            ["Profundidade (DFS)", "5", "343,06", "19", "não"],
-            ["Custo uniforme", "4", "92,22", "13", "sim"],
-            ["Gulosa", "4", "357,35", "5", "não"],
-            ["A*", "4", "92,22", "11", "sim"],
+            ["Largura (BFS)", "2", "381,46", "7", "só em passos"],
+            ["Custo uniforme", "3", "70,51", "6", "sim"],
+            ["Gulosa", "2", "381,46", "3", "não"],
+            ["A*", "3", "70,51", "4", "sim"],
         ],
         """Esta tabela é o centro do tema 3. Leia as três lições:
 
-Primeira: a busca em largura minimiza SALTOS, não custo. Quatro saltos por 357
-ms, quase quatro vezes o ótimo — porque conta um salto de fibra e um salto de
-rádio armazena-e-encaminha como iguais.
+Primeira, e este exemplo é melhor que o anterior: a busca em largura minimiza
+SALTOS, não custo — e aqui o caminho ÓTIMO TEM MAIS SALTOS. A largura acha 2
+saltos por 381 ms; o A* acha 3 saltos por 70. Cinco vezes mais barato, com um
+salto a mais. Não há demonstração mais direta de que salto não é custo.
 
 Segunda: a gulosa é a mais rápida E ESTÁ ERRADA. Cinco expansões contra onze do
 A*, e um caminho 3,9 vezes mais caro. É o argumento mais direto a favor do termo
@@ -943,20 +1026,22 @@ heurística não muda a resposta; muda o trabalho necessário para chegar a ela.
     d.code(
         "O caminho ótimo, salto a salto",
         [
-            "NOC -> LTE_CORE -> LTE_ENB -> RM_A5 -> RECLOSER_7        92,22 ms",
+            "LTE_ENB -> LTE_CORE -> NOC -> AP_B                       70,51 ms",
             "",
             "salto                  meio                 qual.   custo    acum.",
-            "NOC -> LTE_CORE        ethernet local        1,00     5,99     5,99",
-            "LTE_CORE -> LTE_ENB    fibra óptica          0,95    10,55    16,54",
-            "LTE_ENB -> RM_A5       LTE privativo         0,80    69,94    86,48",
-            "RM_A5 -> RECLOSER_7    ethernet local        1,00     5,74    92,22",
+            "LTE_ENB -> LTE_CORE    fibra óptica          0,96    13,86    13,86",
+            "LTE_CORE -> NOC        ethernet local        1,00     9,41    23,27",
+            "NOC -> AP_B            fibra óptica          0,97    47,23    70,51",
+            "",
+            "a largura preferiu: LTE_ENB -> RM_B4 -> AP_B  =  381,46 ms",
+            "dois saltos, um deles de radio — e cinco vezes mais caro",
         ],
-        """O caminho ótimo evita inteiramente a cadeia armazena-e-encaminha e desce pela
-sobreposição LTE.
+        """O caminho ótimo desce pelo núcleo — fibra e ethernet — em vez de atravessar um
+salto de rádio direto.
 
-Repare que o salto LTE domina o custo — 70 dos 92 ms. Ainda assim, é mais barato
-que três saltos de repetidor, cada um pagando 25 ms só de sobrecarga por
-terminar e retransmitir o quadro.
+A largura escolhe o caminho de 2 saltos porque conta saltos. Mas aquele salto de
+rádio custa sozinho mais do que os três saltos do núcleo somados. É exatamente
+o erro que a tabela anterior mede.
 
 Este é o tipo de conclusão que um operador de rede tiraria de um estudo de
 planejamento — e o algoritmo chegou a ela sozinho.""",
@@ -967,15 +1052,18 @@ planejamento — e o algoritmo chegou a ela sozinho.""",
         "A vantagem da heurística cresce com o grafo",
         ["Cenário", "Nós", "A* expandidos", "Custo uniforme", "Economia"],
         [
-            ["base", "17", "1 382", "1 519", "9,0 %"],
-            ["escala", "30", "5 571", "7 657", "27,2 %"],
+            ["campo", "17", "2 342", "2 584", "9,4 %"],
+            ["simulado", "30", "10 310", "13 920", "25,9 %"],
         ],
-        """Um único par pode ser sorte. Estes números somam TODOS os pares
-origem-objetivo de cada cenário.
+        """Um único par pode ser sorte. Estes números somam todos os pares ORDENADOS
+(origem, destino) de cada cenário — 272 no de campo, 870 no simulado. Diga
+"ordenados": a contagem muda pela metade se forem não ordenados, e a pergunta
+vai ser feita.
 
-A economia agregada triplica ao passar de 17 para 30 nós. É o argumento prático
-a favor do A* quando a rede cresce: num grafo pequeno, a busca cega é barata;
-num grande, deixa de ser.
+A economia é bem maior NESTE exemplo maior. Não diga que isso é uma lei de
+escala: são dois grafos, e dois pontos não estabelecem uma tendência. O que se
+pode afirmar é o que foi medido, e o teste verifica a RELAÇÃO entre os dois, não
+os números.
 
 O teste test_the_heuristic_saves_more_work_as_the_graph_grows verifica essa
 RELAÇÃO — que a economia cresce — e não os números específicos, que mudariam a
@@ -988,13 +1076,14 @@ $ aisg --topology scale route --compare""",
     d.code(
         "Falha e recálculo de rota",
         [
-            "$ aisg route --from NOC --to RECLOSER_7 --disable-link LTE_ENB-RM_A5",
+            "$ aisg --topology simulated route --from LTE_ENB --to AP_B \\",
+            "         --disable-link LTE_CORE-LTE_ENB",
             "",
-            "antes : 92,22 ms   NOC -> LTE_CORE -> LTE_ENB -> RM_A5 -> RECLOSER_7",
-            "depois: ~357 ms    NOC -> AP_B -> RM_B3 -> SAF_A2 -> RECLOSER_7",
+            "antes :  70,51 ms   LTE_ENB -> LTE_CORE -> NOC -> AP_B",
+            "depois: 345,80 ms   LTE_ENB -> RM_C4 -> AP_C -> NOC -> AP_B",
             "",
-            "Sem a sobreposição LTE, o caminho passa a usar a cadeia",
-            "armazena-e-encaminha — e o custo quase quadruplica.",
+            "Sem o enlace de núcleo, o caminho entra por um salto de rádio",
+            "— e o custo quase quintuplica.",
         ],
         """Demonstre a injeção de falha ao vivo. É assim que a integração com o
 planejador funciona: quando o plano inclui desviar tráfego, a rota é recalculada
@@ -1082,16 +1171,16 @@ a concentrar-se no fim.""")
     d.code(
         "Um comando, os três sistemas",
         [
-            "$ aisg pipeline --case congestion --node SAF_A2",
+            "$ aisg --topology simulated pipeline --case congestion --node SAF_A1",
             "",
             "1/3  diagnóstico ......... congestion (CF +0,89)",
             "     ação recomendada .... reroute_traffic (CF +0,71)",
             "",
             "2/3  rota alternativa confirmada pelo A*: True",
-            "     plano com 5 ações, custo 6, validado",
+            "     plano validado",
             "",
-            "3/3  rota evitando SAF_A2:",
-            "     NOC -> LTE_CORE -> LTE_ENB -> RM_A5 -> RECLOSER_7   92,22 ms",
+            "3/3  rota evitando SAF_A1:",
+            "     NOC -> LTE_CORE -> LTE_ENB -> FD_A               267,06 ms",
         ],
         """A demonstração final. Um comando só.
 
