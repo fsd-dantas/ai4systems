@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" width="1120" height="700" font-family="Segoe UI, Helvetica, Arial, sans-serif">
   <title>Expert system: rule layers and both chaining directions</title>
-  <desc>The 43 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it actually needs.</desc>
+  <desc>The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it actually needs.</desc>
   <rect width="1120" height="700" fill="#fbfaf7"/>
   <text x="40" y="46" font-size="23" fill="#1f2933" font-weight="600">Expert system - 41 rules in five layers</text>
   <text x="40" y="72" font-size="14" fill="#52606d">Diagnostic rules never read the raw measurement: they read the previous layer's conclusion. Replacing the sensor changes ONE layer.</text>
