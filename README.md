@@ -83,7 +83,8 @@ Apresentação / presentation:
 [`docs/presentation/ai-for-smartgrids-apresentacao.pptx`](docs/presentation/ai-for-smartgrids-apresentacao.pptx)
 (57 slides, 90 min, com notas do apresentador /
 57 slides, 90 min, with speaker notes)
-· [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) (executável / executable)
+· [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) — já executado, renderiza no GitHub sem rodar nada / pre-executed, renders on GitHub with no kernel
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fsd-dantas/ai-for-smartgrids/blob/main/notebooks/apresentacao.ipynb)
 
 Wiki com a teoria da disciplina / course theory wiki:
 [github.com/fsd-dantas/ai-for-smartgrids/wiki](https://github.com/fsd-dantas/ai-for-smartgrids/wiki)
