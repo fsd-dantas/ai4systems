@@ -38,13 +38,15 @@
   </picture>
 </p>
 
-| Diagrama / Diagram                                                                                      | Conteúdo / Contents                                             |
-| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [Integration](docs/assets/01-integration-light.svg) · [dark](docs/assets/01-integration-dark.svg)       | How the three systems exchange information                      |
-| [Expert system](docs/assets/02-expert-system-light.svg) · [dark](docs/assets/02-expert-system-dark.svg) | The five rule layers and both chaining directions               |
-| [Planning](docs/assets/03-planning-light.svg) · [dark](docs/assets/03-planning-dark.svg)                | STRIPS operator anatomy and the GPS means-ends recursion        |
-| [A* search](docs/assets/04-astar-light.svg) · [dark](docs/assets/04-astar-dark.svg)                     | f = g + h, the admissibility proof, and the strategy comparison |
-| [Scenario](docs/assets/05-simulated-30-light.svg) · [dark](docs/assets/05-simulated-30-dark.svg)        | The 30-node simulated scenario and the A* route across it       |
+| Diagrama / Diagram                                                                                         | Conteudo / Contents                                                                |
+|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [Integration](docs/assets/01-integration-light.svg) · [dark](docs/assets/01-integration-dark.svg)          | How the three systems exchange information                                         |
+| [Expert system](docs/assets/02-expert-system-light.svg) · [dark](docs/assets/02-expert-system-dark.svg)    | The five rule layers and both chaining directions                                  |
+| [Planning](docs/assets/03-planning-light.svg) · [dark](docs/assets/03-planning-dark.svg)                   | STRIPS operator anatomy and the GPS means-ends recursion                           |
+| [A* search](docs/assets/04-astar-light.svg) · [dark](docs/assets/04-astar-dark.svg)                        | f = g + h, the admissibility proof, and the strategy comparison                    |
+| [Scenario, 30 nodes](docs/assets/05-simulated-30-light.svg) · [dark](docs/assets/05-simulated-30-dark.svg) | The simulated scenario and the A* route across it                                  |
+| [Scenario, 60 nodes](docs/assets/06-dual-60-light.svg) · [dark](docs/assets/06-dual-60-dark.svg)           | 15 dual-homed sites reached by both a pLTE star and a 900 MHz mesh                 |
+| [State machine](docs/assets/07-state-machine-light.svg) · [dark](docs/assets/07-state-machine-dark.svg)    | The restoration state space, and why the goal is unreachable while a fault is live |
 
 ---
 
