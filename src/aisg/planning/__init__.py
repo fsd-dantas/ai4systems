@@ -23,6 +23,12 @@ from aisg.planning.forward import (
     zero_heuristic,
 )
 from aisg.planning.gps import GPSPlanner, GPSTrace, plan_with_gps
+from aisg.planning.planning_graph import (
+    DomainAnalysis,
+    PlanningGraph,
+    analyse,
+    build_planning_graph,
+)
 from aisg.planning.strips import (
     Action,
     Operator,
@@ -39,15 +45,19 @@ __all__ = [
     "CREW_BASE",
     "DIAGNOSIS_TO_FAULT",
     "SIMULATED_ONLY_DIAGNOSES",
+    "DomainAnalysis",
     "GPSPlanner",
     "GPSTrace",
     "Operator",
     "Plan",
+    "PlanningGraph",
     "PlanningProblem",
     "Predicate",
     "Problem",
     "State",
+    "analyse",
     "build_operators",
+    "build_planning_graph",
     "build_restoration_problem",
     "fault_literals",
     "format_state",
