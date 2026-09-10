@@ -1,6 +1,6 @@
 # Roteiro de apresentação — três minissistemas de inteligência artificial
 
-Apresentação: [mini-systems-presentation-1.pptx](mini-systems-presentation-1.pptx).
+Apresentação: [mini-systems-presentation.pptx](mini-systems-presentation.pptx).
 
 **57 slides · duração de ensaio: aproximadamente 90 minutos**, incluindo demonstrações, leitura de diagramas e discussão. A duração é uma previsão; ajustar o ritmo após ensaio. O texto abaixo é uma fala sugerida, não uma transcrição de execução experimental.
 

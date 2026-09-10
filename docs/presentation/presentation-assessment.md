@@ -73,9 +73,9 @@ O planejador modela concessão de autorização e verificação como efeitos sim
 
 ## Arquivos e procedimento de atualização
 
-- [Apresentação revisada](mini-systems-presentation-1.pptx).
-- [Roteiro detalhado sincronizado](mini-systems-presentation-1-script.md).
-- [Original preservado como base visual](mini-systems-presentation-1.baseline.pptx).
+- [Apresentação revisada](mini-systems-presentation.pptx).
+- [Roteiro detalhado sincronizado](mini-systems-presentation-script.md).
+- Identidade visual herdada do proprio deck, que serve de doador de mestre, leiautes e arte de capa a cada reconstrucao.
 - [Fonte editorial](academic_content.py) e [gerador](build_academic_deck.py).
 - [Demonstrações verificáveis](presentation_demo.py), [resultados](presentation-evidence.json) e [manifesto](presentation-manifest.json).
 

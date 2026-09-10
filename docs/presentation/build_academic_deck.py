@@ -29,9 +29,12 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from aisg.domain import load_topology
 
-BASELINE = HERE / "mini-systems-presentation-1.baseline.pptx"
-OUTPUT = HERE / "mini-systems-presentation-1.pptx"
-SCRIPT = HERE / "mini-systems-presentation-1-script.md"
+# The deck is its own template donor: the build strips slides 2..n and the
+# cover text, keeping the master, layouts and cover artwork. Git is the
+# backup - restore with git checkout if a build is interrupted.
+BASELINE = HERE / "mini-systems-presentation.pptx"
+OUTPUT = HERE / "mini-systems-presentation.pptx"
+SCRIPT = HERE / "mini-systems-presentation-script.md"
 MANIFEST = HERE / "presentation-manifest.json"
 
 INK, WINE, BLUE, GREEN = "172235", "8C3041", "274C77", "3E6B5C"
@@ -404,7 +407,7 @@ def main():
     prs.save(OUTPUT)
 
     md = ["# Roteiro de apresentação — três minissistemas de inteligência artificial", "",
-          "Apresentação: [mini-systems-presentation-1.pptx](mini-systems-presentation-1.pptx).", "",
+          "Apresentação: [mini-systems-presentation.pptx](mini-systems-presentation.pptx).", "",
           "**57 slides · duração de ensaio: aproximadamente 90 minutos**, incluindo demonstrações, leitura de diagramas e discussão. "
           "A duração é uma previsão; ajustar o ritmo após ensaio. O texto abaixo é uma fala sugerida, não uma transcrição de execução experimental.", "",
           "**Sincronização:** este arquivo e as notas do PowerPoint são gerados da mesma fonte, "
