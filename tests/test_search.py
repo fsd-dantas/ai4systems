@@ -130,6 +130,67 @@ def test_astar_matches_uniform_cost_on_every_pair(any_topology):
         assert informed.cost == pytest.approx(optimal.cost)
 
 
+def _floyd_warshall(topology):
+    """
+    All-pairs shortest costs, computed WITHOUT any of the package's search code.
+
+    PT-BR: `uniform_cost` e literalmente `astar` com h=0 — comparar os dois nao e
+           uma verificacao independente: um defeito no laco principal, na fila de
+           prioridade ou na reconstrucao do caminho corromperia os dois de forma
+           identica e o teste passaria. Floyd-Warshall e um algoritmo diferente,
+           escrito aqui, e por isso serve de referencia externa.
+    EN:    `uniform_cost` is literally `astar` with h=0, so comparing them is not
+           an independent check: a defect in the main loop, the priority queue or
+           path reconstruction would corrupt both identically and the test would
+           still pass. Floyd-Warshall is a different algorithm, written here, and
+           therefore an outside reference.
+    """
+    nodes = sorted(topology.nodes)
+    index = {n: i for i, n in enumerate(nodes)}
+    size = len(nodes)
+    dist = [[math.inf] * size for _ in range(size)]
+    for i in range(size):
+        dist[i][i] = 0.0
+    for node in nodes:
+        for neighbour, step in topology.successors(node):
+            i, j = index[node], index[neighbour]
+            dist[i][j] = min(dist[i][j], step)
+
+    for k in range(size):
+        dk = dist[k]
+        for i in range(size):
+            via = dist[i][k]
+            if via == math.inf:
+                continue
+            row = dist[i]
+            for j in range(size):
+                candidate = via + dk[j]
+                if candidate < row[j]:
+                    row[j] = candidate
+    return nodes, index, dist
+
+
+def test_astar_matches_an_independent_reference_on_every_ordered_pair(any_topology):
+    """A* costs must match Floyd-Warshall, which shares no code with the package."""
+    nodes, index, dist = _floyd_warshall(any_topology)
+    checked = 0
+    for source in nodes:
+        for goal in nodes:
+            if source == goal:
+                continue
+            problem = RoutingProblem(any_topology, source, goal)
+            result = astar(problem, problem.heuristic())
+            reference = dist[index[source]][index[goal]]
+            assert result.found == (reference < math.inf)
+            if result.found:
+                assert result.cost == pytest.approx(reference), (
+                    f"{source} -> {goal}: A* says {result.cost:.4f}, "
+                    f"Floyd-Warshall says {reference:.4f}"
+                )
+            checked += 1
+    assert checked == len(nodes) * (len(nodes) - 1)  # ordered pairs
+
+
 def test_astar_never_expands_more_nodes_than_uniform_cost(any_topology):
     """A consistent heuristic can only help. Totalled to avoid per-pair noise."""
     astar_total = ucs_total = 0

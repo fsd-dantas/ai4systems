@@ -35,6 +35,7 @@ from aisg.expert_system import (
     build_knowledge_base,
 )
 from aisg.i18n import t
+from aisg.observation import Observation, ObservationError
 from aisg.planning import (
     fault_literals,
     format_state,
@@ -190,7 +191,35 @@ def cmd_diagnose(args: argparse.Namespace) -> int:
 
     print(_header(f"{t('es_title', lang)}  [{kb.name(lang)}]"))
 
-    if args.case:
+    if args.from_observation or args.from_prometheus:
+        try:
+            if args.from_prometheus:
+                from aisg.prometheus import (
+                    PrometheusClient,
+                    fetch_observation,
+                    load_specs,
+                )
+
+                if not args.subject:
+                    print("--from-prometheus needs --subject (the link or node id)")
+                    return 2
+                client = PrometheusClient(args.from_prometheus)
+                specs = load_specs(args.specs) if args.specs else ()
+                record = fetch_observation(client, args.subject, specs)
+                if args.save_observation:
+                    record.save(args.save_observation)
+                    print(f"saved {args.save_observation}")
+            else:
+                record = Observation.load(args.from_observation)
+            print(record.report(kb, lang))
+            print()
+            applied = record.apply_to(engine)
+            print(f"{applied} " + ("fatos carregados" if lang == "pt"
+                                   else "facts loaded"))
+        except (ObservationError, OSError) as exc:
+            print(exc)
+            return 2
+    elif args.case:
         if args.case not in cases:
             print(f"unknown case: {args.case}; available: {', '.join(sorted(cases))}")
             return 2
@@ -200,7 +229,10 @@ def cmd_diagnose(args: argparse.Namespace) -> int:
         for fact in engine.memory.all_facts():
             print(f"  {fact.render(kb, lang)}")
     elif not args.interactive:
-        print("Use --case NAME or --interactive.")
+        print(
+            "Use --case NAME, --from-observation FILE, --from-prometheus URL, "
+            "or --interactive."
+        )
         return 2
 
     mode_label = t("es_backward" if args.mode == "backward" else "es_forward", lang)
@@ -423,6 +455,20 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     d.add_argument("--case", help="preset case; depends on --kb")
+    d.add_argument(
+        "--from-observation", metavar="FILE",
+        help="read evidence from an observation record (JSON)",
+    )
+    d.add_argument(
+        "--from-prometheus", metavar="URL",
+        help="query a Prometheus instance for the evidence it can answer",
+    )
+    d.add_argument("--subject", help="link or node id, with --from-prometheus")
+    d.add_argument("--specs", metavar="FILE", help="metric spec overrides (JSON)")
+    d.add_argument(
+        "--save-observation", metavar="FILE",
+        help="write the fetched record, so a run can be replayed offline",
+    )
     d.add_argument("--interactive", action="store_true", help="ask the user for facts")
     d.add_argument("--mode", choices=("forward", "backward"), default="forward")
     d.add_argument("--goal", default="diagnosis", help="goal variable for backward chaining")

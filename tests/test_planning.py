@@ -232,6 +232,27 @@ def test_gps_and_astar_agree_on_multiple_faults():
     assert _remaining_faults(problem, astar_plan) == []
 
 
+def test_no_restoration_is_claimed_when_one_fault_cannot_be_resolved():
+    """
+    PT-BR: Com duas falhas em que uma nao tem reparo disponivel — congestionamento
+           sem rota alternativa — o planejador deve FALHAR, e nao reparar a outra
+           e declarar servico restaurado. E a garantia que a correcao do
+           sinalizador unico existe para dar.
+    EN:    With two faults where one has no available repair - congestion with no
+           alternative route - the planner must FAIL rather than repair the other
+           and declare service restored. This is the guarantee the shared-flag fix
+           exists to provide.
+    """
+    problem = build_restoration_problem(
+        "N1", ["interference", "congested"], alternate_route=False
+    )
+    astar_plan, _ = plan_with_astar(problem)
+    gps_plan, _ = plan_with_gps(problem, lang="en")
+
+    assert astar_plan is None, "A* restored service with an unresolvable fault"
+    assert gps_plan is None, "GPS restored service with an unresolvable fault"
+
+
 def test_unknown_fault_is_rejected_rather_than_silently_unplannable():
     with pytest.raises(ValueError, match="unknown fault"):
         build_restoration_problem("N1", ["gremlins"])
