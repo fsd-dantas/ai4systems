@@ -16,16 +16,58 @@ use o notebook quando quiser mostrar o raciocinio.
 
 # TEMA 1 — Sistema especialista (30 min)
 
-### 0:00–4:00 — O dominio e a escolha do metodo
+### 0:00–2:00 — O dominio
 
-**O dominio.** A rede de comunicacao que liga ativos distribuidos de um sistema eletrico ao centro de
-operacao: nucleo em fibra, dois setores de radio 900 MHz, uma cadeia de repetidores armazena-e-encaminha
-e uma sobreposicao LTE privativa. 17 nos, 24 enlaces.
+A rede de comunicacao que liga ativos distribuidos de um sistema eletrico ao centro de operacao: nucleo em
+fibra, dois setores de radio 900 MHz, uma cadeia de repetidores armazena-e-encaminha e uma sobreposicao LTE
+privativa. 17 nos, 24 enlaces.
 
 > Diga explicitamente: **a topologia e sintetica**, um modelo didatico da *classe* de cenarios estudada em
 > laboratorios de backhaul sem fio. Nao ha inventario real, enderecamento nem identificacao de equipamento.
 
-**A escolha do metodo — o argumento mais forte da apresentacao inteira.**
+### 2:00–4:00 — A pergunta de pesquisa
+
+> **Como recomendar diagnostico e acao sem dados rotulados de falha?**
+> De forma auditavel, e sob restricoes explicitas de autorizacao — numa rede de comunicacao de sistema
+> eletrico.
+
+Enuncie-a e deixe-a no ar por um instante. Os tres qualificadores sao restricoes reais, nao retorica:
+
+- **sem dados rotulados de falha** — elimina a via indutiva para o diagnostico;
+- **de forma auditavel** — em operacao critica, recomendacao que nao se justifica nao e utilizavel;
+- **sob restricoes de autorizacao** — nada alcanca a planta sem janela, autorizacao e operador.
+
+E decomponha, porque e a frase que amarra a apresentacao inteira:
+
+| Subpergunta | Trabalho |
+|---|---|
+| Por que o enlace degradou, e com que confianca? | Sistema especialista |
+| Em que sequencia agir, respeitando as restricoes? | Planejamento STRIPS/GPS |
+| Existe caminho alternativo, e qual o de menor custo? | Busca A* |
+
+> Os tres trabalhos nao foram escolhidos por serem os temas da disciplina — sao as tres partes de uma
+> pergunta so.
+
+### 4:00–6:00 — Como isto e medido: dois niveis de KPI
+
+| KPIs do dominio — a entrada | KPIs de avaliacao — o veredito |
+|---|---|
+| RSSI, SNR, perda, RTT, utilizacao | CF do diagnostico |
+| Custo de transporte (derivado) | Custo e validade do plano |
+| **Limiares nominais e nao calibrados** | Nos expandidos, otimalidade |
+| | 108 testes; admissibilidade em todos os pares |
+
+O ponto a fazer em voz alta e a **assimetria entre as duas colunas**:
+
+> Os KPIs de avaliacao estao **verificados** — saem de testes que qualquer um roda. Os limiares do dominio
+> estao **declarados**, e declarados como **nao calibrados**. Vieram de faixas de folha de dados e de
+> pratica comum de telecom; sao ponto de partida para calibracao, nao valores medidos numa instalacao.
+
+Dizer isso e mais forte do que deixar alguem perceber sozinho.
+
+### 6:00–8:00 — A escolha do metodo
+
+**Atencao ao escopo.** A afirmacao e sobre a tarefa de **diagnostico**, nao sobre o projeto inteiro.
 
 > Nao existe conjunto de dados rotulado de falhas para este dominio. Rotular um enlace como *degradado* ou
 > *em falha* exige um instrumento de degradacao controlada e uma linha de base de observabilidade
@@ -39,7 +81,11 @@ e uma sobreposicao LTE privativa. 17 nos, 24 enlaces.
 Esse e o contraste entre metodos **dedutivos** e **indutivos** — o mesmo que a disciplina retoma na aula
 de inducao, regras de associacao e classificacao.
 
-### 4:00–10:00 — Representacao do conhecimento
+> **Nao diga "nao usamos aprendizado de maquina".** Dito de forma ampla, e falso: aprender a *heuristica*
+> da busca e uma tarefa diferente, com supervisao gratuita e exata. Se a pergunta vier, remeta ao bloco
+> de 22:00 do tema 3, que trata exatamente disso.
+
+### 8:00–13:00 — Representacao do conhecimento
 
 Mostre a base: 18 variaveis, 43 regras, cinco camadas.
 
@@ -63,7 +109,7 @@ cada regra carrega — e ela que aparece depois na explicacao.
 derivada. `rssi_dbm` e sempre perguntada ou medida. A validacao estatica da base rejeita variaveis que nao
 sao nem perguntaveis nem concluiveis — becos sem saida.
 
-### 10:00–16:00 — Encadeamento progressivo, ao vivo
+### 13:00–18:00 — Encadeamento progressivo, ao vivo
 
 ```bash
 aisg diagnose --case interference --trace --explain
@@ -76,7 +122,7 @@ aisg diagnose --case interference --trace --explain
    de canal, R36 exige autorizacao. A cadeia inteira e legivel.
 3. Este e o modo **alarme de monitoramento**: chega telemetria, o sistema conclui sozinho.
 
-### 16:00–21:00 — Fatores de certeza
+### 18:00–22:00 — Fatores de certeza
 
 Faca a aritmetica no quadro, nao so no slide:
 
@@ -103,7 +149,7 @@ combinacao de duas conclusoes independentes sobre o mesmo fato:
 Mostre tambem o caso `rain_fade`, que conclui com CF 0,56: o sistema **admite** que a evidencia e fraca em
 vez de fingir confianca.
 
-### 21:00–26:00 — Encadeamento regressivo e explicacao
+### 22:00–26:00 — Encadeamento regressivo e explicacao
 
 ```bash
 aisg diagnose --interactive --mode backward
@@ -279,7 +325,7 @@ custo(u, v) = sobrecarga(tipo) + distancia(u, v) / (velocidade(tipo) * qualidade
 > repetidor armazena-e-encaminha **termina e retransmite** o quadro — por isso paga sobrecarga de 25 ms
 > contra 0,5 ms da fibra.
 
-### 3:00–8:00 — O algoritmo
+### 3:00–7:00 — O algoritmo
 
 ```
 f(n) = g(n) + h(n)
@@ -296,7 +342,7 @@ Tres detalhes de implementacao que valem ser ditos, porque separam um A* de brin
    isso nunca acontece, mas tratamos o caso geral em vez de **supor** a consistencia.
 3. **Custos negativos** sao recusados com erro explicito: o A* nao os admite.
 
-### 8:00–14:00 — A heuristica e as duas provas
+### 7:00–13:00 — A heuristica e as duas provas
 
 ```
 h(n) = distancia_em_linha_reta(n, objetivo) / VELOCIDADE_MAXIMA      (150 m/ms, a fibra)
@@ -324,7 +370,7 @@ A consistencia implica a admissibilidade e garante que nenhum no precise ser rea
 > sao derivadas das coordenadas, nunca armazenadas em separado, de modo que geometria e heuristica **nao
 > podem** divergir.
 
-### 14:00–19:00 — Verificado, nao apenas argumentado
+### 13:00–17:00 — Verificado, nao apenas argumentado
 
 Rode as celulas 3.3 do notebook:
 
@@ -334,7 +380,7 @@ Rode as celulas 3.3 do notebook:
 
 Mostre tambem a razao `h/otimo` mais alta: quanto mais perto de 1, mais informativa a heuristica.
 
-### 19:00–25:00 — Comparacao entre as estrategias
+### 17:00–22:00 — Comparacao entre as estrategias
 
 ```bash
 aisg route --from NOC --to RECLOSER_7 --compare --expansion
@@ -360,6 +406,37 @@ aisg route --from NOC --to RECLOSER_7 --compare --expansion
 Mostre a figura com o caminho em vermelho e os nos expandidos circulados (celula 3.2), e depois o
 detalhamento salto a salto: o caminho otimo **evita inteiramente** a cadeia armazena-e-encaminha e desce
 pela sobreposicao LTE.
+
+### 22:00–25:00 — Onde o aprendizado de maquina ENTRARIA
+
+Este bloco existe porque a pergunta e boa e vai ser feita. Antecipe-a.
+
+> Aprender a heuristica **nao** esbarra no obstaculo do diagnostico. O alvo de regressao e `h*(n)`, o custo
+> real restante — e esse custo e **calculavel exatamente**, rodando custo uniforme a partir do objetivo. A
+> supervisao e gratuita, exata e ilimitada. Nada a ver com rotular falhas em campo.
+
+| | Diagnosticar a causa | Aprender a heuristica |
+|---|---|---|
+| Origem do rotulo | Medicao em campo | Calculavel: custo uniforme |
+| Exige instrumento de degradacao | Sim | **Nao** |
+| Exemplos disponiveis | Zero hoje | Ilimitados |
+
+**O que realmente impede e a admissibilidade**, nao os dados:
+
+> Uma heuristica obtida por regressao pode **superestimar**. E uma heuristica inadmissivel nao quebra o
+> A*: ele continua rodando e devolve caminhos subotimos **sem avisar** — o mesmo modo de falha silenciosa
+> do bloco sobre `goal_count`, no tema 2.
+
+Tres formas de conviver, em ordem de garantia: **so como desempate** (preserva o otimo exatamente);
+**busca limitadamente subotima**, com fator de garantia declarado; **regressao com perda assimetrica**,
+que reduz mas nao elimina a violacao.
+
+> **Onde pagaria mais:** nao no roteamento, onde a linha reta ja e quase perfeita e custa nada — mas no
+> **planejador**, onde `goal_count` vale no maximo 2 e o espaco de estados nao tem geometria a explorar.
+>
+> **E o instrumento de medida ja existe:** os testes de admissibilidade percorrem todos os pares. Aplicados
+> a uma heuristica aprendida, deixam de ser protecao e passam a **medir** quantas vezes ela viola a
+> admissibilidade, e em quanto.
 
 ### 25:00–30:00 — Falha, recalculo e integracao
 
@@ -392,14 +469,15 @@ E encerre pelos limites, nao pelos resultados:
 
 | Pergunta | Resposta |
 |---|---|
-| Por que nao usou aprendizado de maquina? | Nao ha dados rotulados de falha, e nao ha como produzi-los sem instrumento de degradacao controlada. Um modelo treinado so em estado normal nao infere degradacao. |
+| Por que nao usou aprendizado de maquina no **diagnostico**? | Nao ha dados rotulados de falha, e nao ha como produzi-los sem instrumento de degradacao controlada. Um modelo treinado so em estado normal nao infere degradacao. |
+| E aprender a **heuristica** da busca? | Tarefa diferente: o alvo e o custo real restante, calculavel exatamente por custo uniforme. A supervisao e gratuita. O que impede nao sao os dados, e sim a **admissibilidade** — regressao pode superestimar e o A* perde a otimalidade em silencio. |
 | Como o sistema escolhe entre regras concorrentes? | Tres politicas de resolucao de conflito, selecionaveis; a padrao e especificidade. A politica muda a ordem, nao a conclusao — e ha teste para as duas coisas. |
 | A heuristica e admissivel? | Sim, com prova por desigualdade triangular sobre o modelo de custo, e verificacao exaustiva em teste para todos os pares. |
 | O GPS sempre acha o melhor plano? | Nao. Nao e completo nem otimo, e sofre a anomalia de Sussman. Ha um teste que exibe um caso concreto de nao-otimalidade. Por isso o A* progressivo esta ao lado. |
 | Qual banco de dados? | Nenhum. Topologia em JSON versionado, regras declaradas em codigo, memoria de trabalho em RAM. Persistencia so faria sentido para raciocinio baseado em casos. |
 | E se nao houver rota alternativa? | A acao de desvio fica inaplicavel e o planejador falha honestamente, em vez de propor um desvio impossivel. Ha teste. |
 | Por que os fatores de certeza e nao probabilidade bayesiana? | Fatores de certeza nao exigem probabilidades a priori nem independencia condicional — que nao temos como estimar sem dados. E o mesmo compromisso do MYCIN, e a mesma limitacao: a algebra e heuristica, nao probabilisticamente fundamentada. |
-| Os limiares vieram de onde? | De faixas de folha de dados de radio sub-GHz e pratica comum de telecom de concessionaria. Sao **nominais**, ponto de partida para calibracao, nao valores medidos. |
+| Os limiares vieram de onde? | De faixas de folha de dados de radio sub-GHz e pratica comum de telecom de concessionaria. Sao **nominais**, ponto de partida para calibracao, nao valores medidos. Note a assimetria: os KPIs de **avaliacao** estao verificados em teste; os limiares do **dominio** estao declarados, e declarados como nao calibrados. |
 
 ---
 
@@ -407,11 +485,15 @@ E encerre pelos limites, nao pelos resultados:
 
 Three topics, **30 minutes each**.
 
-**Topic 1 — Expert system.** Domain and the method choice (no labelled fault data exists, so encode
-auditable engineering knowledge) → knowledge representation in five layers and why stratification matters
-→ live forward chaining with the recognise-act cycle → certainty-factor arithmetic worked on the board,
-including negative CFs as counter-evidence → backward chaining live with `why` and `how` → conflict
-resolution changing order but not the fixed point → validity limits.
+**Topic 1 — Expert system.** Domain (state that the topology is synthetic) → **the research question**:
+how to recommend diagnosis and action without labelled fault data, auditably, under explicit authorisation
+constraints, decomposed into one sub-question per assignment → **two levels of KPI**, and the asymmetry
+between them: evaluation KPIs are verified, domain thresholds are declared and declared uncalibrated →
+the method choice, **scoped to diagnosis** rather than stated as "no machine learning" → knowledge
+representation in five layers and why stratification matters → live forward chaining with the
+recognise-act cycle → certainty-factor arithmetic worked on the board, including negative CFs as
+counter-evidence → backward chaining live with `why` and `how` → conflict resolution changing order but
+not the fixed point → validity limits.
 
 **Topic 2 — Planning.** The sequencing problem → STRIPS triples and the closed-world assumption, with
 governance as a *precondition* rather than advice → GPS means-ends analysis walked through its trace
@@ -423,5 +505,6 @@ the rain-fade contrast, where the correct plan touches nothing.
 **Topic 3 — A\*.** The exact-path requirement and the cost model → `f = g + h` with the three
 implementation details that separate a toy A* from a correct one → the admissibility and consistency
 proofs → their exhaustive verification over all 272 pairs and every edge → the five-strategy comparison
-table and its three lessons → link failure forcing a re-route, then the full pipeline, closing on
-validity limits.
+table and its three lessons → **where machine learning would enter**: learning the heuristic is a
+different task with free, exact supervision, blocked by admissibility rather than by data → link failure
+forcing a re-route, then the full pipeline, closing on validity limits.
