@@ -766,8 +766,17 @@ O GPS vê um operador de custo 1 e escolhe-o. Não vê que ele exige um
 deslocamento de custo 10. O A*, que raciocina sobre o custo acumulado do caminho
 inteiro, encontra o plano de custo 3.
 
-É exatamente por isso que os dois planejadores convivem no mesmo repositório: um
-explica, o outro garante.""",
+DIGA ISTO EM VOZ ALTA, porque é a parte honesta: esse é um problema CONSTRUÍDO
+para isolar a propriedade. No domínio de restauração deste trabalho o GPS NUNCA
+perde — comparei as 55 combinações de falhas solúveis dos dois cenários e o
+custo é idêntico ao do A* em todas. O motivo é estrutural: nenhum literal do
+domínio tem mais de um operador que o produz, então a análise meios-fins não
+tem escolha para errar.
+
+Ou seja: o GPS é não-ótimo em geral, e este domínio em particular não é capaz de
+mostrá-lo. Os dois planejadores convivem no repositório porque um explica e o
+outro garante — mas a garantia só passa a valer a pena quando o domínio tiver
+mais de uma forma de alcançar o mesmo objetivo.""",
         accent=GREEN,
     )
 

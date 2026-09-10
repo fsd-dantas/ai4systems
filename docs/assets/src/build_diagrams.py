@@ -420,7 +420,8 @@ def build_planning(t) -> str:
         (254, 42, "blue_fill", "blue", 1.4, [("link-up(N)", 12, "ink", None, True),
                                              ("logged(N)", 12, "ink", None, True)]),
         (322, 34, "panel", "green", 1.6, [("verify_link(N)", 12, "ink", None, True)]),
-        (382, 34, "blue_fill", "blue", 1.4, [("fault-cleared(N)", 12, "ink", None, True)]),
+        (382, 34, "blue_fill", "blue", 1.4,
+         [("cleared-mac-contention(N)", 12, "ink", None, True)]),
         (442, 34, "panel", "green", 1.6, [("separate_channels(N)", 12, "ink", None, True)]),
         (502, 42, "green_fill", "green", 1.4, [("run-active(N)  - already true", 12, "ink", None, True),
                                                ("recursion ends: the difference is gone", 11, "faint", None, False)]),
@@ -442,16 +443,23 @@ def build_planning(t) -> str:
     b.append(txt(874, 348, "stack unwound", 12, "green_text", "700", t=t))
     b.append(txt(874, 368, "in reverse order", 11, "muted", t=t))
 
-    b.append(box(500, 562, 580, 122, t, "red_fill", "red", 1.6))
-    b.append(txt(518, 584, "THE WEAKNESS OF GPS, DEMONSTRATED", 13, "red_text", "700", t=t))
-    b.append(txt(518, 605, "GPS orders operators by their OWN cost - and never sees the cost "
+    # The trap below is a MINIMAL constructed problem, not the restoration
+    # domain: see tests/test_planning.py::test_gps_can_be_suboptimal_...
+    # The restoration domain cannot show this, and the panel says so.
+    b.append(box(500, 552, 580, 156, t, "red_fill", "red", 1.6))
+    b.append(txt(518, 574, "THE WEAKNESS OF GPS", 13, "red_text", "700", t=t))
+    b.append(txt(518, 595, "GPS orders operators by their OWN cost - and never sees the cost "
                            "of their PRECONDITIONS.", 11.5, "red_text", t=t))
-    b.append(txt(518, 628, "GPS:  stop_run (10) + cheap_fix (1)   =  cost 11",
+    b.append(txt(518, 618, "GPS:  travel (10) + cheap_fix (1)  =  cost 11",
                  11.5, "ink", mono=True, t=t))
-    b.append(txt(518, 648, "A* :  remote_fix (3)                          =  cost  3",
+    b.append(txt(518, 636, "A* :  remote_fix (3)               =  cost  3",
                  11.5, "ink", mono=True, t=t))
-    b.append(txt(518, 672, "That is why both planners live in the same repository.",
-                 11.5, "red_text", italic=True, t=t))
+    b.append(txt(518, 660, "Isolated in a constructed test problem where the goal has TWO",
+                 11, "red_text", t=t))
+    b.append(txt(518, 676, "achievers. In the restoration domain every literal has exactly ONE,",
+                 11, "red_text", t=t))
+    b.append(txt(518, 692, "so GPS matches A* on all 55 solvable fault combinations.",
+                 11, "red_text", "600", t=t))
 
     b.append(box(820, 126, 260, 120, t, "panel", "border"))
     b.append(txt(836, 148, "WHY COST MATTERS", 12.5, "ink", "700", t=t))
