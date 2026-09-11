@@ -58,7 +58,7 @@ STRIPS foi escolhido por três propriedades que um script não tem:
 
 Regra adotada: **um predicado por condição que o simulador consegue comandar.**
 
-O cenário é simulado em ns-3. Isso é uma vantagem metodológica, não uma
+O cenário é simulado. Isso é uma vantagem metodológica, não uma
 limitação: uma condição *comandada* é repetível e rotulável, ao passo que uma
 condição *observada* em campo é apenas provável. O bloco `INDUCIBLE_BY` na base de
 conhecimento registra, para cada diagnóstico, como ele é induzido no simulador. Os
@@ -245,7 +245,7 @@ STRIPS was chosen for three properties a script does not have:
 
 The rule adopted: **one predicate per condition the simulator can command.**
 
-The scenario is simulated in ns-3. That is a methodological advantage rather
+The scenario is simulated. That is a methodological advantage rather
 than a limitation: a *commanded* condition is repeatable and labellable, while
 an *observed* field condition is merely probable. The `INDUCIBLE_BY` block in
 the knowledge base records, for each diagnosis, how it is induced in the

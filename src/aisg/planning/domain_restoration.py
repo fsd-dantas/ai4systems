@@ -39,7 +39,7 @@ DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "vlan_misconfiguration": "vlan-wrong",
     "congestion": "congested",
     "healthy": None,  # nothing to repair; the link is already clear
-    # Simulated ns-3 scenario. A simulation does not radiate, so there is no
+    # Simulated scenario. A simulation does not radiate, so there is no
     # containment condition here; and it has no antenna or cable, so the outdoor
     # propagation faults are replaced by what a simulator can actually command.
     "excess_path_loss": "excess-path-loss",

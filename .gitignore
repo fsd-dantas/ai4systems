@@ -37,3 +37,4 @@ docs/presentation/*.py
 docs/presentation/presentation-manifest.json
 docs/presentation/presentation-evidence.json
 docs/assets/src/
+~$*.pptx

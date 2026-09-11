@@ -459,7 +459,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="backhaul",
         help=(
             "knowledge base / base de conhecimento: 'backhaul' (field network) "
-            "or 'simulated' (ns-3 scenario, wireless KPIs)"
+            "or 'simulated' (simulated scenario, wireless KPIs)"
         ),
     )
     d.add_argument("--case", help="preset case; depends on --kb")
@@ -506,7 +506,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--node", help="default: a store-and-forward relay")
     p.add_argument(
         "--simulated", action="store_true",
-        help="plan for the simulated ns-3 scenario instead of the field network",
+        help="plan for the simulated scenario instead of the field network",
     )
     p.add_argument("--solver", choices=("gps", "astar", "both"), default="both")
     p.add_argument("--heuristic", choices=("goal_count", "zero"), default="goal_count")

@@ -30,7 +30,7 @@ from aisg.expert_system.kb_simulated import (
 )
 
 #: The knowledge bases this engine ships with. `backhaul` models an outdoor field
-#: network, where weather attenuates the link. `simulated` models the ns-3
+#: network, where weather attenuates the link. `simulated` models the
 #: scenario, where there is no weather, no antenna and no cable - only wireless
 #: nodes on a shared medium and the quantities a simulator produces. Same engine,
 #: different knowledge.

@@ -1,5 +1,5 @@
 """
-Knowledge base: diagnosis on the SIMULATED wireless scenario (ns-3).
+Knowledge base: diagnosis on the SIMULATED wireless scenario.
 
 PT-BR: Segunda base de conhecimento sobre o MESMO motor de inferencia. A base de
        [`kb_backhaul`] modela uma rede de campo, com propagacao exterior e chuva.
@@ -91,7 +91,7 @@ INDUCIBLE_BY: Dict[str, str] = {
 }
 
 VALIDITY_PT = (
-    "LIMITE DE VALIDADE: base para o CENARIO SIMULADO em ns-3. Os limiares sao "
+    "LIMITE DE VALIDADE: base para o CENARIO SIMULADO. Os limiares sao "
     "NOMINAIS e NAO CALIBRADOS ate que existam execucoes medidas. Toda condicao "
     "aqui e COMANDAVEL no simulador — logo, rotulavel e repetivel. Um resultado "
     "obtido aqui vale para o MODELO simulado, nao para radio fisico: o MAC "
@@ -99,7 +99,7 @@ VALIDITY_PT = (
 )
 
 VALIDITY_EN = (
-    "VALIDITY LIMIT: base for the SIMULATED ns-3 scenario. Thresholds are NOMINAL "
+    "VALIDITY LIMIT: base for the SIMULATED scenario. Thresholds are NOMINAL "
     "and UNCALIBRATED until measured runs exist. Every condition here is "
     "COMMANDABLE in the simulator, and therefore labellable and repeatable. A "
     "result obtained here holds for the SIMULATED model, not for physical radio: "
@@ -114,8 +114,8 @@ def _cond(variable: str, operator: str, value: object) -> Condition:
 def build_simulated_knowledge_base() -> KnowledgeBase:
     """Assemble the simulated-scenario variables and rules."""
     kb = KnowledgeBase(
-        name_pt="Diagnostico no cenario simulado (ns-3)",
-        name_en="Simulated-scenario diagnosis (ns-3)",
+        name_pt="Diagnostico no cenario simulado",
+        name_en="Simulated-scenario diagnosis",
         goal_variables=("diagnosis", "recommended_action", "authorization_required"),
         thresholds=dict(SIM_THRESHOLDS),
         validity_note_pt=VALIDITY_PT,

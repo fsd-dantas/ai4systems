@@ -11,7 +11,7 @@ Codigo / code: [`src/aisg/expert_system/`](../src/aisg/expert_system/)
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/02-expert-system-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/02-expert-system-light.svg" alt="The 43 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/02-expert-system-light.svg" alt="The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
   </picture>
 </p>
 

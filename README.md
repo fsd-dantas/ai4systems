@@ -80,9 +80,9 @@ Em inglês / in English: acrescente `--lang en` / add `--lang en`.
 Testes / tests: `python -m pytest` (202 testes / 202 tests).
 
 Apresentação / presentation:
-[`docs/presentation/ai-for-smartgrids-apresentacao.pptx`](docs/presentation/ai-for-smartgrids-apresentacao.pptx)
-(57 slides, 90 min, com notas do apresentador /
-57 slides, 90 min, with speaker notes)
+[`docs/presentation/mini-systems-presentation.pptx`](docs/presentation/mini-systems-presentation.pptx)
+(59 slides, 90 min, com notas do apresentador e roteiro sincronizado /
+59 slides, 90 min, with speaker notes and a synchronised script)
 · [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) — já executado, renderiza no GitHub sem rodar nada / pre-executed, renders on GitHub with no kernel
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fsd-dantas/ai-for-smartgrids/blob/main/notebooks/apresentacao.ipynb)
 
@@ -160,8 +160,8 @@ real, endereçamento, identificação de equipamento, configuração de RF nem
 topologia de campo de qualquer laboratório ou concessionária. Ver
 [`docs/domain-model.md`](docs/domain-model.md).
 
-**Simulado, e não de campo — por escolha metodológica.** O cenário é simulado em
-ns-3, o que inverte a relação usual entre validade interna e externa a favor
+**Simulado, e não de campo — por escolha metodológica.** O cenário é simulado,
+o que inverte a relação usual entre validade interna e externa a favor
 deste trabalho: uma condição de falha *comandada* é repetível e rotulável, ao
 passo que uma condição *observada* em campo é apenas provável. Cada diagnóstico
 declara, no bloco `INDUCIBLE_BY`, **como é induzido no simulador** — o que torna
@@ -224,7 +224,6 @@ plano, invariantes do domínio — e não apenas saídas esperadas.
 | [`docs/03-astar.md`](docs/03-astar.md) | A*, prova de admissibilidade e consistência, comparação entre estratégias |
 | [`docs/domain-model.md`](docs/domain-model.md) | Topologia, modelo de custo e limites de validade |
 | [`docs/presentation-script.md`](docs/presentation-script.md) | Roteiro da apresentação — 30 minutos por tema |
-| [`docs/assessment-protocol.md`](docs/assessment-protocol.md) | Protocolo de avaliação, rubrica proposta e procedimento de evidência |
 
 ---
 
@@ -293,8 +292,8 @@ studied in wireless backhaul research testbeds. It contains no real inventory,
 addressing, equipment identification, RF configuration, or field topology of any
 laboratory or utility. See [`docs/domain-model.md`](docs/domain-model.md).
 
-**Simulated rather than field, by methodological choice.** The scenario runs in
-ns-3, which inverts the usual internal/external validity trade-off in this work's
+**Simulated rather than field, by methodological choice.** The scenario is
+simulated, which inverts the usual internal/external validity trade-off in this work's
 favor: a *commanded* fault condition is repeatable and labellable, whereas an
 *observed* field condition is merely probable. Each diagnosis declares in the
 `INDUCIBLE_BY` block **how it is induced in the simulator**, which makes the case
@@ -352,7 +351,6 @@ domain invariants — rather than merely expected outputs.
 | [`docs/03-astar.md`](docs/03-astar.md) | A*, admissibility and consistency proofs, strategy comparison |
 | [`docs/domain-model.md`](docs/domain-model.md) | Topology, cost model, and validity limits |
 | [`docs/presentation-script.md`](docs/presentation-script.md) | Presentation script — 30 minutes per topic |
-| [`docs/assessment-protocol.md`](docs/assessment-protocol.md) | Assessment protocol, proposed rubric, and evidence procedure |
 
 ---
 
