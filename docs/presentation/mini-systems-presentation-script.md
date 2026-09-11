@@ -1912,7 +1912,7 @@ Por fim, a reprodução deve ser tratada como parte do método. A apresentação
 - [3] [Hart, P. E.; Nilsson, N. J.; Raphael, B. A Formal Basis for the Heuristic Determination of Minimum Cost Paths. IEEE TSSC, 4(2), 100–107, 1968.](https://ai.stanford.edu/~nilsson/OnlinePubs-Nils/PublishedPapers/astar.pdf)
 - [4] [Dijkstra, E. W. A Note on Two Problems in Connexion with Graphs. Numerische Mathematik, 1, 269–271, 1959.](https://doi.org/10.1007/BF01386390)
 - [5] [ns-3 Project. Manual: Random Variables. Documentação de sementes, execuções e fluxos aleatórios. Consulta: 10 set. 2026.](https://www.nsnam.org/docs/manual/html/random-variables.html)
-- [6] [Dantas, F. S. AI for Smart Grids: código, topologia, exemplos e testes. Repositório do projeto. Estado auditado registrado no relatório acompanhante.](https://github.com/fsd-dantas/ai-for-smartgrids)
+- [6] [Dantas, F. S. AI for Smart Grids: código, topologia, exemplos e testes. Repositório do projeto. Estado auditado registrado no relatório acompanhante.](https://github.com/fsd-dantas/ai4systems)
 
 ### Fala sugerida
 

@@ -1,13 +1,13 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/banner-dark.jpg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-dark.jpg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
   </picture>
 </p>
 
-# ai-for-smartgrids
+# ai4systems
 
-[![tests](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai-for-smartgrids/actions/workflows/tests.yml)
+[![tests](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)](pyproject.toml)
 
@@ -33,8 +33,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/01-integration-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai-for-smartgrids/main/docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/01-integration-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
   </picture>
 </p>
 
@@ -56,8 +56,8 @@ Não há dependências externas no núcleo: apenas a biblioteca padrão do Pytho
 The core has no third-party dependencies: only the Python 3.10+ standard library.
 
 ```bash
-git clone https://github.com/fsd-dantas/ai-for-smartgrids.git
-cd ai-for-smartgrids
+git clone https://github.com/fsd-dantas/ai4systems.git
+cd ai4systems
 python -m pip install -e .
 
 # 1 — sistema especialista / expert system
@@ -84,10 +84,10 @@ Apresentação / presentation:
 (59 slides, 90 min, com notas do apresentador e roteiro sincronizado /
 59 slides, 90 min, with speaker notes and a synchronised script)
 · [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) — já executado, renderiza no GitHub sem rodar nada / pre-executed, renders on GitHub with no kernel
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fsd-dantas/ai-for-smartgrids/blob/main/notebooks/apresentacao.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fsd-dantas/ai4systems/blob/main/notebooks/apresentacao.ipynb)
 
 Wiki com a teoria da disciplina / course theory wiki:
-[github.com/fsd-dantas/ai-for-smartgrids/wiki](https://github.com/fsd-dantas/ai-for-smartgrids/wiki)
+[github.com/fsd-dantas/ai4systems/wiki](https://github.com/fsd-dantas/ai4systems/wiki)
 
 
 ---
