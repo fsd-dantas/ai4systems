@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-dark.jpg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Systems — research on cyber-physical and networked systems. An isometric lattice with energised traces wiring a search tree, a network router, a transmission tower, a gauge, a feedback controller and a network mesh to one AI processor." width="100%">
+  </picture>
+</p>
+
 # ai4systems
 
 **AI for Systems** — métodos de Inteligência Artificial para sistemas ciber-físicos e em rede.
