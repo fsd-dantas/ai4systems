@@ -2,17 +2,11 @@
 
 Apresentação: [mini-systems-presentation.pptx](mini-systems-presentation.pptx).
 
-**57 slides · duração de ensaio: aproximadamente 90 minutos**, incluindo demonstrações, leitura de diagramas e discussão. A duração é uma previsão; ajustar o ritmo após ensaio. O texto abaixo é uma fala sugerida, não uma transcrição de execução experimental.
+**60 slides · duração de ensaio: aproximadamente 90 minutos**, incluindo demonstrações, leitura de diagramas e discussão. A duração é uma previsão; ajustar o ritmo após ensaio. O texto abaixo é uma fala sugerida, não uma transcrição de execução experimental.
 
-**Sincronização:** este arquivo e as notas do PowerPoint são gerados da mesma fonte, [academic_content.py](academic_content.py). Alterar a fonte e executar `python docs/presentation/build_academic_deck.py` para atualizar ambos. Evitar editar somente o PPTX ou somente este Markdown. Verificar a correspondência sem regenerar com `python docs/presentation/build_academic_deck.py --check`.
+**Sincronização:** este roteiro e as notas do PowerPoint são gerados da mesma fonte, de modo que não podem divergir. Evitar editar somente o PPTX ou somente este Markdown.
 
-**Preparação:** usar o ambiente Python do projeto com `python-pptx` para regenerar o deck. As demonstrações precisam apenas da biblioteca padrão e do código local. Executar os comandos a partir da raiz do repositório.
-
-```powershell
-python docs/presentation/presentation_demo.py all
-```
-
-Os exemplos usam explicitamente a base simulada e a API do planejador. Não executam ns-3. A execução completa também verifica o caso de destino isolado e compara custos com Floyd–Warshall.
+As demonstrações usam a base simulada e a API do planejador, com a biblioteca padrão e o código do repositório. Nenhum simulador de rede é executado. A verificação completa também cobre o caso de destino isolado e compara custos com Floyd–Warshall.
 
 ## Índice e tempo previsto
 
@@ -42,41 +36,42 @@ Os exemplos usam explicitamente a base simulada e a API do planejador. Não exec
 | 22 | [Explicação, hipótese e identificação causal](#slide-22) | 29:37–31:07 |
 | 23 | [Resultados dos oito casos ilustrativos](#slide-23) | 31:07–32:38 |
 | 24 | [Avaliação crítica do sistema especialista](#slide-24) | 32:38–34:00 |
-| 25 | [Do diagnóstico à sequência de ações](#slide-25) | 34:00–35:14 |
-| 26 | [Modelo formal de planejamento STRIPS](#slide-26) | 35:14–36:28 |
-| 27 | [Hipóteses de planejamento e suas consequências](#slide-27) | 36:28–37:44 |
-| 28 | [Operador: separar canais no cenário simulado](#slide-28) | 37:44–38:54 |
-| 29 | [Operadores pertinentes à demonstração](#slide-29) | 38:54–40:08 |
-| 30 | [Autorização e validação pertencem ao modelo](#slide-30) | 40:08–41:21 |
-| 31 | [GPS: análise meios-fins](#slide-31) | 41:21–42:31 |
-| 32 | [Interação entre subobjetivos](#slide-32) | 42:31–43:49 |
-| 33 | [Não otimalidade: custo local e custo total](#slide-33) | 43:49–46:00 |
-| 34 | [Planejamento como busca progressiva](#slide-34) | 46:00–47:16 |
-| 35 | [Heurística de objetivos não satisfeitos](#slide-35) | 47:16–48:33 |
-| 36 | [Demonstração: plano para contenção MAC](#slide-36) | 48:33–50:44 |
-| 37 | [Falhas simultâneas e correção específica](#slide-37) | 50:44–52:53 |
-| 38 | [Validação do domínio por grafo de planejamento](#slide-38) | 52:53–56:00 |
-| 39 | [O defeito reencontrado como exclusão mútua ausente](#slide-39) | 56:00–58:57 |
-| 40 | [Rota alternativa como precondição verificável](#slide-40) | 58:57–60:15 |
-| 41 | [Busca de caminhos em um grafo ponderado](#slide-41) | 60:15–61:29 |
-| 42 | [Função de custo e significado dos parâmetros](#slide-42) | 61:29–62:51 |
-| 43 | [Função de avaliação e fronteira de busca](#slide-43) | 62:51–64:12 |
-| 44 | [Condições e decisões de implementação](#slide-44) | 64:12–65:31 |
-| 45 | [Admissibilidade da heurística geométrica](#slide-45) | 65:31–66:53 |
-| 46 | [Consistência e verificação independente](#slide-46) | 66:53–68:17 |
-| 47 | [Comparação: NOC → ER_03](#slide-47) | 68:17–71:25 |
-| 48 | [Caminho ótimo e decomposição do custo](#slide-48) | 71:25–73:26 |
-| 49 | [Perda de um meio e comutação para o outro](#slide-49) | 73:26–76:00 |
-| 50 | [Esforço de busca no cenário de 60 nós](#slide-50) | 76:00–79:08 |
-| 51 | [Aprendizagem de heurísticas: possibilidade e cautela](#slide-51) | 79:08–80:21 |
-| 52 | [Contrato entre diagnóstico, planejamento e busca](#slide-52) | 80:21–81:35 |
-| 53 | [Demonstração integrada: congestionamento](#slide-53) | 81:35–84:00 |
-| 54 | [Procedimento experimental proposto](#slide-54) | 84:00–85:32 |
-| 55 | [O que cada evidência permite concluir](#slide-55) | 85:32–87:00 |
-| 56 | [Contribuições e limitações do trabalho](#slide-56) | 87:00–88:30 |
-| 57 | [Agenda de investigação e critérios de avanço](#slide-57) | 88:30–90:00 |
-| 58 | [Referências e procedência dos resultados](#slide-58) | 90:00–90:00 |
-| 59 | [Discussão](#slide-59) | 90:00–90:00 |
+| 25 | [Do diagnóstico à sequência de ações](#slide-25) | 34:00–35:27 |
+| 26 | [Modelo formal de planejamento STRIPS](#slide-26) | 35:27–36:54 |
+| 27 | [Hipóteses de planejamento e suas consequências](#slide-27) | 36:54–38:22 |
+| 28 | [Operador: separar canais no cenário simulado](#slide-28) | 38:22–39:44 |
+| 29 | [Operadores pertinentes à demonstração](#slide-29) | 39:44–41:11 |
+| 30 | [Autorização e validação pertencem ao modelo](#slide-30) | 41:11–42:37 |
+| 31 | [GPS: análise meios-fins](#slide-31) | 42:37–43:59 |
+| 32 | [Interação entre subobjetivos](#slide-32) | 43:59–45:31 |
+| 33 | [Não otimalidade: custo local e custo total](#slide-33) | 45:31–46:57 |
+| 34 | [Planejamento como busca progressiva](#slide-34) | 46:57–48:26 |
+| 35 | [Heurística de objetivos não satisfeitos](#slide-35) | 48:26–49:56 |
+| 36 | [Demonstração: plano para contenção MAC](#slide-36) | 49:56–52:29 |
+| 37 | [O domínio de restauração como máquina de estados](#slide-37) | 52:29–54:36 |
+| 38 | [Falhas simultâneas e correção específica](#slide-38) | 54:36–56:00 |
+| 39 | [Validação do domínio por grafo de planejamento](#slide-39) | 56:00–58:29 |
+| 40 | [O defeito reencontrado como exclusão mútua ausente](#slide-40) | 58:29–60:42 |
+| 41 | [Rota alternativa como precondição verificável](#slide-41) | 60:42–62:11 |
+| 42 | [Busca de caminhos em um grafo ponderado](#slide-42) | 62:11–63:35 |
+| 43 | [Função de custo e significado dos parâmetros](#slide-43) | 63:35–65:08 |
+| 44 | [Função de avaliação e fronteira de busca](#slide-44) | 65:08–66:40 |
+| 45 | [Condições e decisões de implementação](#slide-45) | 66:40–68:09 |
+| 46 | [Admissibilidade da heurística geométrica](#slide-46) | 68:09–69:42 |
+| 47 | [Consistência e verificação independente](#slide-47) | 69:42–71:17 |
+| 48 | [Comparação: NOC → ER_03](#slide-48) | 71:17–73:43 |
+| 49 | [Caminho ótimo e decomposição do custo](#slide-49) | 73:43–76:00 |
+| 50 | [Perda de um meio e comutação para o outro](#slide-50) | 76:00–77:53 |
+| 51 | [Esforço de busca no cenário de 60 nós](#slide-51) | 77:53–80:47 |
+| 52 | [Aprendizagem de heurísticas: possibilidade e cautela](#slide-52) | 80:47–82:22 |
+| 53 | [Contrato entre diagnóstico, planejamento e busca](#slide-53) | 82:22–84:00 |
+| 54 | [Demonstração integrada: congestionamento](#slide-54) | 84:00–85:58 |
+| 55 | [Procedimento experimental proposto](#slide-55) | 85:58–87:00 |
+| 56 | [O que cada evidência permite concluir](#slide-56) | 87:00–88:33 |
+| 57 | [Contribuições e limitações do trabalho](#slide-57) | 88:33–90:00 |
+| 58 | [Agenda de investigação e critérios de avanço](#slide-58) | 90:00–90:00 |
+| 59 | [Referências e procedência dos resultados](#slide-59) | 90:00–90:00 |
+| 60 | [Discussão](#slide-60) | 90:00–90:00 |
 
 <a id="slide-01"></a>
 
@@ -216,7 +211,7 @@ Os identificadores permitem acompanhar um incidente entre os módulos. ER_03 ser
 
 Identificar NOC, um ponto de acesso, um repetidor e uma rota alternativa.
 
-**Fonte / procedência:** Repositório: src/aisg/domain/data/backhaul-topology-30.json
+**Fonte / procedência:** Repositório: src/aisg/domain/data/backhaul-topology-60.json
 
 **Transição:** Grandezas físicas: definição e interpretação.
 
@@ -644,7 +639,7 @@ A implementação permite novo disparo quando a premissa se fortalece, substitui
 ### Conteúdo exibido
 
 ```text
-python docs/presentation/presentation_demo.py diagnose
+# demonstracao: diagnostico sobre a base simulada
 
 diagnosis             mac_contention       CF +0,94125
 recommended_action    separate_channels    CF +0,80006
@@ -789,7 +784,7 @@ No experimento, existe uma descrição de condições que se pretende introduzir
 ## Slide 25 — Do diagnóstico à sequência de ações
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:14 · **Janela:** 34:00–35:14
+**Tempo previsto:** 01:27 · **Janela:** 34:00–35:27
 
 ### Conteúdo exibido
 
@@ -817,7 +812,7 @@ Há uma mudança de representação: o fator de certeza do diagnóstico não se 
 ## Slide 26 — Modelo formal de planejamento STRIPS
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:14 · **Janela:** 35:14–36:28
+**Tempo previsto:** 01:27 · **Janela:** 35:27–36:54
 
 ### Conteúdo exibido
 
@@ -851,7 +846,7 @@ Os operadores podem ser escritos com parâmetros e depois instanciados para obje
 ## Slide 27 — Hipóteses de planejamento e suas consequências
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:16 · **Janela:** 36:28–37:44
+**Tempo previsto:** 01:28 · **Janela:** 36:54–38:22
 
 ### Conteúdo exibido
 
@@ -880,7 +875,7 @@ Essas simplificações são legítimas para estudar planejamento clássico. O ri
 ## Slide 28 — Operador: separar canais no cenário simulado
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:10 · **Janela:** 37:44–38:54
+**Tempo previsto:** 01:22 · **Janela:** 38:22–39:44
 
 ### Conteúdo exibido
 
@@ -919,7 +914,7 @@ Perguntar quais precondições ainda faltam no estado inicial do caso mac_conten
 ## Slide 29 — Operadores pertinentes à demonstração
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:14 · **Janela:** 38:54–40:08
+**Tempo previsto:** 01:27 · **Janela:** 39:44–41:11
 
 ### Conteúdo exibido
 
@@ -952,7 +947,7 @@ As etapas finais verificam o enlace, registram o resultado e encerram a ordem. N
 ## Slide 30 — Autorização e validação pertencem ao modelo
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:13 · **Janela:** 40:08–41:21
+**Tempo previsto:** 01:26 · **Janela:** 41:11–42:37
 
 ### Conteúdo exibido
 
@@ -976,7 +971,7 @@ O mesmo cuidado se aplica à verificação do enlace. O operador verify_link pro
 ## Slide 31 — GPS: análise meios-fins
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:10 · **Janela:** 41:21–42:31
+**Tempo previsto:** 01:22 · **Janela:** 42:37–43:59
 
 ### Conteúdo exibido
 
@@ -1004,7 +999,7 @@ Esse procedimento produz uma justificativa intuitiva: cada ação aparece porque
 ## Slide 32 — Interação entre subobjetivos
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:18 · **Janela:** 42:31–43:49
+**Tempo previsto:** 01:32 · **Janela:** 43:59–45:31
 
 ### Conteúdo exibido
 
@@ -1038,7 +1033,7 @@ No projeto, a estratégia meios-fins reverifica os subobjetivos e pode rejeitar 
 ## Slide 33 — Não otimalidade: custo local e custo total
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 02:11 · **Janela:** 43:49–46:00
+**Tempo previsto:** 01:26 · **Janela:** 45:31–46:57
 
 ### Conteúdo exibido
 
@@ -1061,7 +1056,7 @@ O exemplo não afirma que GPS sempre será pior, nem que nunca encontrará a sol
 
 ### Condução / demonstração
 
-Executar presentation_demo.py gps-counterexample se houver tempo; comparar 11 e 3.
+Se houver tempo, percorrer o contraexemplo do GPS: comparar custo 11 e custo 3.
 
 **Transição:** Planejamento como busca progressiva.
 
@@ -1071,7 +1066,7 @@ Executar presentation_demo.py gps-counterexample se houver tempo; comparar 11 e 
 ## Slide 34 — Planejamento como busca progressiva
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:16 · **Janela:** 46:00–47:16
+**Tempo previsto:** 01:29 · **Janela:** 46:57–48:26
 
 ### Conteúdo exibido
 
@@ -1101,7 +1096,7 @@ A reutilização é conceitualmente importante, mas não torna os dois espaços 
 ## Slide 35 — Heurística de objetivos não satisfeitos
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:17 · **Janela:** 47:16–48:33
+**Tempo previsto:** 01:30 · **Janela:** 48:26–49:56
 
 ### Conteúdo exibido
 
@@ -1132,12 +1127,12 @@ Um caso particular simples ocorre quando cada ação adiciona no máximo um obje
 ## Slide 36 — Demonstração: plano para contenção MAC
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 02:11 · **Janela:** 48:33–50:44
+**Tempo previsto:** 02:33 · **Janela:** 49:56–52:29
 
 ### Conteúdo exibido
 
 ```text
-python docs/presentation/presentation_demo.py plan
+# demonstracao: plano para contencao MAC
 
 1  request_authorization(ER_03)   1
 2  stop_run(ER_03)                2
@@ -1166,15 +1161,54 @@ Utilizo um script de apresentação que chama a API porque a auditoria identific
 
 Executar o comando, conferir custo 11 e validação. Mostrar a posição de stop_run e start_run.
 
-**Transição:** Falhas simultâneas e correção específica.
+**Transição:** O domínio de restauração como máquina de estados.
 
 
 <a id="slide-37"></a>
 
-## Slide 37 — Falhas simultâneas e correção específica
+## Slide 37 — O domínio de restauração como máquina de estados
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 02:09 · **Janela:** 50:44–52:53
+**Tempo previsto:** 02:07 · **Janela:** 52:29–54:36
+
+### Conteúdo exibido
+
+diagnosed (estado inicial) → run-stopped (authorizar e parar) → cleared-<falha> (separate_channels) → service-restored (retomar, verificar, encerrar)
+
+- Um estado STRIPS É um conjunto de literais verdadeiros.
+- Cada seta é um operador, com custo e listas de adição e remoção.
+- Uma falha por literal: verify_link exige um cleared por falha.
+- Com duas falhas, limpar uma deixa o objetivo INALCANÇÁVEL.
+
+**Mensagem central:** O invariante não é um aviso no código: é uma aresta ausente no grafo.
+
+### Fala sugerida
+
+O domínio de planejamento já é uma máquina de estados, e vale desenhá-lo assim pelo menos uma vez. Um estado STRIPS é literalmente um conjunto de literais verdadeiros, de modo que um plano é uma caminhada por um espaço de estados e cada seta é um operador com o seu custo.
+
+A trajetória mostrada é a que o planejador devolve para uma contenção MAC: pedir autorização, interromper a execução, separar os canais, retomar a execução, verificar o enlace, registrar e encerrar. Sete transições, custo total onze.
+
+O ponto que peço para observar está no fim. Com duas falhas no mesmo nó, verify_link exige um literal cleared POR FALHA. Se apenas uma for corrigida, verify_link não é aplicável, link-up não é alcançável, e com ele logged e service-restored também não são.
+
+Isso muda o estatuto da garantia. Não existe uma verificação em tempo de execução dizendo "não declare serviço restaurado ainda". Existe uma aresta que simplesmente não está no grafo, e é por isso que o defeito relatado sobre múltiplas falhas deixou de ser possível em vez de ser apenas desencorajado.
+
+A figura correspondente está em docs/assets, em variantes clara e escura, e pode ser projetada se houver tempo para percorrer os oito estados um a um.
+
+### Condução / demonstração
+
+Percorrer os estados com o dedo na tela; parar em cleared e explicar o literal por falha.
+
+**Fonte / procedência:** Repositório: src/aisg/planning/domain_restoration.py
+
+**Transição:** Falhas simultâneas e correção específica.
+
+
+<a id="slide-38"></a>
+
+## Slide 38 — Falhas simultâneas e correção específica
+
+**Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
+**Tempo previsto:** 01:24 · **Janela:** 54:36–56:00
 
 ### Conteúdo exibido
 
@@ -1196,17 +1230,17 @@ Entretanto, o conjunto de falhas é uma entrada da instância. A presença de v�
 
 ### Condução / demonstração
 
-Executar presentation_demo.py multifault; verificar custo 12 e uma única parada/retomada.
+Conferir o caso de duas falhas: custo 12, com uma única parada e retomada.
 
 **Transição:** Validação do domínio por grafo de planejamento.
 
 
-<a id="slide-38"></a>
+<a id="slide-39"></a>
 
-## Slide 38 — Validação do domínio por grafo de planejamento
+## Slide 39 — Validação do domínio por grafo de planejamento
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 03:07 · **Janela:** 52:53–56:00
+**Tempo previsto:** 02:29 · **Janela:** 56:00–58:29
 
 ### Conteúdo exibido
 
@@ -1233,22 +1267,22 @@ A quarta pergunta devolve um limite inferior para o número de passos paralelos,
 
 ### Condução / demonstração
 
-Executar presentation_demo.py planning-graph; ler as três análises impressas.
+Ler as três análises do grafo de planejamento em voz alta, uma de cada vez.
 
 **Transição:** O defeito reencontrado como exclusão mútua ausente.
 
 
-<a id="slide-39"></a>
+<a id="slide-40"></a>
 
-## Slide 39 — O defeito reencontrado como exclusão mútua ausente
+## Slide 40 — O defeito reencontrado como exclusão mútua ausente
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 02:57 · **Janela:** 56:00–58:57
+**Tempo previsto:** 02:13 · **Janela:** 58:29–60:42
 
 ### Conteúdo exibido
 
 ```text
-python docs/presentation/presentation_demo.py planning-graph
+# demonstracao: plano para contencao MACning-graph
 
 # domínio ANTES da correção: um único fault-cleared
 pontos de escolha:
@@ -1280,17 +1314,17 @@ Registro também a limitação. O grafo é uma relaxação: ele ignora listas de
 
 ### Condução / demonstração
 
-Executar presentation_demo.py planning-graph; comparar as duas análises.
+Comparar as duas análises: antes da correção e depois dela.
 
 **Transição:** Rota alternativa como precondição verificável.
 
 
-<a id="slide-40"></a>
+<a id="slide-41"></a>
 
-## Slide 40 — Rota alternativa como precondição verificável
+## Slide 41 — Rota alternativa como precondição verificável
 
 **Seção:** 3 · PLANEJAMENTO AUTOMÁTICO  
-**Tempo previsto:** 01:18 · **Janela:** 58:57–60:15
+**Tempo previsto:** 01:29 · **Janela:** 60:42–62:11
 
 ### Conteúdo exibido
 
@@ -1311,12 +1345,12 @@ Mesmo quando o caminho existe, a garantia é de conectividade no grafo e custo s
 **Transição:** Busca de caminhos em um grafo ponderado.
 
 
-<a id="slide-41"></a>
+<a id="slide-42"></a>
 
-## Slide 41 — Busca de caminhos em um grafo ponderado
+## Slide 42 — Busca de caminhos em um grafo ponderado
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:14 · **Janela:** 60:15–61:29
+**Tempo previsto:** 01:24 · **Janela:** 62:11–63:35
 
 ### Conteúdo exibido
 
@@ -1339,12 +1373,12 @@ Essa diferença permite comparar estratégias de busca de maneira concreta. Busc
 **Transição:** Função de custo e significado dos parâmetros.
 
 
-<a id="slide-42"></a>
+<a id="slide-43"></a>
 
-## Slide 42 — Função de custo e significado dos parâmetros
+## Slide 43 — Função de custo e significado dos parâmetros
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:22 · **Janela:** 61:29–62:51
+**Tempo previsto:** 01:33 · **Janela:** 63:35–65:08
 
 ### Conteúdo exibido
 
@@ -1373,12 +1407,12 @@ Caso a função de custo seja substituída por medições ou por um objetivo nã
 **Transição:** Função de avaliação e fronteira de busca.
 
 
-<a id="slide-43"></a>
+<a id="slide-44"></a>
 
-## Slide 43 — Função de avaliação e fronteira de busca
+## Slide 44 — Função de avaliação e fronteira de busca
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:21 · **Janela:** 62:51–64:12
+**Tempo previsto:** 01:32 · **Janela:** 65:08–66:40
 
 ### Conteúdo exibido
 
@@ -1407,12 +1441,12 @@ A garantia de A* depende das propriedades da heurística e do tratamento de esta
 **Transição:** Condições e decisões de implementação.
 
 
-<a id="slide-44"></a>
+<a id="slide-45"></a>
 
-## Slide 44 — Condições e decisões de implementação
+## Slide 45 — Condições e decisões de implementação
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:19 · **Janela:** 64:12–65:31
+**Tempo previsto:** 01:29 · **Janela:** 66:40–68:09
 
 ### Conteúdo exibido
 
@@ -1439,12 +1473,12 @@ As garantias discutidas se referem a um grafo finito com custos não negativos e
 **Transição:** Admissibilidade da heurística geométrica.
 
 
-<a id="slide-45"></a>
+<a id="slide-46"></a>
 
-## Slide 45 — Admissibilidade da heurística geométrica
+## Slide 46 — Admissibilidade da heurística geométrica
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:22 · **Janela:** 65:31–66:53
+**Tempo previsto:** 01:33 · **Janela:** 68:09–69:42
 
 ### Conteúdo exibido
 
@@ -1477,12 +1511,12 @@ Apontar cada desigualdade e pedir que a audiência identifique a hipótese utili
 **Transição:** Consistência e verificação independente.
 
 
-<a id="slide-46"></a>
+<a id="slide-47"></a>
 
-## Slide 46 — Consistência e verificação independente
+## Slide 47 — Consistência e verificação independente
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:24 · **Janela:** 66:53–68:17
+**Tempo previsto:** 01:35 · **Janela:** 69:42–71:17
 
 ### Conteúdo exibido
 
@@ -1510,12 +1544,12 @@ Há ainda um cuidado na escolha do oráculo. No repositório, custo uniforme reu
 **Transição:** Comparação: NOC → ER_03.
 
 
-<a id="slide-47"></a>
+<a id="slide-48"></a>
 
-## Slide 47 — Comparação: NOC → ER_03
+## Slide 48 — Comparação: NOC → ER_03
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 03:08 · **Janela:** 68:17–71:25
+**Tempo previsto:** 02:26 · **Janela:** 71:17–73:43
 
 ### Conteúdo exibido
 
@@ -1543,17 +1577,17 @@ Os custos em milissegundos pertencem à escala convencional já definida. A cont
 
 ### Condução / demonstração
 
-Executar presentation_demo.py route; comparar custo, caminho e expansões.
+Comparar custo, caminho e expansões entre as cinco estratégias.
 
 **Transição:** Caminho ótimo e decomposição do custo.
 
 
-<a id="slide-48"></a>
+<a id="slide-49"></a>
 
-## Slide 48 — Caminho ótimo e decomposição do custo
+## Slide 49 — Caminho ótimo e decomposição do custo
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 02:01 · **Janela:** 71:25–73:26
+**Tempo previsto:** 02:17 · **Janela:** 73:43–76:00
 
 ### Conteúdo exibido
 
@@ -1582,12 +1616,12 @@ O exemplo também evidencia a diferença entre caminho exato e caminho único. O
 **Transição:** Perda de um meio e comutação para o outro.
 
 
-<a id="slide-49"></a>
+<a id="slide-50"></a>
 
-## Slide 49 — Perda de um meio e comutação para o outro
+## Slide 50 — Perda de um meio e comutação para o outro
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 02:34 · **Janela:** 73:26–76:00
+**Tempo previsto:** 01:53 · **Janela:** 76:00–77:53
 
 ### Conteúdo exibido
 
@@ -1607,17 +1641,17 @@ Também é importante incluir o caso em que o destino fica isolado. Nesse caso, 
 
 ### Condução / demonstração
 
-Executar presentation_demo.py reroute; conferir que o enlace removido não aparece no novo caminho.
+Conferir que o enlace desativado não aparece no novo caminho.
 
 **Transição:** Esforço de busca no cenário de 60 nós.
 
 
-<a id="slide-50"></a>
+<a id="slide-51"></a>
 
-## Slide 50 — Esforço de busca no cenário de 60 nós
+## Slide 51 — Esforço de busca no cenário de 60 nós
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 03:08 · **Janela:** 76:00–79:08
+**Tempo previsto:** 02:54 · **Janela:** 77:53–80:47
 
 ### Conteúdo exibido
 
@@ -1645,17 +1679,17 @@ Para estudar escalabilidade, seria necessário variar sistematicamente tamanho e
 
 ### Condução / demonstração
 
-Executar presentation_demo.py benchmark; explicar o cálculo 1 − 10310/13920.
+Explicar o cálculo da redução agregada: 1 − 99963/109740.
 
 **Transição:** Aprendizagem de heurísticas: possibilidade e cautela.
 
 
-<a id="slide-51"></a>
+<a id="slide-52"></a>
 
-## Slide 51 — Aprendizagem de heurísticas: possibilidade e cautela
+## Slide 52 — Aprendizagem de heurísticas: possibilidade e cautela
 
 **Seção:** 4 · BUSCA A*  
-**Tempo previsto:** 01:13 · **Janela:** 79:08–80:21
+**Tempo previsto:** 01:35 · **Janela:** 80:47–82:22
 
 ### Conteúdo exibido
 
@@ -1676,12 +1710,12 @@ Essa possibilidade é uma agenda de investigação. Não há treinamento de heur
 **Transição:** Contrato entre diagnóstico, planejamento e busca.
 
 
-<a id="slide-52"></a>
+<a id="slide-53"></a>
 
-## Slide 52 — Contrato entre diagnóstico, planejamento e busca
+## Slide 53 — Contrato entre diagnóstico, planejamento e busca
 
 **Seção:** 5 · INTEGRAÇÃO E AVALIAÇÃO  
-**Tempo previsto:** 01:14 · **Janela:** 80:21–81:35
+**Tempo previsto:** 01:38 · **Janela:** 82:22–84:00
 
 ### Conteúdo exibido
 
@@ -1706,17 +1740,17 @@ A composição demonstra compatibilidade funcional entre os módulos. Ela não c
 **Transição:** Demonstração integrada: congestionamento.
 
 
-<a id="slide-53"></a>
+<a id="slide-54"></a>
 
-## Slide 53 — Demonstração integrada: congestionamento
+## Slide 54 — Demonstração integrada: congestionamento
 
 **Seção:** 5 · INTEGRAÇÃO E AVALIAÇÃO  
-**Tempo previsto:** 02:25 · **Janela:** 81:35–84:00
+**Tempo previsto:** 01:58 · **Janela:** 84:00–85:58
 
 ### Conteúdo exibido
 
 ```text
-python docs/presentation/presentation_demo.py integrated
+# demonstracao: incidente integrado
 
 Caso: congestion      Nó afetado: SAF_02
 Base: simulated       Planejamento: simulated=True
@@ -1749,12 +1783,12 @@ Executar o comando; conferir base, predicado run-active, ação de desvio, desti
 **Transição:** Procedimento experimental proposto.
 
 
-<a id="slide-54"></a>
+<a id="slide-55"></a>
 
-## Slide 54 — Procedimento experimental proposto
+## Slide 55 — Procedimento experimental proposto
 
 **Seção:** 5 · INTEGRAÇÃO E AVALIAÇÃO  
-**Tempo previsto:** 01:32 · **Janela:** 84:00–85:32
+**Tempo previsto:** 01:02 · **Janela:** 85:58–87:00
 
 ### Conteúdo exibido
 
@@ -1782,12 +1816,12 @@ Os indicadores e as unidades de análise precisam ser definidos antes de calcula
 **Transição:** O que cada evidência permite concluir.
 
 
-<a id="slide-55"></a>
+<a id="slide-56"></a>
 
-## Slide 55 — O que cada evidência permite concluir
+## Slide 56 — O que cada evidência permite concluir
 
 **Seção:** 5 · INTEGRAÇÃO E AVALIAÇÃO  
-**Tempo previsto:** 01:28 · **Janela:** 85:32–87:00
+**Tempo previsto:** 01:33 · **Janela:** 87:00–88:33
 
 ### Conteúdo exibido
 
@@ -1811,12 +1845,12 @@ Na documentação que acompanha o arquivo, registro o estado auditado e os coman
 **Transição:** Contribuições e limitações do trabalho.
 
 
-<a id="slide-56"></a>
+<a id="slide-57"></a>
 
-## Slide 56 — Contribuições e limitações do trabalho
+## Slide 57 — Contribuições e limitações do trabalho
 
 **Seção:** 6 · SÍNTESE E CONTINUIDADE  
-**Tempo previsto:** 01:30 · **Janela:** 87:00–88:30
+**Tempo previsto:** 01:27 · **Janela:** 88:33–90:00
 
 ### Conteúdo exibido
 
@@ -1835,12 +1869,12 @@ As limitações principais são a ausência de calibração empírica dos limiar
 **Transição:** Agenda de investigação e critérios de avanço.
 
 
-<a id="slide-57"></a>
+<a id="slide-58"></a>
 
-## Slide 57 — Agenda de investigação e critérios de avanço
+## Slide 58 — Agenda de investigação e critérios de avanço
 
 **Seção:** 6 · SÍNTESE E CONTINUIDADE  
-**Tempo previsto:** 01:30 · **Janela:** 88:30–90:00
+**Tempo previsto:** 00:00 · **Janela:** 90:00–90:00
 
 ### Conteúdo exibido
 
@@ -1864,9 +1898,9 @@ Por fim, a reprodução deve ser tratada como parte do método. A apresentação
 **Transição:** Referências e procedência dos resultados.
 
 
-<a id="slide-58"></a>
+<a id="slide-59"></a>
 
-## Slide 58 — Referências e procedência dos resultados
+## Slide 59 — Referências e procedência dos resultados
 
 **Seção:** 7 · REFERÊNCIAS E DISCUSSÃO  
 **Tempo previsto:** 00:00 · **Janela:** 90:00–90:00
@@ -1895,9 +1929,9 @@ Não ler a bibliografia integralmente. Indicar que os links também constam no r
 **Transição:** Discussão.
 
 
-<a id="slide-59"></a>
+<a id="slide-60"></a>
 
-## Slide 59 — Discussão
+## Slide 60 — Discussão
 
 **Seção:** 7 · REFERÊNCIAS E DISCUSSÃO  
 **Tempo previsto:** 00:00 · **Janela:** 90:00–90:00
