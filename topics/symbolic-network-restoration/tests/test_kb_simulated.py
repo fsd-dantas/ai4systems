@@ -1,12 +1,12 @@
 """
-Tests for the indoor conducted-simulated scenario knowledge base.
+Tests for the simulated scenario's knowledge base.
 
 PT-BR: A propriedade central desta base nao e "diagnostica corretamente" — e que
-       toda condicao que ela reconhece pode ser INDUZIDA na bancada. Uma regra
-       sobre um fenomeno que o laboratorio nao consegue produzir e regra morta.
+       toda condicao que ela reconhece pode ser INDUZIDA no simulador. Uma regra
+       sobre um fenomeno que o simulador nao consegue produzir e regra morta.
 EN:    This base's central property is not "diagnoses correctly" but that every
-       condition it recognises can be INDUCED on the simulated scenario. A rule about a
-       phenomenon the laboratory cannot produce is a dead rule.
+       condition it recognises can be INDUCED in the simulator. A rule about a
+       phenomenon the simulator cannot produce is a dead rule.
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ from aisg.expert_system import (
     SIM_CASES,
     SIM_THRESHOLDS,
     INDUCIBLE_BY,
-    KNOWLEDGE_BASES,
     InferenceEngine,
     build_simulated_knowledge_base,
 )
@@ -27,19 +26,7 @@ def test_simulated_knowledge_base_is_internally_consistent():
     assert build_simulated_knowledge_base().validate() == []
 
 
-def test_the_simulated_base_has_no_weather_and_no_rain_fade():
-    """
-    An indoor conducted path has no weather to observe and no rain fade to induce.
-    Keeping either would be a rule that can never fire.
-    """
-    kb = build_simulated_knowledge_base()
-    for absent in ("weather", "residual_leakage_dbm"):
-        assert absent not in kb.variables, f"{absent} cannot exist in a simulation"
-    for absent in ("rain_fade", "path_obstruction", "containment_breach"):
-        assert absent not in kb.variables["diagnosis"].labels
-
-
-def test_commanded_attenuation_replaces_weather_as_evidence():
+def test_commanded_path_loss_is_askable_evidence():
     kb = build_simulated_knowledge_base()
     attenuation = kb.variables["excess_path_loss_db"]
     assert attenuation.askable
@@ -47,7 +34,7 @@ def test_commanded_attenuation_replaces_weather_as_evidence():
     assert kb.rules_concluding("diagnosis"), "attenuation must feed a diagnosis"
 
 
-def test_every_diagnosis_is_inducible_on_the_simulated():
+def test_every_diagnosis_is_inducible_in_the_simulator():
     """
     The property that makes this base labellable: no diagnosis exists that the
     simulated scenario cannot deliberately produce.
@@ -75,7 +62,7 @@ def test_each_induced_condition_is_diagnosed_as_itself(case):
 
 
 def test_nominal_path_loss_is_counter_evidence_for_excess_loss():
-    """Replaces the clear-weather rule, and is stronger: the value is commanded."""
+    """Nominal path loss is a commanded value, so it counts against excess loss."""
     engine = InferenceEngine(build_simulated_knowledge_base())
     for variable, value in SIM_CASES["rf_interference"].items():
         engine.given(variable, value)
@@ -88,7 +75,7 @@ def test_nominal_path_loss_is_counter_evidence_for_excess_loss():
 def test_commanded_loss_outranks_contention():
     """
     With the attenuator commanded high, path loss explains the poor signal; the
-    physical-path hypothesis should not win.
+    contention hypothesis should not win.
     """
     engine = InferenceEngine(build_simulated_knowledge_base())
     for variable, value in SIM_CASES["excess_path_loss"].items():
@@ -96,9 +83,9 @@ def test_commanded_loss_outranks_contention():
     engine.forward_chain()
 
     excess = engine.memory.get("diagnosis", "excess_path_loss")
-    cabling = engine.memory.get("diagnosis", "mac_contention")
+    contention = engine.memory.get("diagnosis", "mac_contention")
     assert excess is not None
-    assert cabling is None or excess.cf > cabling.cf
+    assert contention is None or excess.cf > contention.cf
 
 
 def test_actions_touching_the_rig_require_an_authorised_window():
@@ -123,19 +110,5 @@ def test_thresholds_are_declared_in_one_block():
     assert kb.thresholds == SIM_THRESHOLDS
     assert "path_loss_high_db" in kb.thresholds
 
-
-def test_both_knowledge_bases_run_on_the_same_engine():
-    """
-    The engine is domain-independent: swapping the knowledge swaps the domain,
-    with no change to the inference machinery.
-    """
-    for name, (build, cases) in KNOWLEDGE_BASES.items():
-        kb = build()
-        assert kb.validate() == [], name
-        engine = InferenceEngine(kb)
-        first = next(iter(cases))
-        for variable, value in cases[first].items():
-            engine.given(variable, value)
-        assert engine.forward_chain().conclusions(), name
 
 

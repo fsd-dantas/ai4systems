@@ -41,5 +41,6 @@ jobs:
       - name: Check the command-line interface starts
         run: |
           aisg --version
-          aisg --lang en diagnose --case interference
-          aisg --lang en --topology scale route --compare
+          aisg --lang en diagnose --case rf_interference
+          aisg --lang en route --compare
+          aisg --lang en pipeline --case congestion

@@ -1,41 +1,37 @@
 """
 Knowledge base: diagnosis on the SIMULATED wireless scenario.
 
-PT-BR: Segunda base de conhecimento sobre o MESMO motor de inferencia. A base de
-       [`kb_backhaul`] modela uma rede de campo, com propagacao exterior e chuva.
-       Aqui o cenario e simulado: nao ha clima, nao ha antena a desalinhar e nao
-       ha cabo a apertar. O que existe sao nos sem fio num meio compartilhado, e
-       as grandezas que um simulador realmente produz.
+PT-BR: A base de conhecimento do motor de inferencia. O cenario e simulado: o que
+       existe sao nos sem fio num meio compartilhado, e as grandezas que um
+       simulador realmente produz.
 
-EN:    A second knowledge base over the SAME inference engine. [`kb_backhaul`]
-       models a field network, with outdoor propagation and rain. Here the
-       scenario is simulated: there is no weather, no antenna to misalign and no
-       connector to tighten. What exists are wireless nodes on a shared medium,
-       and the quantities a simulator actually produces.
+EN:    The knowledge base the inference engine runs on. The scenario is simulated:
+       what exists are wireless nodes on a shared medium, and the quantities a
+       simulator actually produces.
 
 O que o cenario simulado permite e proibe / What simulation allows and forbids
 -----------------------------------------------------------------------------
 Permite: perda de percurso comandada, interferencia co-canal, contencao de MAC,
 parada de no, queda de repetidor, ausencia de rota, congestionamento.
 
-Proibe: clima; desalinhamento de antena; falhas de cabeamento; e **violacao de
-contencao de RF** — uma simulacao nao irradia, portanto nao ha vazamento
-residual a medir. Uma regra sobre um fenomeno que o simulador nao produz e regra
-morta, e regra morta sugere cobertura que a base nao tem.
+Proibe: o que o simulador nao produz. Uma simulacao nao irradia, por exemplo,
+portanto nao ha vazamento residual a medir. Uma regra sobre um fenomeno que o
+simulador nao produz e regra morta, e regra morta sugere cobertura que a base
+nao tem.
 
-Forbidden here: weather; antenna misalignment; cabling faults; and **RF
-containment breach** - a simulation does not radiate, so there is no residual
-leakage to measure. A rule about a phenomenon the simulator cannot produce is a
-dead rule, and a dead rule suggests coverage the base does not have.
+Forbidden here: what the simulator does not produce. A simulation does not
+radiate, for instance, so there is no residual leakage to measure. A rule about a
+phenomenon the simulator cannot produce is a dead rule, and a dead rule suggests
+coverage the base does not have.
 
 Por que isto importa para os dados / Why this matters for data
 -------------------------------------------------------------
-A base de campo nao pode ser aprendida porque nao ha rotulos. Aqui o operador
+Uma rede de campo nao pode ser aprendida porque nao ha rotulos. Aqui o operador
 **comanda** a condicao no simulador, portanto conhece o rotulo por construcao —
 e pode repetir a execucao quantas vezes quiser. A simulacao e a unica fonte
 neste projeto capaz de produzir dados rotulados em quantidade.
 
-The field base cannot be learned because it has no labels. Here the operator
+A field network cannot be learned because it has no labels. Here the operator
 *commands* the condition in the simulator and therefore knows the label by
 construction - and can repeat the run as often as wanted. Simulation is the only
 source in this project able to produce labelled data in quantity.

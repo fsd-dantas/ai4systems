@@ -9,11 +9,11 @@ EN:    Four subcommands: ``diagnose`` (expert system), ``plan`` (STRIPS/GPS/A*
        planning), ``route`` (A* search), and ``pipeline``, which runs all three in
        sequence over the same incident.
 
-    python -m aisg diagnose --case interference --trace
+    python -m aisg diagnose --case rf_interference --trace
     python -m aisg diagnose --interactive --mode backward
-    python -m aisg route --from NOC --to RECLOSER_7 --compare
-    python -m aisg plan --diagnosis congestion --node SAF_A2 --solver both
-    python -m aisg pipeline --case congestion --node SAF_A2
+    python -m aisg route --from NOC --to ER_03 --compare
+    python -m aisg plan --diagnosis mac_contention --node ER_03 --solver both
+    python -m aisg pipeline --case congestion --node SAF_01 --target ER_03
 """
 
 from __future__ import annotations
@@ -25,14 +25,13 @@ from typing import Optional, Sequence, Tuple
 from aisg import __version__
 from aisg.domain import BUNDLED_TOPOLOGIES, load_topology
 from aisg.expert_system import (
-    CASES,
-    KNOWLEDGE_BASES,
+    SIM_CASES,
     ConflictResolution,
     Consultation,
     InferenceEngine,
     Variable,
     VariableKind,
-    build_knowledge_base,
+    build_simulated_knowledge_base,
 )
 from aisg.i18n import t
 from aisg.observation import Observation, ObservationError
@@ -43,6 +42,7 @@ from aisg.planning import (
     plan_with_gps,
     problem_from_diagnosis,
 )
+from aisg.planning.domain_restoration import DESTINATION_KINDS
 from aisg.search import RoutingProblem, astar, compare
 from aisg.search.algorithms import SearchResult
 
@@ -65,16 +65,17 @@ def _default_source(topology) -> str:
 
 def _default_target(topology, exclude: Optional[str] = None) -> str:
     """
-    A field device: the natural destination for operational traffic.
+    Where operational traffic ends: a field device, or else an edge router.
 
     PT-BR: Resolvido a partir da topologia, e nao fixado no codigo, para que os
            comandos funcionem em qualquer cenario carregado com --topology.
     EN:    Resolved from the topology rather than hard-coded, so the commands work on
            whichever scenario --topology loaded.
     """
-    for node in topology.nodes.values():
-        if node.kind == "field_device" and node.id != exclude:
-            return node.id
+    for kind in DESTINATION_KINDS:
+        for node in topology.nodes.values():
+            if node.kind == kind and node.id != exclude:
+                return node.id
     return next(n for n in topology.nodes if n != exclude)
 
 
@@ -115,7 +116,7 @@ def _make_asker(lang: str, engine_holder: dict):
                     print(engine.why(lang))
                 continue
 
-            # An optional trailing certainty: "rain 0.6"
+            # An optional trailing certainty: "many 0.6"
             cf = 1.0
             parts = raw.rsplit(" ", 1)
             if len(parts) == 2:
@@ -179,8 +180,8 @@ def _report_consultation(consultation: Consultation, lang: str, *, show_trace: b
 
 def cmd_diagnose(args: argparse.Namespace) -> int:
     lang = args.lang
-    build_kb, cases = KNOWLEDGE_BASES[args.kb]
-    kb = build_kb()
+    kb = build_simulated_knowledge_base()
+    cases = SIM_CASES
     holder: dict = {}
     engine = InferenceEngine(
         kb,
@@ -263,7 +264,7 @@ def _print_search_result(result: SearchResult, problem: RoutingProblem, lang: st
 
 def cmd_route(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_topology(getattr(args, "topology", "base"))
+    topology = load_topology(getattr(args, "topology", "dual"))
 
     for spec in args.disable_link or []:
         try:
@@ -320,12 +321,10 @@ def _report_plan(plan, lang: str, *, label: str) -> None:
 
 def cmd_plan(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_topology(getattr(args, "topology", "base"))
+    topology = load_topology(getattr(args, "topology", "dual"))
     node = args.node or _default_repair_node(topology)
     try:
-        problem = problem_from_diagnosis(
-            args.diagnosis, node, topology=topology, simulated=args.simulated
-        )
+        problem = problem_from_diagnosis(args.diagnosis, node, topology=topology)
     except (ValueError, KeyError) as exc:
         print(exc)
         return 2
@@ -359,17 +358,17 @@ def cmd_plan(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 def cmd_pipeline(args: argparse.Namespace) -> int:
     lang = args.lang
-    topology = load_topology(getattr(args, "topology", "base"))
-    kb = build_knowledge_base()
+    topology = load_topology(getattr(args, "topology", "dual"))
+    kb = build_simulated_knowledge_base()
 
-    if args.case not in CASES:
-        print(f"unknown case: {args.case}; available: {', '.join(sorted(CASES))}")
+    if args.case not in SIM_CASES:
+        print(f"unknown case: {args.case}; available: {', '.join(sorted(SIM_CASES))}")
         return 2
 
     # --- 1. diagnose -----------------------------------------------------
     print(_header(f"1/3  {t('es_title', lang)}"))
     engine = InferenceEngine(kb)
-    for variable, value in CASES[args.case].items():
+    for variable, value in SIM_CASES[args.case].items():
         engine.given(variable, value)
     consultation = engine.forward_chain()
     conclusions = consultation.conclusions()
@@ -443,7 +442,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--topology",
-        default="base",
+        default="dual",
         help=(
             "bundled scenario or path to a JSON file / cenario ou caminho: "
             + ", ".join(sorted(BUNDLED_TOPOLOGIES))
@@ -453,16 +452,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # diagnose
     d = sub.add_parser("diagnose", help="run the expert system / executar o sistema especialista")
-    d.add_argument(
-        "--kb",
-        choices=sorted(KNOWLEDGE_BASES),
-        default="backhaul",
-        help=(
-            "knowledge base / base de conhecimento: 'backhaul' (field network) "
-            "or 'simulated' (simulated scenario, wireless KPIs)"
-        ),
-    )
-    d.add_argument("--case", help="preset case; depends on --kb")
+    d.add_argument("--case", help=f"preset case: {', '.join(SIM_CASES)}")
     d.add_argument(
         "--from-observation", metavar="FILE",
         help="read evidence from an observation record (JSON)",
@@ -493,7 +483,7 @@ def build_parser() -> argparse.ArgumentParser:
     # route
     r = sub.add_parser("route", help="A* routing / roteamento por A*")
     r.add_argument("--from", dest="source", help="default: the operations centre")
-    r.add_argument("--to", dest="target", help="default: a field device")
+    r.add_argument("--to", dest="target", help="default: a field device or edge router")
     r.add_argument("--avoid", nargs="*", help="nodes the route must not traverse")
     r.add_argument("--disable-link", nargs="*", metavar="A-B", help="take links out of service")
     r.add_argument("--compare", action="store_true", help="compare BFS, DFS, UCS, greedy, A*")
@@ -504,10 +494,6 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("plan", help="automated planning / planejamento automatico")
     p.add_argument("--diagnosis", default="rf_interference")
     p.add_argument("--node", help="default: a store-and-forward relay")
-    p.add_argument(
-        "--simulated", action="store_true",
-        help="plan for the simulated scenario instead of the field network",
-    )
     p.add_argument("--solver", choices=("gps", "astar", "both"), default="both")
     p.add_argument("--heuristic", choices=("goal_count", "zero"), default="goal_count")
     p.add_argument("--trace", action="store_true", help="show the means-ends trace")
@@ -517,7 +503,7 @@ def build_parser() -> argparse.ArgumentParser:
     pl = sub.add_parser(
         "pipeline", help="diagnose -> plan -> route / diagnosticar -> planejar -> rotear"
     )
-    pl.add_argument("--case", default="congestion", help=f"one of: {', '.join(sorted(CASES))}")
+    pl.add_argument("--case", default="congestion", help=f"one of: {', '.join(sorted(SIM_CASES))}")
     pl.add_argument("--node", help="default: a store-and-forward relay")
     pl.add_argument("--target", help="routing destination / destino do roteamento")
     pl.set_defaults(func=cmd_pipeline)

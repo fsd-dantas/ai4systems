@@ -1,5 +1,5 @@
 """
-Planning domain: restoring service on a degraded backhaul node.
+Planning domain: restoring service on a node of the simulated scenario.
 
 PT-BR: Este dominio e o ponto de encontro dos tres trabalhos. O DIAGNOSTICO vem do
        sistema especialista e vira o estado inicial; o PLANO e gerado por GPS ou por
@@ -13,10 +13,11 @@ EN:    This domain is where the three assignments meet. The DIAGNOSIS comes from
 
 Governance encoded as preconditions / Governanca como precondicao
 -----------------------------------------------------------------
-Every operator that reaches the plant requires ``authorized(?n)``. That is not
+Every operator that changes the scenario requires ``authorized(?n)`` - directly,
+or for ``start_run`` through the ``stop_run`` that must precede it. That is not
 decoration: it makes "we acted without authorisation" *unreachable* rather than
-merely discouraged. Only ``monitor_and_wait`` skips it, because observing changes
-nothing.
+merely discouraged. Only verifying, logging and closing skip it, because they
+change nothing.
 """
 
 from __future__ import annotations
@@ -26,38 +27,25 @@ from typing import Dict, Iterable, List, Optional, Sequence
 from aisg.domain.topology import Topology
 from aisg.planning.strips import Operator, Predicate, Problem, make_state
 
-#: Base of operations the field crew starts from.
-CREW_BASE = "BASE"
-
 #: Expert-system diagnosis -> the fault literal it puts in the initial state.
 DIAGNOSIS_TO_FAULT: Dict[str, Optional[str]] = {
     "rf_interference": "interference",
-    "path_obstruction": "misaligned",
-    "rain_fade": "transient",
-    "node_power_failure": "power-failed",
-    "upstream_relay_failure": "relay-down",
-    "vlan_misconfiguration": "vlan-wrong",
-    "congestion": "congested",
-    "healthy": None,  # nothing to repair; the link is already clear
-    # Simulated scenario. A simulation does not radiate, so there is no
-    # containment condition here; and it has no antenna or cable, so the outdoor
-    # propagation faults are replaced by what a simulator can actually command.
     "excess_path_loss": "excess-path-loss",
     "mac_contention": "mac-contention",
     "node_failure": "node-stopped",
+    "upstream_relay_failure": "relay-down",
     "routing_misconfiguration": "route-missing",
+    "congestion": "congested",
+    "healthy": None,  # nothing to repair; the link is already clear
 }
-
-#: Diagnoses that exist only in the simulated scenario. Asking to plan one
-#: implies that scenario: their repairs are simulation operators, and in the
-#: field domain there would be no operator able to clear them.
-SIMULATED_ONLY_DIAGNOSES = frozenset(
-    {"excess_path_loss", "mac_contention", "node_failure", "routing_misconfiguration"}
-)
 
 #: Every fault the domain can repair. A fault outside this set would have no
 #: operator able to clear it, and the planner would fail with no explanation.
 KNOWN_FAULTS = frozenset(f for f in DIAGNOSIS_TO_FAULT.values() if f)
+
+#: Node kinds that terminate operational traffic, in order of preference: the
+#: 30-node scenario ends in field devices, the 60-node one in edge routers.
+DESTINATION_KINDS = ("field_device", "edge_router")
 
 
 def cleared(fault: str) -> str:
@@ -76,9 +64,9 @@ def cleared(fault: str) -> str:
     return f"cleared-{fault}(?n)"
 
 
-def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> List[Operator]:
+def build_operators(faults: Sequence[str] = ()) -> List[Operator]:
     """
-    The twelve restoration operators, in STRIPS form.
+    The thirteen restoration operators, in STRIPS form.
 
     ``faults`` are the fault names present in the problem being built. They
     determine what ``verify_link`` demands: the link counts as verified only once
@@ -87,11 +75,11 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
     of the specific repairs the instance requires.
     """
     build = Operator.build
-    verify_preconditions = ("diagnosed(?n)",) + tuple(cleared(f) for f in faults)
-    if simulated:
-        # A link is only verifiable with the rig transmitting again, which is
-        # what makes powering down a cost rather than a free precaution.
-        verify_preconditions += ("run-active(?n)",)
+    # A link is only verifiable with the run active again, which is what makes
+    # stopping the run a cost rather than a free precaution.
+    verify_preconditions = (
+        ("diagnosed(?n)",) + tuple(cleared(f) for f in faults) + ("run-active(?n)",)
+    )
 
     return [
         build(
@@ -104,16 +92,6 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
             description_en="Request authorisation and a maintenance window for ?n.",
         ),
         build(
-            "dispatch_crew",
-            parameters=("?from", "?to"),
-            preconditions=("authorized(?to)", "crew-at(?from)"),
-            add=("crew-at(?to)",),
-            delete=("crew-at(?from)",),
-            cost=4.0,
-            description_pt="Deslocar a equipe de ?from ate ?to.",
-            description_en="Move the field crew from ?from to ?to.",
-        ),
-        build(
             "change_channel",
             parameters=("?n",),
             preconditions=("authorized(?n)", "interference(?n)"),
@@ -122,30 +100,6 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
             cost=2.0,
             description_pt="Mudar o canal de ?n para sair da emissao interferente.",
             description_en="Change the channel of ?n to move away from the interferer.",
-        ),
-        build(
-            "realign_antenna",
-            parameters=("?n",),
-            preconditions=("authorized(?n)", "crew-at(?n)", "misaligned(?n)"),
-            add=("cleared-misaligned(?n)",),
-            delete=("misaligned(?n)",),
-            cost=3.0,
-            description_pt="Realinhar a antena de ?n (exige equipe no local).",
-            description_en="Realign the antenna at ?n (requires the crew on site).",
-        ),
-        build(
-            "replace_power_unit",
-            parameters=("?n",),
-            preconditions=(
-                ("authorized(?n)", "run-stopped(?n)", "power-failed(?n)")
-                if simulated
-                else ("authorized(?n)", "crew-at(?n)", "power-failed(?n)")
-            ),
-            add=("cleared-power-failed(?n)",),
-            delete=("power-failed(?n)",),
-            cost=5.0,
-            description_pt="Substituir a fonte de alimentacao de ?n (exige equipe no local).",
-            description_en="Replace the power unit at ?n (requires the crew on site).",
         ),
         build(
             "restore_relay",
@@ -158,16 +112,6 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
             description_en="Recover the relay upstream of ?n.",
         ),
         build(
-            "fix_vlan",
-            parameters=("?n",),
-            preconditions=("authorized(?n)", "vlan-wrong(?n)"),
-            add=("cleared-vlan-wrong(?n)",),
-            delete=("vlan-wrong(?n)",),
-            cost=1.0,
-            description_pt="Corrigir a lista de VLANs permitidas no tronco de ?n.",
-            description_en="Correct the allowed-VLAN list on the trunk of ?n.",
-        ),
-        build(
             "reroute_traffic",
             parameters=("?n",),
             preconditions=("authorized(?n)", "congested(?n)", "alternate-route(?n)"),
@@ -177,22 +121,11 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
             description_pt="Desviar o trafego de ?n pela rota alternativa calculada por A*.",
             description_en="Reroute the traffic of ?n over the alternative route computed by A*.",
         ),
-        build(
-            "monitor_and_wait",
-            parameters=("?n",),
-            preconditions=("diagnosed(?n)", "transient(?n)"),
-            add=("cleared-transient(?n)",),
-            delete=("transient(?n)",),
-            cost=1.0,
-            description_pt="Acompanhar ?n: causa transitoria, nenhuma intervencao na planta.",
-            description_en="Monitor ?n: transient cause, no intervention on the plant.",
-        ),
-        # ---- simulated scenario ----------------------------------------
-        # Nobody travels to a simulation, so crew dispatch is not the cost that
-        # matters. What matters is that changing a SCENARIO PARAMETER - the
+        # ---- the run -----------------------------------------------------
+        # What costs here is the run itself. Changing a SCENARIO PARAMETER - the
         # propagation budget, the channel plan - invalidates the run in progress,
         # so the run must be stopped and restarted. Runtime repairs do not. That
-        # restores a real trade-off: batch the parameter changes into one restart,
+        # is the real trade-off: batch the parameter changes into one restart,
         # or pay for another.
         build(
             "stop_run",
@@ -288,26 +221,17 @@ def build_operators(faults: Sequence[str] = (), *, simulated: bool = False) -> L
     ]
 
 
-def _no_self_move(operator_name: str, binding: Dict[str, str]) -> bool:
-    """Reject dispatching the crew from a place to that same place."""
-    if operator_name == "dispatch_crew":
-        return binding.get("?from") != binding.get("?to")
-    return True
-
-
 def build_restoration_problem(
     node: str,
     faults: Sequence[str],
     *,
-    simulated: bool = False,
     alternate_route: bool = False,
-    crew_base: str = CREW_BASE,
     extra_initial: Iterable[str] = (),
 ) -> Problem:
     """
     Build the STRIPS problem for restoring ``node``.
 
-    :param faults: fault predicate names, e.g. ``["interference"]``.
+    :param faults: fault predicate names, e.g. ``["mac-contention"]``.
     :param alternate_route: whether A* confirmed an alternative route exists.
     """
     unknown = [f for f in faults if f not in KNOWN_FAULTS]
@@ -317,26 +241,21 @@ def build_restoration_problem(
             f"{', '.join(sorted(KNOWN_FAULTS))}"
         )
 
-    initial: List[str] = [f"diagnosed({node})"]
-    if simulated:
-        initial.append(f"run-active({node})")
-    else:
-        initial.append(f"crew-at({crew_base})")
+    initial: List[str] = [f"diagnosed({node})", f"run-active({node})"]
     initial += [f"{fault}({node})" for fault in faults]
     if alternate_route:
         initial.append(f"alternate-route({node})")
     initial += list(extra_initial)
 
     # With no faults the link needs only verification and closure: verify_link's
-    # preconditions reduce to diagnosed(?n).
+    # preconditions reduce to diagnosed(?n) and run-active(?n).
     return Problem(
         name=f"restore-service-{node}",
-        operators=build_operators(faults, simulated=simulated),
+        operators=build_operators(faults),
         initial=make_state(initial),
         goal=make_state([f"service-restored({node})", f"logged({node})"]),
-        objects={"node": [node], "location": [crew_base, node]},
-        parameter_types={"?n": "node", "?from": "location", "?to": "location"},
-        binding_filter=_no_self_move,
+        objects={"node": [node]},
+        parameter_types={"?n": "node"},
     )
 
 
@@ -346,8 +265,6 @@ def problem_from_diagnosis(
     *,
     topology: Optional[Topology] = None,
     reroute_target: Optional[str] = None,  # the destination, not the source
-    crew_base: str = CREW_BASE,
-    simulated: bool = False,
 ) -> Problem:
     """
     Turn an expert-system diagnosis into a planning problem.
@@ -367,9 +284,6 @@ def problem_from_diagnosis(
             f"{', '.join(sorted(DIAGNOSIS_TO_FAULT))}"
         )
 
-    # The diagnosis selects the scenario when it can only belong to one.
-    simulated = simulated or diagnosis in SIMULATED_ONLY_DIAGNOSES
-
     fault = DIAGNOSIS_TO_FAULT[diagnosis]
     faults = [fault] if fault else []
 
@@ -385,9 +299,7 @@ def problem_from_diagnosis(
         if target is not None and target != node:
             alternate = shortest_route(topology, source, target, avoid=(node,)) is not None
 
-    return build_restoration_problem(
-        node, faults, simulated=simulated, alternate_route=alternate, crew_base=crew_base
-    )
+    return build_restoration_problem(node, faults, alternate_route=alternate)
 
 
 def _default_source(topology: Topology) -> str:
@@ -402,12 +314,15 @@ def _default_target(topology: Topology, node: str) -> Optional[str]:
     """
     A node whose traffic the congested node carries.
 
-    PT-BR: Usamos um dispositivo de campo a jusante como destino do desvio.
-    EN:    We use a downstream field device as the reroute destination.
+    PT-BR: Usamos como destino do desvio o primeiro no onde o trafego termina: um
+           dispositivo de campo ou, no cenario de 60 nos, um roteador de borda.
+    EN:    We use the first node where traffic ends as the reroute destination: a
+           field device or, in the 60-node scenario, an edge router.
     """
-    for candidate in topology.nodes.values():
-        if candidate.kind == "field_device" and candidate.id != node:
-            return candidate.id
+    for kind in DESTINATION_KINDS:
+        for candidate in topology.nodes.values():
+            if candidate.kind == kind and candidate.id != node:
+                return candidate.id
     return None
 
 

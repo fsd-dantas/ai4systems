@@ -8,9 +8,7 @@ EN:    STRIPS representation, GPS solver (means-ends analysis), and A* progressi
 """
 
 from aisg.planning.domain_restoration import (
-    CREW_BASE,
     DIAGNOSIS_TO_FAULT,
-    SIMULATED_ONLY_DIAGNOSES,
     build_operators,
     build_restoration_problem,
     fault_literals,
@@ -42,9 +40,7 @@ from aisg.planning.strips import (
 
 __all__ = [
     "Action",
-    "CREW_BASE",
     "DIAGNOSIS_TO_FAULT",
-    "SIMULATED_ONLY_DIAGNOSES",
     "DomainAnalysis",
     "GPSPlanner",
     "GPSTrace",

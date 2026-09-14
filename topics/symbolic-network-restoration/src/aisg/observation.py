@@ -21,17 +21,17 @@ Formato / Format
   "captured_at": "2026-09-10T14:32:00Z",
   "source": "prometheus",
   "window": "5m",
-  "subject": { "kind": "link", "id": "AP_A-RM_A3" },
+  "subject": { "kind": "link", "id": "RELAY_5-CPE_03" },
   "observations": {
-    "rssi_dbm": { "value": -97.2, "cf": 1.0, "query": "min_over_time(...)" },
-    "weather":  { "value": "storm", "cf": 0.6, "source": "external-api" }
+    "rssi_dbm":           { "value": -97.2, "cf": 1.0, "query": "min_over_time(...)" },
+    "co_channel_emitter": { "value": "yes", "cf": 0.6, "source": "operator-read sweep" }
   },
-  "unavailable": { "spectrum_scan": "no exporter for the SDR sweep yet" }
+  "unavailable": { "retry_rate_pct": "no exporter for the MAC counters yet" }
 }
 ```
 
 ``cf`` carries how much the reading should be believed. A locally measured RSSI
-earns 1.0; a weather report from a station 20 km away is evidence, not
+earns 1.0; an operator reading a spectrum sweep by eye is evidence, not
 measurement, and should say so with something lower. ``unavailable`` records why
 a variable is missing, so a gap is documented rather than merely absent.
 """

@@ -3,22 +3,22 @@
   "captured_at": "2026-09-10T14:32:00Z",
   "source": "prometheus",
   "window": "5m",
-  "subject": { "kind": "link", "id": "AP_A-RM_A3" },
+  "subject": { "kind": "link", "id": "RELAY_5-CPE_03" },
   "observations": {
-    "rssi_dbm":        { "value": -97.2, "cf": 1.0, "query": "min_over_time(radio_rssi_dbm[5m])" },
-    "snr_db":          { "value": 6.1,   "cf": 1.0 },
-    "packet_loss_pct": { "value": 12.4,  "cf": 1.0 },
-    "rtt_ms":          { "value": 180.0, "cf": 1.0 },
-    "link_state":      { "value": "up",  "cf": 1.0 },
-    "spectrum_scan":   { "value": "occupied", "cf": 0.7, "source": "manual SDR sweep, operator-read" }
+    "rssi_dbm":           { "value": -97.2, "cf": 1.0, "query": "min_over_time(radio_rssi_dbm[5m])" },
+    "snr_db":             { "value": 6.1,   "cf": 1.0 },
+    "packet_loss_pct":    { "value": 12.4,  "cf": 1.0 },
+    "rtt_ms":             { "value": 180.0, "cf": 1.0 },
+    "node_responding":    { "value": "yes", "cf": 1.0 },
+    "co_channel_emitter": { "value": "yes", "cf": 0.7, "source": "manual spectrum sweep, operator-read" }
   },
   "unavailable": {
-    "weather": "no exporter; would come from an external forecast, not the bench",
-    "node_power": "PSU does not expose status over SNMP on this unit",
-    "vlan_trunk_ok": "config compliance check not wired to Prometheus",
-    "traffic_load_pct": "link_capacity_bps not published yet",
+    "retry_rate_pct": "no exporter for the MAC retry counters yet",
+    "offered_load_pct": "link capacity not published yet",
+    "excess_path_loss_db": "the propagation budget is not exported by the run",
+    "nodes_sharing_channel": "comes from the channel plan, not telemetry",
     "neighbours_affected": "needs a recording rule across the sector",
-    "recent_change": "comes from the change log, not telemetry",
-    "upstream_relay_reachable": "no blackbox probe defined for the SAF parent"
+    "route_present": "routing table not scraped",
+    "upstream_relay_reachable": "no blackbox probe defined for the relay"
   }
 }

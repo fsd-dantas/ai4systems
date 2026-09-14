@@ -101,7 +101,7 @@ class MetricSpec:
         return self.mapping[key]
 
 
-#: A starting set for the field knowledge base. Queries are deliberately generic:
+#: A starting set for the knowledge base. Queries are deliberately generic:
 #: metric names differ per exporter, so treat these as templates to edit, not as
 #: names that will exist in any particular installation.
 DEFAULT_SPECS: List[MetricSpec] = [
@@ -118,15 +118,19 @@ DEFAULT_SPECS: List[MetricSpec] = [
         convert="seconds_to_ms",
     ),
     MetricSpec(
-        "traffic_load_pct",
+        "offered_load_pct",
         '100 * rate(link_in_octets{link="{subject}"}[5m]) * 8'
         ' / link_capacity_bps{link="{subject}"}',
     ),
     MetricSpec(
-        "link_state",
-        'link_oper_status{link="{subject}"}',
-        mapping={"1": "up", "0": "down"},
-        note="flapping is not a level; derive it from changes() over a window",
+        "retry_rate_pct",
+        '100 * rate(mac_retries_total{link="{subject}"}[5m])'
+        ' / rate(mac_tx_total{link="{subject}"}[5m])',
+    ),
+    MetricSpec(
+        "node_responding",
+        'probe_success{node="{subject}"}',
+        mapping={"1": "yes", "0": "no"},
     ),
     MetricSpec(
         "upstream_relay_reachable",

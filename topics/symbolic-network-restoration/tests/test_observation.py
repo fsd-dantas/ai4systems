@@ -15,7 +15,7 @@ import json
 
 import pytest
 
-from aisg.expert_system import InferenceEngine, build_knowledge_base
+from aisg.expert_system import SIM_CASES, InferenceEngine, build_simulated_knowledge_base
 from aisg.observation import SCHEMA, Observation, ObservationError
 from aisg.prometheus import (
     MetricSpec,
@@ -49,16 +49,16 @@ def test_a_bare_value_is_accepted_and_taken_as_certain():
 def test_a_certainty_below_one_is_preserved():
     record = Observation.from_dict({
         "subject": {"id": "L1"},
-        "observations": {"weather": {"value": "storm", "cf": 0.6}},
+        "observations": {"co_channel_emitter": {"value": "yes", "cf": 0.6}},
     })
-    assert record.values["weather"] == ("storm", 0.6)
+    assert record.values["co_channel_emitter"] == ("yes", 0.6)
 
 
 def test_records_round_trip_through_json(tmp_path):
     original = Observation(
         subject_id="L1",
-        values={"rssi_dbm": (-97.2, 1.0), "link_state": ("up", 1.0)},
-        unavailable={"weather": "no exporter"},
+        values={"rssi_dbm": (-97.2, 1.0), "node_responding": ("yes", 1.0)},
+        unavailable={"retry_rate_pct": "no exporter"},
     )
     path = tmp_path / "obs.json"
     original.save(path)
@@ -89,10 +89,10 @@ def test_an_out_of_range_certainty_is_refused():
 
 # --- agreement with the knowledge base ------------------------------------
 def test_values_outside_the_declared_domain_are_caught_before_inference():
-    kb = build_knowledge_base()
+    kb = build_simulated_knowledge_base()
     record = Observation.from_dict({
         "subject": {"id": "L1"},
-        "observations": {"snr_db": 999.0, "link_state": "sideways"},
+        "observations": {"snr_db": 999.0, "node_responding": "sideways"},
     })
     problems = record.validate_against(kb)
     assert len(problems) == 2
@@ -101,7 +101,7 @@ def test_values_outside_the_declared_domain_are_caught_before_inference():
 
 
 def test_a_variable_the_base_concludes_cannot_be_observed():
-    kb = build_knowledge_base()
+    kb = build_simulated_knowledge_base()
     record = Observation.from_dict({
         "subject": {"id": "L1"},
         "observations": {"diagnosis": "rf_interference"},
@@ -110,7 +110,7 @@ def test_a_variable_the_base_concludes_cannot_be_observed():
 
 
 def test_applying_a_mismatched_record_raises_rather_than_half_loading():
-    engine = InferenceEngine(build_knowledge_base())
+    engine = InferenceEngine(build_simulated_knowledge_base())
     record = Observation.from_dict({
         "subject": {"id": "L1"},
         "observations": {"snr_db": 999.0},
@@ -119,9 +119,17 @@ def test_applying_a_mismatched_record_raises_rather_than_half_loading():
         record.apply_to(engine)
 
 
+def test_the_bundled_example_record_agrees_with_the_knowledge_base():
+    from pathlib import Path
+
+    example = Path(__file__).resolve().parents[1] / "examples" / "observation-partial.json"
+    record = Observation.load(example)
+    assert record.validate_against(build_simulated_knowledge_base()) == []
+
+
 # --- partial evidence, which is the normal case ---------------------------
 def test_coverage_reports_what_is_missing():
-    kb = build_knowledge_base()
+    kb = build_simulated_knowledge_base()
     record = Observation.from_dict({
         "subject": {"id": "L1"},
         "observations": {"rssi_dbm": -97.0, "snr_db": 6.0},
@@ -130,7 +138,7 @@ def test_coverage_reports_what_is_missing():
 
     assert supplied == 2
     assert askable == 13
-    assert "weather" in missing and "node_power" in missing
+    assert "retry_rate_pct" in missing and "node_responding" in missing
 
 
 def test_missing_evidence_lowers_certainty_rather_than_being_invented():
@@ -138,23 +146,16 @@ def test_missing_evidence_lowers_certainty_rather_than_being_invented():
     PT-BR: O mesmo diagnostico, com menos evidencia, deve vir com MENOS certeza.
     EN:    The same diagnosis, on less evidence, must come with LESS certainty.
     """
-    full = {
-        "rssi_dbm": -97.0, "snr_db": 6.0, "packet_loss_pct": 12.0, "rtt_ms": 180.0,
-        "traffic_load_pct": 35.0, "link_state": "up", "node_power": "ok",
-        "weather": "clear", "spectrum_scan": "occupied",
-        "neighbours_affected": "many", "recent_change": "none",
-        "vlan_trunk_ok": "yes", "upstream_relay_reachable": "yes",
-    }
-    partial = {k: full[k] for k in ("rssi_dbm", "snr_db", "spectrum_scan", "link_state")}
+    full = dict(SIM_CASES["rf_interference"])
+    partial = {k: full[k] for k in ("rssi_dbm", "snr_db", "co_channel_emitter")}
 
     results = {}
     for name, evidence in (("full", full), ("partial", partial)):
-        engine = InferenceEngine(build_knowledge_base())
+        engine = InferenceEngine(build_simulated_knowledge_base())
         Observation.from_dict(
             {"subject": {"id": "L1"}, "observations": evidence}
         ).apply_to(engine)
-        best = engine.forward_chain().memory.best("diagnosis")
-        results[name] = best
+        results[name] = engine.forward_chain().memory.best("diagnosis")
 
     assert results["full"].value == results["partial"].value == "rf_interference"
     assert results["partial"].cf < results["full"].cf
@@ -193,7 +194,7 @@ def test_an_ambiguous_result_is_refused():
 
 
 def test_a_failing_metric_becomes_a_documented_gap_not_a_guess():
-    """The whole point of the reader: a partly instrumented bench still works."""
+    """The whole point of the reader: a partly instrumented setup still works."""
     def fetch(query):
         if "rssi" in query:
             return _prometheus_reply("-97.2")
@@ -204,7 +205,7 @@ def test_a_failing_metric_becomes_a_documented_gap_not_a_guess():
         MetricSpec("rssi_dbm", 'radio_rssi_dbm{{link="{subject}"}}'),
         MetricSpec("snr_db", 'radio_snr_db{{link="{subject}"}}'),
     ]
-    record = fetch_observation(client, "AP_A-RM_A3", specs)
+    record = fetch_observation(client, "RELAY_5-CPE_03", specs)
 
     assert record.values["rssi_dbm"][0] == pytest.approx(-97.2)
     assert "snr_db" not in record.values
@@ -213,17 +214,17 @@ def test_a_failing_metric_becomes_a_documented_gap_not_a_guess():
 
 def test_categorical_mapping_turns_a_number_into_a_declared_label():
     client = PrometheusClient("http://x", _fetch=lambda q: _prometheus_reply("1"))
-    spec = MetricSpec("link_state", "s", mapping={"1": "up", "0": "down"})
+    spec = MetricSpec("node_responding", "s", mapping={"1": "yes", "0": "no"})
     record = fetch_observation(client, "L1", [spec])
-    assert record.values["link_state"][0] == "up"
+    assert record.values["node_responding"][0] == "yes"
 
 
 def test_an_unmapped_numeric_result_is_refused_rather_than_passed_through():
     client = PrometheusClient("http://x", _fetch=lambda q: _prometheus_reply("7"))
-    spec = MetricSpec("link_state", "s", mapping={"1": "up", "0": "down"})
+    spec = MetricSpec("node_responding", "s", mapping={"1": "yes", "0": "no"})
     record = fetch_observation(client, "L1", [spec])
-    assert "link_state" not in record.values
-    assert "not in the declared mapping" in record.unavailable["link_state"]
+    assert "node_responding" not in record.values
+    assert "not in the declared mapping" in record.unavailable["node_responding"]
 
 
 def test_a_fetched_record_carries_the_query_as_provenance():
@@ -238,4 +239,13 @@ def test_a_fetched_record_is_accepted_by_the_knowledge_base():
     record = fetch_observation(
         client, "L1", [MetricSpec("rssi_dbm", 'radio_rssi_dbm{{link="{subject}"}}')]
     )
-    assert record.validate_against(build_knowledge_base()) == []
+    assert record.validate_against(build_simulated_knowledge_base()) == []
+
+
+def test_every_default_metric_names_a_variable_the_base_can_be_asked():
+    from aisg.prometheus import DEFAULT_SPECS
+
+    kb = build_simulated_knowledge_base()
+    for spec in DEFAULT_SPECS:
+        assert spec.variable in kb.variables, spec.variable
+        assert kb.variables[spec.variable].askable, spec.variable

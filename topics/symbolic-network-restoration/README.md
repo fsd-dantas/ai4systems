@@ -1,9 +1,3 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/banner-dark.jpg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Smartgrid Networks — an isometric grid fabric with energised traces linking a neural network, a solar array, a transmission tower, smart meters, a wind turbine and an AI processor." width="100%">
-  </picture>
-</p>
 
 [ai4systems](../../README.md) › **Symbolic AI for Network Restoration**
 

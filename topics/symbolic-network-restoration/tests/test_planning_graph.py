@@ -29,23 +29,21 @@ from aisg.planning import (
     plan_with_gps,
     problem_from_diagnosis,
 )
+from aisg.planning.domain_restoration import KNOWN_FAULTS
 from aisg.planning.planning_graph import (
     analyse,
     build_planning_graph,
     is_noop,
 )
 
-FIELD_FAULTS = ("interference", "misaligned", "power-failed", "relay-down",
-                "vlan-wrong", "transient")
-SIMULATED_FAULTS = ("excess-path-loss", "mac-contention", "node-stopped",
-                    "route-missing")
-SIMULATED_DIAGNOSES = ("excess_path_loss", "mac_contention", "node_failure",
-                       "routing_misconfiguration")
+FAULTS = tuple(sorted(KNOWN_FAULTS))
+#: Diagnoses that plan without a topology (congestion needs one, to find a detour).
+DIAGNOSES = ("excess_path_loss", "mac_contention", "node_failure",
+             "routing_misconfiguration", "rf_interference", "upstream_relay_failure")
 
 
-def _restoration(faults, simulated=True, node="N"):
-    return build_restoration_problem(node=node, faults=faults, simulated=simulated,
-                                     alternate_route=True)
+def _restoration(faults, node="N"):
+    return build_restoration_problem(node=node, faults=faults, alternate_route=True)
 
 
 # --- graph construction ----------------------------------------------------
@@ -100,7 +98,7 @@ def test_inconsistent_effects_produce_an_action_mutex():
 
 
 # --- the lower bound -------------------------------------------------------
-@pytest.mark.parametrize("diagnosis", SIMULATED_DIAGNOSES)
+@pytest.mark.parametrize("diagnosis", DIAGNOSES)
 def test_graph_level_is_a_lower_bound_on_the_plan_a_star_finds(diagnosis):
     """
     The level at which the goal first appears non-mutex can never exceed the
@@ -144,38 +142,35 @@ def test_the_restoration_domain_has_no_choice_points():
     finally became rich enough for the GPS/A* comparison to be interesting, and
     the claim in the planning slides needs revisiting.
     """
-    for faults, simulated in ((FIELD_FAULTS, False), (SIMULATED_FAULTS, True)):
-        problem = _restoration(faults, simulated=simulated)
-        assert analyse(problem).choice_points == {}
+    assert analyse(_restoration(FAULTS)).choice_points == {}
 
 
 def test_gps_matches_a_star_on_every_solvable_fault_combination():
     """The empirical companion to the structural result above."""
     compared = 0
-    for pool, simulated in ((FIELD_FAULTS, False), (SIMULATED_FAULTS, True)):
-        for size in (1, 2, 3):
-            for combo in itertools.combinations(pool, size):
-                problem = _restoration(combo, simulated=simulated)
-                astar_plan, _ = plan_with_astar(problem)
-                gps_plan, _ = plan_with_gps(problem)
-                if astar_plan is None or gps_plan is None:
-                    continue
-                compared += 1
-                assert gps_plan.cost == astar_plan.cost
-    assert compared == 55
+    for size in (1, 2, 3):
+        for combo in itertools.combinations(FAULTS, size):
+            problem = _restoration(combo)
+            astar_plan, _ = plan_with_astar(problem)
+            gps_plan, _ = plan_with_gps(problem)
+            if astar_plan is None or gps_plan is None:
+                continue
+            compared += 1
+            assert gps_plan.cost == astar_plan.cost
+    assert compared == 63
 
 
-def test_crew_operators_are_dead_in_the_simulated_scenario():
+def test_repairs_for_absent_faults_are_dead_operators():
     """
-    A simulated run has no field crew, so nothing ever establishes crew-at.
+    With one fault diagnosed, nothing establishes the other faults' literals, so
+    their repair operators can never fire.
 
-    The operators remain on offer, which is harmless for correctness -- they
-    simply never fire -- but the graph is what tells us so without having to
-    read the operator list by hand.
+    That is harmless for correctness -- they simply never fire -- but the graph
+    is what tells us so without having to read the operator list by hand.
     """
-    problem = _restoration(SIMULATED_FAULTS, simulated=True)
-    dead = set(analyse(problem).dead_operators)
-    assert {"dispatch_crew", "realign_antenna"} <= dead
+    dead = set(analyse(_restoration(("mac-contention",))).dead_operators)
+    assert {"change_channel", "restart_node", "fix_routing"} <= dead
+    assert "separate_channels" not in dead
 
 
 # --- the success invariant -------------------------------------------------

@@ -37,26 +37,21 @@ from pathlib import Path
 from typing import Dict, Iterable, Iterator, List, Optional, Tuple
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
-DEFAULT_TOPOLOGY_FILE = DATA_DIR / "backhaul-topology.json"
-
 #: Bundled scenarios, by short name.
 #:
-#: PT-BR: ``base`` e o cenario de trabalho (17 nos). ``scale`` e o cenario de escala
-#:        (30 nos, tres setores), usado para mostrar como as estrategias de busca se
-#:        comportam quando o grafo cresce.
-#: EN:    ``base`` is the working scenario (17 nodes). ``scale`` is the scale
-#:        scenario (30 nodes, three sectors), used to show how the search strategies
-#:        behave as the graph grows.
+#: PT-BR: ``dual`` e o cenario de trabalho (60 nos, 15 sites com duplo acesso).
+#:        ``simulated`` e o cenario de 30 nos em tres setores, usado para comparar o
+#:        esforco de busca em dois grafos.
+#: EN:    ``dual`` is the working scenario (60 nodes, 15 dual-homed sites).
+#:        ``simulated`` is the 30-node, three-sector scenario, used to compare search
+#:        effort across two graphs.
 BUNDLED_TOPOLOGIES: Dict[str, Path] = {
-    "base": DEFAULT_TOPOLOGY_FILE,
     "simulated": DATA_DIR / "backhaul-topology-30.json",
-    # Kept as an alias: the 30-node scenario was introduced as the "scale" case
-    # before it was framed as the simulated bench extension.
-    "scale": DATA_DIR / "backhaul-topology-30.json",
     # 60 nodes: 15 grid sites each reached by BOTH a private LTE star and a
     # 900 MHz store-and-forward mesh, so a route has a choice of medium.
     "dual": DATA_DIR / "backhaul-topology-60.json",
 }
+DEFAULT_TOPOLOGY_FILE = BUNDLED_TOPOLOGIES["dual"]
 
 
 @dataclass(frozen=True)
@@ -342,14 +337,14 @@ def load_default_topology() -> Topology:
     return Topology.load()
 
 
-def load_topology(name: str = "base") -> Topology:
+def load_topology(name: str = "dual") -> Topology:
     """
     Load a bundled scenario by short name.
 
-    PT-BR: ``base`` (17 nos) ou ``scale`` (30 nos). Tambem aceita um caminho de
+    PT-BR: ``dual`` (60 nos) ou ``simulated`` (30 nos). Tambem aceita um caminho de
            arquivo, para cenarios proprios fora do repositorio.
-    EN:    ``base`` (17 nodes) or ``scale`` (30 nodes). Also accepts a file path, for
-           private scenarios kept outside the repository.
+    EN:    ``dual`` (60 nodes) or ``simulated`` (30 nodes). Also accepts a file path,
+           for private scenarios kept outside the repository.
     """
     path = BUNDLED_TOPOLOGIES.get(name)
     if path is None:

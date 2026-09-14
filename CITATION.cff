@@ -33,7 +33,7 @@ abstract: >-
   own research question, code, tests and documentation. The first topic,
   Symbolic AI for Network Restoration, applies three symbolic systems to a
   single domain: the communication backhaul of a smart electric grid. A
-  rule-based expert system diagnoses link degradation using 43 production rules
+  rule-based expert system diagnoses link degradation using 41 production rules
   in five layers, with forward and backward chaining, MYCIN-style certainty
   factors, selectable conflict-resolution policies, and why/how explanation. An
   automated planner represents restoration actions in STRIPS and solves them
