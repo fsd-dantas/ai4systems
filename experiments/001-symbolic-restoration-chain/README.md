@@ -1,11 +1,11 @@
 
-[ai4systems](../../README.md) › **Symbolic AI for Network Restoration**
+[ai4systems](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **001 Symbolic restoration chain**
 
-# Symbolic AI for Network Restoration
+# 001 — Symbolic AI for Network Restoration
 
 [![tests](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](../../LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)](pyproject.toml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)](../../pyproject.toml)
 
 > **PT-BR** — Três sistemas simbólicos de Inteligência Artificial aplicados a um mesmo domínio: redes de comunicação sem fio para sistemas elétricos inteligentes. Um sistema especialista de diagnóstico, um gerador automático de planos de ação (STRIPS / GPS) e uma implementação de busca A*.
 >
@@ -19,9 +19,9 @@
 
 | # | Sistema / System | Técnica / Technique | Código / Code |
 |---|---|---|---|
-| 1 | Sistema especialista / Expert system | Regras de produção, encadeamento progressivo e regressivo, fatores de certeza / Production rules, forward and backward chaining, certainty factors | [`expert_system/`](src/aisg/expert_system/) |
-| 2 | Geração de planos / Plan generation | STRIPS + GPS (análise meios-fins) + planejamento progressivo por A* / STRIPS + GPS (means-ends analysis) + A* progression planning | [`planning/`](src/aisg/planning/) |
-| 3 | Busca A* / A* search | A*, custo uniforme, gulosa, largura, profundidade / A*, uniform cost, greedy, breadth-first, depth-first | [`search/`](src/aisg/search/) |
+| 1 | Sistema especialista / Expert system | Regras de produção, encadeamento progressivo e regressivo, fatores de certeza / Production rules, forward and backward chaining, certainty factors | [`expert_system/`](../../software/aisg/expert_system/) |
+| 2 | Geração de planos / Plan generation | STRIPS + GPS (análise meios-fins) + planejamento progressivo por A* / STRIPS + GPS (means-ends analysis) + A* progression planning | [`planning/`](../../software/aisg/planning/) |
+| 3 | Busca A* / A* search | A*, custo uniforme, gulosa, largura, profundidade / A*, uniform cost, greedy, breadth-first, depth-first | [`search/`](../../software/aisg/search/) |
 
 **Os três se conectam.** O diagnóstico produzido pelo sistema especialista vira o estado inicial do planejador; a ação *desviar tráfego* só é aplicável quando a busca A* confirma que existe rota alternativa; e o planejador progressivo usa **a mesma função A***, sem cópia, que resolve o roteamento.
 
@@ -29,20 +29,20 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/01-integration-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/01-integration-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
   </picture>
 </p>
 
 | Diagrama / Diagram                                                                                         | Conteúdo / Contents                                                                |
 |------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [Integration](docs/assets/01-integration-light.svg) · [dark](docs/assets/01-integration-dark.svg)          | How the three systems exchange information                                         |
-| [Expert system](docs/assets/02-expert-system-light.svg) · [dark](docs/assets/02-expert-system-dark.svg)    | The five rule layers and both chaining directions                                  |
-| [Planning](docs/assets/03-planning-light.svg) · [dark](docs/assets/03-planning-dark.svg)                   | STRIPS operator anatomy and the GPS means-ends recursion                           |
-| [A* search](docs/assets/04-astar-light.svg) · [dark](docs/assets/04-astar-dark.svg)                        | f = g + h, the admissibility proof, and the strategy comparison                    |
-| [Scenario, 30 nodes](docs/assets/05-simulated-30-light.svg) · [dark](docs/assets/05-simulated-30-dark.svg) | The simulated scenario and the A* route across it                                  |
-| [Scenario, 60 nodes](docs/assets/06-dual-60-light.svg) · [dark](docs/assets/06-dual-60-dark.svg)           | 15 dual-homed sites reached by both a pLTE star and a 900 MHz mesh                 |
-| [State machine](docs/assets/07-state-machine-light.svg) · [dark](docs/assets/07-state-machine-dark.svg)    | The restoration state space, and why the goal is unreachable while a fault is live |
+| [Integration](../../docs/assets/figures/01-integration-light.svg) · [dark](../../docs/assets/figures/01-integration-dark.svg)          | How the three systems exchange information                                         |
+| [Expert system](../../docs/assets/figures/02-expert-system-light.svg) · [dark](../../docs/assets/figures/02-expert-system-dark.svg)    | The five rule layers and both chaining directions                                  |
+| [Planning](../../docs/assets/figures/03-planning-light.svg) · [dark](../../docs/assets/figures/03-planning-dark.svg)                   | STRIPS operator anatomy and the GPS means-ends recursion                           |
+| [A* search](../../docs/assets/figures/04-astar-light.svg) · [dark](../../docs/assets/figures/04-astar-dark.svg)                        | f = g + h, the admissibility proof, and the strategy comparison                    |
+| [Scenario, 30 nodes](../../docs/assets/figures/05-simulated-30-light.svg) · [dark](../../docs/assets/figures/05-simulated-30-dark.svg) | The simulated scenario and the A* route across it                                  |
+| [Scenario, 60 nodes](../../docs/assets/figures/06-dual-60-light.svg) · [dark](../../docs/assets/figures/06-dual-60-dark.svg)           | 15 dual-homed sites reached by both a pLTE star and a 900 MHz mesh                 |
+| [State machine](../../docs/assets/figures/07-state-machine-light.svg) · [dark](../../docs/assets/figures/07-state-machine-dark.svg)    | The restoration state space, and why the goal is unreachable while a fault is live |
 
 ---
 
@@ -53,34 +53,27 @@ The core has no third-party dependencies: only the Python 3.10+ standard library
 
 ```bash
 git clone https://github.com/fsd-dantas/ai4systems.git
-cd ai4systems/topics/symbolic-network-restoration
-python -m pip install -e .
+cd ai4systems
+python -m pip install -e ".[dev]"
 
 # 1 — sistema especialista / expert system
-aisg diagnose --case interference --trace --explain
+aisg diagnose --case rf_interference --trace --explain
 aisg diagnose --interactive --mode backward      # consulta guiada por objetivo
 
 # 2 — planejamento / planning
-aisg plan --diagnosis mac_contention --node AP_C --solver both --trace
+aisg plan --diagnosis mac_contention --node SAF_02 --solver both --trace
 
-# 3 — busca A* / A* search  (o caminho mais barato tem MAIS saltos)
-aisg --topology simulated route --from LTE_ENB --to AP_B --compare --expansion
+# 3 — busca A* / A* search
+aisg route --from NOC --to ER_03 --compare --expansion
 
 # os três em sequência / all three in sequence
-aisg pipeline --case congestion --node SAF_A2
+aisg pipeline --case congestion --node SAF_01 --target ER_03
 ```
 
-Sem instalar / without installing: `PYTHONPATH=src python -m aisg ...`
+Sem instalar / without installing: `PYTHONPATH=software python -m aisg ...`
 Em inglês / in English: acrescente `--lang en` / add `--lang en`.
 
-Testes / tests: `python -m pytest` (209 testes / 209 tests).
-
-Apresentação / presentation:
-[`docs/presentation/mini-systems-presentation.pptx`](docs/presentation/mini-systems-presentation.pptx)
-(59 slides, 90 min, com notas do apresentador e roteiro sincronizado /
-59 slides, 90 min, with speaker notes and a synchronised script)
-· [`notebooks/apresentacao.ipynb`](notebooks/apresentacao.ipynb) — já executado, renderiza no GitHub sem rodar nada / pre-executed, renders on GitHub with no kernel
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fsd-dantas/ai4systems/blob/main/topics/symbolic-network-restoration/notebooks/apresentacao.ipynb)
+Testes / tests: `python -m pytest` (207 testes no repositório / 207 tests in the repository).
 
 Fundamentos teóricos na wiki / theoretical foundations in the wiki:
 [github.com/fsd-dantas/ai4systems/wiki](https://github.com/fsd-dantas/ai4systems/wiki)
@@ -154,7 +147,7 @@ setores.
 estudada em laboratórios de pesquisa em backhaul sem fio. Não contém inventário
 real, endereçamento, identificação de equipamento, configuração de RF nem
 topologia de campo de qualquer laboratório ou concessionária. Ver
-[`docs/domain-model.md`](docs/domain-model.md).
+[`docs/domain-model.md`](../../docs/domain-model.md).
 
 **Simulado, e não de campo — por escolha metodológica.** O cenário é simulado,
 o que inverte a relação usual entre validade interna e externa a favor
@@ -177,7 +170,7 @@ suposição sem tornar visível que a herdou. É precisamente essa invisibilidad
 o método simbólico evita: uma regra errada pode ser lida, discutida e refutada
 por um engenheiro; um peso errado, não.
 
-> **O escopo desta afirmação é a tarefa de diagnóstico** — não o projeto inteiro. Aprender a *heurística* da busca, por exemplo, é uma tarefa diferente e perfeitamente viável: o alvo de regressão é o custo real restante `h*(n)`, calculável exatamente com uma busca de custo uniforme a partir do objetivo. A supervisão é gratuita e exata, e não depende de rótulo de falha nenhum. O que impede seu uso direto não é a falta de dados, e sim a **admissibilidade**: uma heurística aprendida por regressão pode superestimar, e então o A* perde a otimalidade em silêncio. Ver [`docs/03-astar.md`](docs/03-astar.md).
+> **O escopo desta afirmação é a tarefa de diagnóstico** — não o projeto inteiro. Aprender a *heurística* da busca, por exemplo, é uma tarefa diferente e perfeitamente viável: o alvo de regressão é o custo real restante `h*(n)`, calculável exatamente com uma busca de custo uniforme a partir do objetivo. A supervisão é gratuita e exata, e não depende de rótulo de falha nenhum. O que impede seu uso direto não é a falta de dados, e sim a **admissibilidade**: uma heurística aprendida por regressão pode superestimar, e então o A* perde a otimalidade em silêncio. Ver [`astar.md`](astar.md).
 >
 > **The scope of this claim is the diagnosis task**, not the whole project. Learning the search *heuristic* is a different and perfectly viable task: the regression target is the true remaining cost `h*(n)`, computable exactly by uniform-cost search from the goal. Supervision is free and exact, and needs no fault labels. What stands in the way is not data but **admissibility**.
 
@@ -207,19 +200,18 @@ Duas consequências de projeto decorrem disso:
 | Nenhum operador é inalcançável | presença nos níveis de ação | grafo de planejamento |
 | Limite inferior do tamanho do plano | nível do objetivo sem exclusão mútua | grafo de planejamento |
 
-São **209 testes**, que asseguram *propriedades* — admissibilidade, validade de
+São **207 testes** no repositório, que asseguram *propriedades* — admissibilidade, validade de
 plano, invariantes do domínio — e não apenas saídas esperadas.
 
 ### Documentação
 
 | Documento | Conteúdo |
 |---|---|
-| [`docs/01-expert-system.md`](docs/01-expert-system.md) | Variáveis, regras (43 na base de campo, 41 na simulada), fatores de certeza, encadeamentos, resolução de conflito, explicação |
-| [`docs/02-planning.md`](docs/02-planning.md) | STRIPS, GPS e análise meios-fins, planejador A*, limitações do GPS |
-| [`docs/planner-design-process.md`](docs/planner-design-process.md) | **Como o domínio de planejamento foi definido**, e a análise por grafo de planejamento que o valida |
-| [`docs/03-astar.md`](docs/03-astar.md) | A*, prova de admissibilidade e consistência, comparação entre estratégias |
-| [`docs/domain-model.md`](docs/domain-model.md) | Topologia, modelo de custo e limites de validade |
-| [`docs/presentation-script.md`](docs/presentation-script.md) | Roteiro da apresentação — 30 minutos por tema |
+| [`expert-system.md`](expert-system.md) | Variáveis, 41 regras na base simulada, fatores de certeza, encadeamentos, resolução de conflito, explicação |
+| [`planning.md`](planning.md) | STRIPS, GPS e análise meios-fins, planejador A*, limitações do GPS |
+| [`planner-design-process.md`](planner-design-process.md) | **Como o domínio de planejamento foi definido**, e a análise por grafo de planejamento que o valida |
+| [`astar.md`](astar.md) | A*, prova de admissibilidade e consistência, comparação entre estratégias |
+| [`docs/domain-model.md`](../../docs/domain-model.md) | Topologia, modelo de custo e limites de validade |
 
 ---
 
@@ -286,7 +278,7 @@ presentation has **30 nodes and 44 links** across three sectors.
 **The topology is SYNTHETIC.** It is a didactic model of the *class* of scenarios
 studied in wireless backhaul research testbeds. It contains no real inventory,
 addressing, equipment identification, RF configuration, or field topology of any
-laboratory or utility. See [`docs/domain-model.md`](docs/domain-model.md).
+laboratory or utility. See [`docs/domain-model.md`](../../docs/domain-model.md).
 
 **Simulated rather than field, by methodological choice.** The scenario is
 simulated, which inverts the usual internal/external validity trade-off in this work's
@@ -334,36 +326,26 @@ Two design consequences follow:
 | No operator is unreachable | presence in the action levels | planning graph |
 | Lower bound on plan length | goal level free of mutexes | planning graph |
 
-There are **209 tests**, asserting *properties* — admissibility, plan validity,
+There are **207 tests** in the repository, asserting *properties* — admissibility, plan validity,
 domain invariants — rather than merely expected outputs.
 
 ### Documentation
 
 | Document | Contents |
 |---|---|
-| [`docs/01-expert-system.md`](docs/01-expert-system.md) | Variables, rules (43 in the field base, 41 in the simulated one), certainty factors, both chainings, conflict resolution, explanation |
-| [`docs/02-planning.md`](docs/02-planning.md) | STRIPS, GPS and means-ends analysis, the A* planner, GPS's limitations |
-| [`docs/planner-design-process.md`](docs/planner-design-process.md) | **How the planning domain was defined**, and the planning-graph analysis that validates it |
-| [`docs/03-astar.md`](docs/03-astar.md) | A*, admissibility and consistency proofs, strategy comparison |
-| [`docs/domain-model.md`](docs/domain-model.md) | Topology, cost model, and validity limits |
-| [`docs/presentation-script.md`](docs/presentation-script.md) | Presentation script — 30 minutes per topic |
+| [`expert-system.md`](expert-system.md) | Variables, 41 rules in the simulated base, certainty factors, both chainings, conflict resolution, explanation |
+| [`planning.md`](planning.md) | STRIPS, GPS and means-ends analysis, the A* planner, GPS's limitations |
+| [`planner-design-process.md`](planner-design-process.md) | **How the planning domain was defined**, and the planning-graph analysis that validates it |
+| [`astar.md`](astar.md) | A*, admissibility and consistency proofs, strategy comparison |
+| [`docs/domain-model.md`](../../docs/domain-model.md) | Topology, cost model, and validity limits |
 
 ---
 
 ## Estrutura / Layout
 
-```
-src/aisg/
-  domain/          modelo compartilhado: topologia e custo / shared model: topology and cost
-  expert_system/   motor de inferência + base de conhecimento / inference engine + knowledge base
-  planning/        STRIPS, GPS, planejador A*, grafo de planejamento / STRIPS, GPS, A* planner, planning graph
-  search/          A* e as demais estratégias / A* and the other strategies
-  cli.py           interface de linha de comando / command-line interface
-tests/             209 testes / 209 tests
-docs/              documentação bilíngue / bilingual documentation
-  assets/          figuras (SVG + PNG) e seus geradores / figures and their generators
-notebooks/         roteiro executável da apresentação / executable presentation script
-```
+O código deste experimento está em [`software/aisg/`](../../software/aisg/) (módulos `domain`, `expert_system`, `planning`, `search`) e os testes em [`software/tests/`](../../software/tests/). Ver [docs/architecture.md](../../docs/architecture.md).
+
+The code for this experiment lives in [`software/aisg/`](../../software/aisg/) (modules `domain`, `expert_system`, `planning`, `search`) and the tests in [`software/tests/`](../../software/tests/). See [docs/architecture.md](../../docs/architecture.md).
 
 ## Referências / References
 

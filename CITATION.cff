@@ -9,8 +9,8 @@ authors:
     given-names: Fernando Sabino
 repository-code: https://github.com/fsd-dantas/ai4systems
 license: MIT
-version: 0.9.0
-date-released: "2026-09-09"
+version: 0.10.0
+date-released: "2026-09-14"
 keywords:
   - artificial intelligence
   - cyber-physical systems
@@ -22,28 +22,28 @@ keywords:
   - automated planning
   - STRIPS
   - general problem solver
-  - means-ends analysis
   - A* search
-  - heuristic search
+  - blackboard architecture
+  - multi-expert system
+  - multi-RAT
+  - private LTE
   - smart grid
   - communication networks
 abstract: >-
-  A collection of self-contained research topics that apply artificial
-  intelligence methods to cyber-physical and networked systems, each with its
-  own research question, code, tests and documentation. The first topic,
-  Symbolic AI for Network Restoration, applies three symbolic systems to a
-  single domain: the communication backhaul of a smart electric grid. A
-  rule-based expert system diagnoses link degradation using 41 production rules
-  in five layers, with forward and backward chaining, MYCIN-style certainty
-  factors, selectable conflict-resolution policies, and why/how explanation. An
-  automated planner represents restoration actions in STRIPS and solves them
-  both by GPS means-ends analysis and by A* progression search. An A*
-  implementation returns least-cost routes over the network graph, with a
-  straight-line heuristic that is admissible and consistent by construction and
-  verified exhaustively in tests. The three integrate: a diagnosis becomes the
-  planner's initial state, and the reroute action is applicable only when A*
-  confirms an alternative route exists. The network topologies are synthetic
-  and the diagnostic thresholds are nominal and uncalibrated: no labelled fault
-  dataset exists for this domain, which is the stated reason for choosing
-  knowledge-driven over data-driven methods. Developed as the practical
-  assignments of a doctoral Introduction to Artificial Intelligence course.
+  A research compendium on justifiable diagnosis, intervention and routing
+  recommendations under explicit assumptions for multi-RAT smart-grid
+  communication networks, where private LTE and 900 MHz radio reach the same
+  grid sites over a fibre core. Its central question is whether, without a
+  labelled fault dataset, a diagnosis-plan-route chain can be both auditable
+  and verifiable. Experiment 001 answers it for a single incident: a rule-based
+  expert system with 41 production rules, MYCIN-style certainty factors, forward
+  and backward chaining and why/how explanation; STRIPS planning solved by GPS
+  means-ends analysis and by A* progression search; and A* routing with a
+  straight-line heuristic proven admissible and consistent and checked against
+  Floyd-Warshall. Experiment 002 extends it to the whole network with a
+  blackboard of eleven knowledge sources: rule experts split from the same base
+  without changing any single-node conclusion, an incident correlator that
+  explains simultaneous outages by one upstream cause, an A* access router and
+  a multi-RAT arbiter deciding medium switch, lost redundancy or isolation per
+  site, and a planner ranking repairs by damage. All scenarios are synthetic
+  and all thresholds nominal and uncalibrated.

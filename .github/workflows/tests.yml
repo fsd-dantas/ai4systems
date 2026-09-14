@@ -7,19 +7,14 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# One job per topic. Each topic installs from its own pyproject.toml, so a
-# topic's dependencies never leak into another topic's test environment.
 jobs:
-  symbolic-network-restoration:
+  software:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: topics/symbolic-network-restoration
     strategy:
       fail-fast: false
       matrix:
         # The core depends only on the standard library, so it is worth proving
-        # that across every Python the topic claims to support.
+        # that across every Python the package claims to support.
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
@@ -44,3 +39,4 @@ jobs:
           aisg --lang en diagnose --case rf_interference
           aisg --lang en route --compare
           aisg --lang en pipeline --case congestion
+          aisg --lang en blackboard --scenario dual-outage

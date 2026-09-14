@@ -27,12 +27,12 @@ desktop.ini
 # Local editor scaffolding
 *.code-workspace
 
-# Build tooling, not coursework. In each topic, these scripts generate the
-# committed deliverables (the .pptx deck, its speaking script, and the figures
-# under docs/assets/). The deliverables are versioned; the machinery that
-# produces them is local, and stays out of the published repository.
-**/docs/presentation/*.py
-**/docs/presentation/presentation-manifest.json
-**/docs/presentation/presentation-evidence.json
-**/docs/assets/src/
+# Presentations are not published: the deck, its speaking script, the
+# presentation notebook and the scripts that build them stay local. The
+# research they present is public, in experiments/ and the wiki.
+manuscripts/presentations/
 ~$*.pptx
+
+# Figure generators are local tooling; the figures they produce under
+# docs/assets/ are versioned.
+docs/assets/src/

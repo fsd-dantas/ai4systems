@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aisg"
-version = "0.9.0"
-description = "Expert system, automated planning (STRIPS/GPS) and A* search applied to smart-grid communication networks"
+version = "0.10.0"
+description = "Justifiable diagnosis, intervention and routing for multi-RAT smart-grid communication networks: expert systems, STRIPS/GPS planning, A* search and a multi-expert blackboard"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Fernando Sabino Dantas" }]
-keywords = ["artificial-intelligence", "expert-system", "strips", "planning", "a-star", "smart-grid"]
+keywords = ["artificial-intelligence", "expert-system", "strips", "planning", "a-star", "blackboard", "multi-rat", "smart-grid"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -25,12 +25,13 @@ notebook = ["matplotlib>=3.7", "ipykernel>=6"]
 aisg = "aisg.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["software"]
+include = ["aisg*"]
 
 [tool.setuptools.package-data]
 aisg = ["domain/data/*.json"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
+testpaths = ["software/tests"]
+pythonpath = ["software"]
 addopts = "-q"

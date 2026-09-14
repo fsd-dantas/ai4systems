@@ -19,7 +19,7 @@ GPS is not complete and not optimal. It commits to the first operator that reduc
 the difference and never revises that commitment except by backtracking on failure.
 It is also subject to the *Sussman anomaly*: with interacting subgoals, achieving
 them one at a time can undo earlier work. This is exactly why the A* forward planner
-in :mod:`aisg.planning.forward` exists next to it — see ``docs/02-planning.md``.
+in :mod:`aisg.planning.forward` exists next to it — see ``experiments/001-symbolic-restoration-chain/planning.md``.
 """
 
 from __future__ import annotations

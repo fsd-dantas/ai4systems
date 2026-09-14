@@ -6,12 +6,12 @@
 > Link-degradation diagnosis with production rules, forward and backward chaining,
 > certainty factors, and explanation.
 
-Codigo / code: [`src/aisg/expert_system/`](../src/aisg/expert_system/)
+Codigo / code: [`software/aisg/expert_system/`](../../software/aisg/expert_system/)
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/02-expert-system-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/02-expert-system-light.svg" alt="The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/02-expert-system-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/02-expert-system-light.svg" alt="The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
   </picture>
 </p>
 
@@ -144,7 +144,7 @@ diagnostico = node_power_failure (CF +0,95, R16)
 
 ### Calibracao
 
-Todos os limiares numericos vivem em `THRESHOLDS`, em [`kb_backhaul.py`](../src/aisg/expert_system/kb_backhaul.py). Sao **nominais e nao calibrados**. Quando existir linha de base medida, ajustam-se os valores; as regras nao mudam. E por isso que o bloco esta declarado num unico lugar.
+Todos os limiares numericos vivem em `SIM_THRESHOLDS`, em [`kb_simulated.py`](../../software/aisg/expert_system/kb_simulated.py). Sao **nominais e nao calibrados**. Quando existir linha de base medida, ajustam-se os valores; as regras nao mudam. E por isso que o bloco esta declarado num unico lugar.
 
 ### Como executar
 

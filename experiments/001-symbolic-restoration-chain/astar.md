@@ -6,12 +6,12 @@
 > Least-cost routing over the backhaul, with an admissibility proof and a comparison
 > against breadth-first, depth-first, uniform-cost, and greedy search.
 
-Codigo / code: [`src/aisg/search/`](../src/aisg/search/)
+Codigo / code: [`software/aisg/search/`](../../software/aisg/search/)
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/04-astar-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/04-astar-light.svg" alt="On the left, the optimal path A* finds. On the right, the heuristic, its admissibility and consistency proofs, and the comparison table for five search strategies." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/04-astar-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/04-astar-light.svg" alt="On the left, the optimal path A* finds. On the right, the heuristic, its admissibility and consistency proofs, and the comparison table for five search strategies." width="100%">
   </picture>
 </p>
 
@@ -144,7 +144,7 @@ O teste `test_the_heuristic_saves_more_work_as_the_graph_grows` verifica essa re
 ### Heuristicas aprendidas: onde o aprendizado de maquina entraria
 
 O repositorio nao usa aprendizado de maquina, e a razao declarada em
-[`01-expert-system.md`](01-expert-system.md) — a ausencia de dados rotulados de
+[`01-expert-system.md`](expert-system.md) — a ausencia de dados rotulados de
 falha — vale para o **diagnostico**, nao para a heuristica.
 
 Aprender `h(n)` e uma tarefa de natureza diferente:
@@ -162,7 +162,7 @@ diagnostico simplesmente nao existe aqui.
 **O que realmente impede o uso direto e a admissibilidade.** Uma heuristica
 obtida por regressao pode **superestimar** o custo restante, e nesse caso o A*
 continua funcionando e passa a devolver caminhos subotimos **sem avisar** — o
-mesmo modo de falha silenciosa discutido em [`02-planning.md`](02-planning.md).
+mesmo modo de falha silenciosa discutido em [`02-planning.md`](planning.md).
 
 Tres formas de conviver com isso, em ordem de garantia:
 

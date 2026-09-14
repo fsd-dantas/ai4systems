@@ -6,9 +6,9 @@
 > The decision process behind the STRIPS restoration domain, and the
 > planning-graph analysis that validates it.
 
-Codigo / code: [`src/aisg/planning/domain_restoration.py`](../src/aisg/planning/domain_restoration.py),
-[`src/aisg/planning/planning_graph.py`](../src/aisg/planning/planning_graph.py)
-Testes / tests: [`tests/test_planning_graph.py`](../tests/test_planning_graph.py)
+Codigo / code: [`software/aisg/planning/domain_restoration.py`](../../software/aisg/planning/domain_restoration.py),
+[`software/aisg/planning/planning_graph.py`](../../software/aisg/planning/planning_graph.py)
+Testes / tests: [`tests/test_planning_graph.py`](../../software/tests/test_planning_graph.py)
 
 ---
 

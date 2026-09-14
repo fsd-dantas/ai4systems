@@ -14,37 +14,67 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](LICENSE)
 [![wiki](https://img.shields.io/badge/wiki-fundamentos%20%2F%20foundations-555555)](https://github.com/fsd-dantas/ai4systems/wiki)
 
-> **PT-BR** — Este repositório reúne estudos de pesquisa que aplicam métodos de IA a sistemas ciber-físicos e em rede, começando pelas redes de comunicação de sistemas elétricos inteligentes. Cada **tópico** é um estudo autocontido: questão de pesquisa, código, testes, documentação e material de apresentação.
+> **PT-BR** — Compêndio de pesquisa sobre **recomendações justificáveis de diagnóstico, intervenção e roteamento sob hipóteses explícitas** em redes de comunicação multi-RAT de sistemas elétricos inteligentes — LTE privativo e rádio em 900 MHz sobre um núcleo em fibra. Cada experimento declara sua questão, seu método, como executá-lo e como seus resultados são verificados.
 >
-> **EN** — This repository gathers research studies that apply AI methods to cyber-physical and networked systems, starting with the communication networks of smart electric grids. Each **topic** is a self-contained study: research question, code, tests, documentation, and presentation material.
+> **EN** — A research compendium on **justifiable diagnosis, intervention and routing recommendations under explicit assumptions** for multi-RAT smart-grid communication networks — private LTE and 900 MHz radio over a fibre core. Every experiment states its question, its method, how to run it, and how its results are checked.
 
-## Tópicos / Topics
+## Questão de pesquisa / Research question
 
-| Tópico / Topic | Questão de pesquisa / Research question | Métodos / Methods | Estado / Status |
+> Na ausência de dados rotulados de falha, é possível construir um encadeamento **diagnóstico → plano → rota** que seja auditável e verificável?
+>
+> In the absence of labelled fault data, can a **diagnosis → plan → route** chain be built that is both auditable and verifiable?
+
+Problema, subquestões e metodologia / problem, sub-questions and methodology: [`research/`](research/).
+
+## Experimentos / Experiments
+
+| # | Experimento / Experiment | Métodos / Methods | Estado / Status |
 |---|---|---|---|
-| [**Symbolic AI for Network Restoration**](topics/symbolic-network-restoration/) | Sem um conjunto de dados rotulado de falhas, é possível construir um encadeamento diagnóstico → plano → rota auditável e verificável? / Without a labelled fault dataset, can a diagnosis → plan → route chain be both auditable and verifiable? | Regras de produção com fatores de certeza, STRIPS e GPS, busca A* / Production rules with certainty factors, STRIPS and GPS, A* search | v0.9.0 · ativo / active |
-
-## Fundamentos / Foundations
-
-A [wiki](https://github.com/fsd-dantas/ai4systems/wiki) reúne a teoria que sustenta os tópicos — raciocínio, busca, planejamento, representação do conhecimento, agentes e aprendizagem — e liga cada conceito ao código que o realiza.
-
-The [wiki](https://github.com/fsd-dantas/ai4systems/wiki) gathers the theory behind the topics — reasoning, search, planning, knowledge representation, agents and learning — and ties each concept to the code that realises it.
+| 001 | [Encadeamento simbólico de restauração / Symbolic restoration chain](experiments/001-symbolic-restoration-chain/) | Regras de produção com fatores de certeza, STRIPS e GPS, A\* / Production rules with certainty factors, STRIPS and GPS, A\* | concluído / complete |
+| 002 | [Quadro-negro multiespecialista / Multi-expert blackboard](experiments/002-multi-expert-blackboard/) | Arquitetura blackboard, correlação de incidentes, failover multi-RAT / Blackboard architecture, incident correlation, multi-RAT failover | concluído / complete |
+| 003 | Eco-resolução / Eco-resolution | Agentes reativos / Reactive agents | em andamento / in progress |
+| 004 | Simulação multi-RAT em ns-3 / Multi-RAT ns-3 simulation | LTE privativo, 900 MHz, injeção de falhas / Private LTE, 900 MHz, fault injection | planejado / planned |
 
 ## Organização / Layout
 
 ```
-topics/
-  symbolic-network-restoration/   README, pyproject.toml, src/, tests/, docs/, notebooks/, examples/
+research/       problema, questões, metodologia, roteiro / problem, questions, methodology, roadmap
+experiments/    um diretório por experimento / one directory per experiment
+software/       pacote aisg e testes / aisg package and tests
+docs/           primeiros passos, arquitetura, modelo de domínio, figuras / getting started, architecture, domain model, figures
 ```
 
-Cada tópico tem o próprio `pyproject.toml` e as próprias dependências, de modo que um tópico novo nunca impõe dependências aos existentes. Para instalar e executar um tópico, siga o README dele.
+Pastas são criadas quando têm conteúdo; o [roteiro](research/roadmap.md) registra o que está planejado.
+Folders are created when they have content; the [roadmap](research/roadmap.md) records what is planned.
 
-Each topic has its own `pyproject.toml` and its own dependencies, so a new topic never imposes dependencies on the existing ones. To install and run a topic, follow its README.
+## Início rápido / Quick start
+
+```bash
+python -m pip install -e ".[dev]"
+make check
+aisg blackboard --scenario dual-outage --experts
+```
+
+Mais em / more in [docs/getting-started.md](docs/getting-started.md).
+
+## Dados e configurações abertos / Open data and configurations
+
+Configurações e dados que sustentam os resultados são publicados. Todos os cenários são **sintéticos**: nenhum inventário, endereçamento, identificador ou topologia de campo real. Ver a lista de verificação em [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Configurations and data behind the results are published. Every scenario is **synthetic**: no real inventory, addressing, identifier or field topology. See the checklist in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Fundamentos / Foundations
+
+A [wiki](https://github.com/fsd-dantas/ai4systems/wiki) reúne a teoria por trás dos experimentos — raciocínio, busca, planejamento, representação do conhecimento, agentes e aprendizagem.
+The [wiki](https://github.com/fsd-dantas/ai4systems/wiki) gathers the theory behind the experiments — reasoning, search, planning, knowledge representation, agents and learning.
 
 ## Como citar / How to cite
 
-Use [`CITATION.cff`](CITATION.cff). No GitHub, o botão **Cite this repository** gera BibTeX e APA a partir dele.
-Use [`CITATION.cff`](CITATION.cff). On GitHub, the **Cite this repository** button generates BibTeX and APA from it.
+Use [`CITATION.cff`](CITATION.cff); no GitHub, **Cite this repository** gera BibTeX e APA. / On GitHub, **Cite this repository** generates BibTeX and APA.
+
+## Contribuir / Contributing
+
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [CHANGELOG.md](CHANGELOG.md)
 
 ## Autor / Author
 

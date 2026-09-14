@@ -122,7 +122,7 @@ def test_applying_a_mismatched_record_raises_rather_than_half_loading():
 def test_the_bundled_example_record_agrees_with_the_knowledge_base():
     from pathlib import Path
 
-    example = Path(__file__).resolve().parents[1] / "examples" / "observation-partial.json"
+    example = Path(__file__).resolve().parents[2] / "experiments" / "001-symbolic-restoration-chain" / "configuration" / "observation-partial.json"
     record = Observation.load(example)
     assert record.validate_against(build_simulated_knowledge_base()) == []
 

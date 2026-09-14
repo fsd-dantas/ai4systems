@@ -5,12 +5,12 @@
 >
 > STRIPS representation, GPS means-ends solver, and A* progression planner.
 
-Codigo / code: [`src/aisg/planning/`](../src/aisg/planning/)
+Codigo / code: [`software/aisg/planning/`](../../software/aisg/planning/)
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/03-planning-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/topics/symbolic-network-restoration/docs/assets/03-planning-light.svg" alt="On the left, the three sets that define a STRIPS action. On the right, the GPS means-ends recursion for restoring service on a node." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/03-planning-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/03-planning-light.svg" alt="On the left, the three sets that define a STRIPS action. On the right, the GPS means-ends recursion for restoring service on a node." width="100%">
   </picture>
 </p>
 
@@ -109,7 +109,7 @@ O planejamento vira busca:
 | custo do passo | custo da acao |
 | teste de objetivo | o objetivo esta contido no estado |
 
-Com isso, **a mesma funcao `astar`** do terceiro trabalho resolve o planejamento. Nao e uma copia adaptada: e a mesma funcao, importada de [`aisg.search.algorithms`](../src/aisg/search/algorithms.py).
+Com isso, **a mesma funcao `astar`** do terceiro trabalho resolve o planejamento. Nao e uma copia adaptada: e a mesma funcao, importada de [`aisg.search.algorithms`](../../software/aisg/search/algorithms.py).
 
 **Heuristica `goal_count`:** h(s) = numero de literais do objetivo ainda nao satisfeitos.
 
@@ -123,7 +123,7 @@ Um plano so vale se for **executavel passo a passo** e **atingir o objetivo**. O
 
 ### Integracao com a busca A*
 
-`reroute_traffic` exige `alternate-route(?n)`. Esse literal **nao e inventado**: quando o diagnostico e congestionamento, [`problem_from_diagnosis`](../src/aisg/planning/domain_restoration.py) consulta o A* sobre a topologia, evitando o no afetado. Se nao houver rota, o literal nao entra no estado inicial, a acao fica inaplicavel e o planejador **falha honestamente** em vez de propor um desvio impossivel — comportamento verificado em teste.
+`reroute_traffic` exige `alternate-route(?n)`. Esse literal **nao e inventado**: quando o diagnostico e congestionamento, [`problem_from_diagnosis`](../../software/aisg/planning/domain_restoration.py) consulta o A* sobre a topologia, evitando o no afetado. Se nao houver rota, o literal nao entra no estado inicial, a acao fica inaplicavel e o planejador **falha honestamente** em vez de propor um desvio impossivel — comportamento verificado em teste.
 
 ### Como executar
 

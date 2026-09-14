@@ -25,7 +25,7 @@ re-transmits the frame, so it is charged much more than a switched hop).
 
 This shape is chosen deliberately so that the straight-line heuristic used by A* is
 provably admissible and consistent — see :func:`Topology.heuristic` and
-``docs/03-astar.md``.
+``experiments/001-symbolic-restoration-chain/astar.md``.
 """
 
 from __future__ import annotations
@@ -297,8 +297,8 @@ class Topology:
         """
         Build the straight-line heuristic h(n) = distance(n, goal) / MAX_SPEED.
 
-        PT-BR: Admissivel e consistente por construcao — ver docs/03-astar.md.
-        EN:    Admissible and consistent by construction — see docs/03-astar.md.
+        PT-BR: Admissivel e consistente por construcao — ver experiments/001-symbolic-restoration-chain/astar.md.
+        EN:    Admissible and consistent by construction — see experiments/001-symbolic-restoration-chain/astar.md.
 
         Admissibility: every hop on any path from ``n`` to ``goal`` costs at least
         ``distance(hop) / MAX_SPEED_M_PER_MS`` (because overhead >= 0 and
