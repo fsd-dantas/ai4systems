@@ -1,19 +1,22 @@
 """
 Command-line interface / Interface de linha de comando.
 
-PT-BR: Quatro subcomandos: ``diagnose`` (sistema especialista), ``plan``
-       (planejamento STRIPS/GPS/A*), ``route`` (busca A*) e ``pipeline``, que executa
-       os tres em sequencia sobre o mesmo incidente.
+PT-BR: Cinco subcomandos: ``diagnose`` (sistema especialista), ``plan``
+       (planejamento STRIPS/GPS/A*), ``route`` (busca A*), ``pipeline``, que executa
+       os tres em sequencia sobre o mesmo incidente, e ``blackboard``, o sistema
+       multiespecialista sobre a rede inteira.
 
-EN:    Four subcommands: ``diagnose`` (expert system), ``plan`` (STRIPS/GPS/A*
-       planning), ``route`` (A* search), and ``pipeline``, which runs all three in
-       sequence over the same incident.
+EN:    Five subcommands: ``diagnose`` (expert system), ``plan`` (STRIPS/GPS/A*
+       planning), ``route`` (A* search), ``pipeline``, which runs all three in
+       sequence over the same incident, and ``blackboard``, the multi-expert system
+       over the whole network.
 
     python -m aisg diagnose --case rf_interference --trace
     python -m aisg diagnose --interactive --mode backward
     python -m aisg route --from NOC --to ER_03 --compare
     python -m aisg plan --diagnosis mac_contention --node ER_03 --solver both
     python -m aisg pipeline --case congestion --node SAF_01 --target ER_03
+    python -m aisg blackboard --scenario dual-outage --experts --explain ER_03
 """
 
 from __future__ import annotations
@@ -23,6 +26,16 @@ import sys
 from typing import Optional, Sequence, Tuple
 
 from aisg import __version__
+from aisg.blackboard import (
+    SCENARIOS,
+    Blackboard,
+    Controller,
+    Level,
+    TaskGenerator,
+    build_experts,
+    build_scenario,
+    medium_label,
+)
 from aisg.domain import BUNDLED_TOPOLOGIES, load_topology
 from aisg.expert_system import (
     SIM_CASES,
@@ -427,6 +440,121 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# blackboard: multi-expert restoration over the whole network
+# ---------------------------------------------------------------------------
+def _levels(levels) -> str:
+    return ",".join(f"L{int(level)}" for level in levels)
+
+
+def cmd_blackboard(args: argparse.Namespace) -> int:
+    lang = args.lang
+    pt = lang == "pt"
+    topology = load_topology(getattr(args, "topology", "dual"))
+
+    if args.list:
+        for name in sorted(SCENARIOS):
+            print(f"  {name:<20} {build_scenario(name, topology).title(lang)}")
+        return 0
+    try:
+        scenario = build_scenario(args.scenario, topology)
+    except KeyError as exc:
+        print(exc.args[0])
+        return 2
+
+    experts = build_experts(topology)
+    print(_header(
+        ("Quadro-negro multiespecialista: " if pt else "Multi-expert blackboard: ")
+        + scenario.title(lang)
+    ))
+    if args.experts:
+        print("Especialistas (le -> escreve)" if pt else "Experts (reads -> writes)")
+        for expert in sorted(experts, key=lambda s: (s.priority, s.name)):
+            print(f"  {expert.name:<13} {_levels(expert.reads):>6} -> {_levels(expert.writes):<6}"
+                  f" {expert.expertise(lang)}")
+        print()
+
+    board = Blackboard()
+    posted = TaskGenerator(board).post(scenario.observations)
+    print(f"{posted} observacoes postadas pelo gerador de tarefas" if pt
+          else f"{posted} observations posted by the task generator")
+    run = Controller(board, experts).loop()
+
+    print(_header("Controlador" if pt else "Controller"))
+    for record in run.records:
+        line = f"  {'ciclo' if pt else 'cycle'} {record.cycle:>2}  {record.source:<13}" \
+               f" +{record.added:<4} -{record.removed:<3}"
+        if len(record.agenda) > 1:
+            line += f" agenda: {' > '.join(record.agenda)}"
+        print(line)
+        if args.trace:
+            for cycle, change, entry in board.history:
+                if cycle == record.cycle and change == "add" and entry.level >= Level.INCIDENT:
+                    print(f"        + {entry.render()}")
+    if run.quiescent:
+        print(f"  quiescencia apos {run.cycles} ciclos" if pt
+              else f"  quiescence after {run.cycles} cycles")
+    else:
+        print(f"  LIMITE atingido apos {run.cycles} ciclos" if pt
+              else f"  LIMIT reached after {run.cycles} cycles")
+
+    print(_header("Incidentes" if pt else "Incidents"))
+    incidents = sorted(board.entries(Level.INCIDENT), key=lambda e: (-e.cf, e.subject))
+    if not incidents:
+        print("  nenhum" if pt else "  none")
+    for incident in incidents:
+        explains = incident.data["explains"]
+        print(f"  {incident.subject:<9} {incident.value:<24} CF {incident.cf:+.2f}  "
+              f"{incident.data['kind']}" + (f", {len(explains)}: {', '.join(explains)}" if explains else ""))
+        print(f"            {incident.rationale(lang)}")
+
+    decisions = sorted(board.entries(Level.ACCESS, key="decision"), key=lambda e: e.subject)
+    if decisions:
+        print(_header("Acesso multi-RAT" if pt else "Multi-RAT access"))
+        routes = {e.subject: e for e in board.entries(Level.ACCESS, key="route")}
+        for decision in decisions:
+            route = routes[decision.subject]
+            print(f"  {decision.subject:<6} {decision.value:<16} {decision.rationale(lang)}")
+            if route.value == "restored":
+                print(f"         {' -> '.join(route.data['path'])}  "
+                      f"({medium_label(route.data['medium'], lang)}, "
+                      f"{route.data['cost_ms']:.1f} ms, A* {route.data['expanded']} "
+                      f"{'expandidos' if pt else 'expanded'})")
+
+    print(_header("Planos, por prioridade" if pt else "Plans, by priority"))
+    for plan in sorted(board.entries(Level.PLAN), key=lambda e: e.data["priority"]):
+        status = ("valido" if pt else "valid") if plan.data["valid"] else plan.data["invalid_reason"]
+        print(f"  {plan.data['priority']}. {plan.subject} ({plan.data['diagnosis']}): "
+              f"{' -> '.join(plan.data['actions'])}")
+        print(f"     {'custo' if pt else 'cost'} {plan.data['cost']:g}, {status}. {plan.rationale(lang)}")
+
+    print(_header(
+        "Verdade comandada (so para avaliar; nenhum especialista a le)" if pt
+        else "Commanded ground truth (scoring only; no expert reads it)"
+    ))
+    found = {(e.subject, e.value) for e in incidents}
+    for node, diagnosis in sorted(scenario.commanded.items()):
+        hit = (node, diagnosis) in found
+        print(f"  {node:<9} {diagnosis:<24} "
+              + (("encontrado" if pt else "found") if hit else ("NAO encontrado" if pt else "NOT found")))
+    spurious = sorted(s for s, _v in found if s not in scenario.commanded)
+    if spurious:
+        print(f"  {'incidentes sem falha comandada' if pt else 'incidents with no commanded fault'}: "
+              f"{', '.join(spurious)}")
+
+    if args.explain:
+        print(_header(f"{'Justificativas para' if pt else 'Justifications for'} {args.explain}"))
+        entries = [e for e in board.entries(subject=args.explain) if e.level >= Level.SYMPTOM]
+        if not entries:
+            print("  sem conclusoes" if pt else "  no conclusions")
+        for entry in sorted(entries, key=lambda e: (e.level, e.key, -e.cf)):
+            print(f"  {entry.render()}")
+            for line in entry.rationale(lang).splitlines():
+                print(f"      {line}")
+
+    return 0 if run.quiescent else 1
+
+
+# ---------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aisg",
@@ -507,6 +635,21 @@ def build_parser() -> argparse.ArgumentParser:
     pl.add_argument("--node", help="default: a store-and-forward relay")
     pl.add_argument("--target", help="routing destination / destino do roteamento")
     pl.set_defaults(func=cmd_pipeline)
+
+    # blackboard
+    bb = sub.add_parser(
+        "blackboard", help="multi-expert blackboard / quadro-negro multiespecialista"
+    )
+    bb.add_argument("--scenario", default="dual-outage",
+                    help=f"one of: {', '.join(sorted(SCENARIOS))}")
+    bb.add_argument("--list", action="store_true", help="list the scenarios / listar cenarios")
+    bb.add_argument("--experts", action="store_true",
+                    help="show what each expert reads, writes and knows")
+    bb.add_argument("--trace", action="store_true",
+                    help="show the incidents, access decisions and plans each cycle posted")
+    bb.add_argument("--explain", metavar="NODE",
+                    help="every conclusion about one node, with its justification")
+    bb.set_defaults(func=cmd_blackboard)
 
     return parser
 
