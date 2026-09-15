@@ -5,11 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pr
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-09-15
+
 ### Added
 - `aisg ns3-export` and the ns-3 dual-homed backhaul program ([experiment 004](experiments/004-multi-rat-simulation/)): private LTE in band 31 with EPC and directional CPE antennas, 900 MHz store-and-forward hops, NOC–CPE tunnels, SCADA and telemetry traffic.
 - Fault injection from the blackboard scenarios, with no, local or central failover; results for all nine combinations.
 - Patch adding E-UTRA band 31 to the ns-3.48 LTE module.
 - Eco-resolution engine (`aisg eco`, [experiment 003](experiments/003-eco-resolution/)): satisfaction, aggression with constraints, flight and dependency; Blocks World with an exhaustive convergence analysis; SCADA and telemetry flow agents on the dual-homed backhaul, driven by the blackboard's diagnosis.
+- Release workflow: a `vX.Y.Z` tag tests the package, builds the wheel, source archive and an ns-3 bundle (program, band 31 patch, scenario files), and publishes them as a GitHub Release.
 
 ### Changed
 - The multi-RAT arbiter holds a congested nominal medium when the only alternative crosses a degraded node. Simulation showed the earlier switch raised a site's loss from 14.3% to 57.1%.

@@ -9,8 +9,8 @@ authors:
     given-names: Fernando Sabino
 repository-code: https://github.com/fsd-dantas/ai4systems
 license: MIT
-version: 0.10.0
-date-released: "2026-09-14"
+version: 0.11.0
+date-released: "2026-09-15"
 keywords:
   - artificial intelligence
   - cyber-physical systems
@@ -45,5 +45,8 @@ abstract: >-
   without changing any single-node conclusion, an incident correlator that
   explains simultaneous outages by one upstream cause, an A* access router and
   a multi-RAT arbiter deciding medium switch, lost redundancy or isolation per
-  site, and a planner ranking repairs by damage. All scenarios are synthetic
-  and all thresholds nominal and uncalibrated.
+  site, and a planner ranking repairs by damage. Experiment 003 adds
+  eco-resolution agents with an exhaustive convergence analysis, and
+  experiment 004 builds the network in ns-3 with private LTE in band 31,
+  injects faults and checks the recommended failover in simulation. All
+  scenarios are synthetic and all thresholds nominal and uncalibrated.

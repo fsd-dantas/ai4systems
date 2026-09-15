@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aisg"
-version = "0.10.0"
+version = "0.11.0"
 description = "Justifiable diagnosis, intervention and routing for multi-RAT smart-grid communication networks: expert systems, STRIPS/GPS planning, A* search and a multi-expert blackboard"
 readme = "README.md"
 requires-python = ">=3.10"

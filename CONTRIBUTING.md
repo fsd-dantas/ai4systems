@@ -39,6 +39,12 @@ Configurations and data behind articles are published. Nothing that identifies a
 - [ ] nenhuma coordenada, nome de subestação ou topologia de campo real / no real coordinate, substation name or field topology;
 - [ ] identificadores sintéticos e declarados como tal / identifiers are synthetic and declared as such.
 
+## Versões / Releases
+
+1. Atualize a versão em `pyproject.toml`, `software/aisg/__init__.py` e `CITATION.cff`, e mova as notas de `[Unreleased]` para a nova versão no `CHANGELOG.md`. / Bump the version in `pyproject.toml`, `software/aisg/__init__.py` and `CITATION.cff`, and move the `[Unreleased]` notes to the new version in `CHANGELOG.md`.
+2. Crie e envie a tag / create and push the tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+3. O workflow `release` testa, gera o wheel, o arquivo-fonte e o pacote ns-3, e publica a versão no GitHub. / The `release` workflow tests, builds the wheel, source archive and ns-3 bundle, and publishes the GitHub Release.
+
 ## Commits
 
 Mensagens em inglês, no imperativo, com um parágrafo explicando o porquê quando não for óbvio.
