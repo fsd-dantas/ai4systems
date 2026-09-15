@@ -1,0 +1,4 @@
+time_s,subject,event,detail
+10,SAF_02,fault,"node_down"
+16,ER_06,switch-er,"radio900 -> plte (local: no poll for 7.734674 s)"
+16.222,ER_06,switch-noc,"radio900 -> plte (local: 3 missed replies)"

@@ -565,7 +565,7 @@ def cmd_ns3_export(args: argparse.Namespace) -> int:
     if args.sim_time is not None:
         overrides["sim_time_s"] = args.sim_time
     try:
-        scenario = build_ns3_scenario(topology, overrides)
+        scenario = build_ns3_scenario(topology, overrides, fault_scenario=args.fault_scenario)
     except ScenarioError as exc:
         print(exc)
         return 2
@@ -585,6 +585,12 @@ def cmd_ns3_export(args: argparse.Namespace) -> int:
     print(f"  {'meio primario' if pt else 'primary medium'}: {media}")
     for note in scenario.notes:
         print(f"  - {note}")
+    if scenario.fault_scenario:
+        print(f"  {'falhas' if pt else 'faults'} ({scenario.fault_scenario}): "
+              + ", ".join(f"{kind} {target} @ {t:g}s" for t, kind, target, _ in scenario.faults))
+        print(f"  {'failover central' if pt else 'central failover'}: "
+              + (", ".join(f"{er} -> {medium_label(m, args.lang)} @ {t:g}s"
+                           for t, er, m in scenario.failovers) or ("nenhum" if pt else "none")))
     return 0
 
 
@@ -691,6 +697,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ns.add_argument("--out", metavar="FILE", help="scenario file to write (default: stdout)")
     ns.add_argument("--sim-time", type=float, help="simulated time, in seconds")
+    ns.add_argument("--fault-scenario", choices=sorted(SCENARIOS),
+                    help="inject a blackboard scenario's faults and its central failover plan")
     ns.set_defaults(func=cmd_ns3_export)
 
     return parser

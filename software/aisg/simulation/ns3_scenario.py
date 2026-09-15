@@ -44,6 +44,12 @@ Line oriented, whitespace separated, ``#`` starts a comment::
     attach <cpe> <enb>
     site  <er> <rm> <cpe> <primary: radio900|plte> <index>
     route <node> <destination: noc|ER id> <next hop: node id|tunnel>
+    path  <er> <medium: radio900|plte> <NOC next hop|tunnel> <ER next hop>
+    fault <time_s> <kind: node_down|radio_per|flood> <target: node|link id|eNodeB> <value|->
+    failover <time_s> <er> <medium>                    central plan from the blackboard
+
+Faults and the central failover plan are written only when a fault scenario is
+requested. Their ground truth is the blackboard scenario's commanded faults.
 """
 
 from __future__ import annotations
@@ -97,6 +103,21 @@ NS3_PARAMETERS: Dict[str, object] = {
     "telemetry_interval_s": 1.0,
     "telemetry_bytes": 512,
     "tunnel_port": 6600,
+    # faults and failover
+    "fault_time_s": 10.0,
+    "central_decision_delay_s": 3.0,
+    "local_miss_threshold": 3,
+    "interference_per": 0.6,
+    "flood_rate": "20Mbps",
+}
+
+#: How each commanded diagnosis is induced in the simulator.
+FAULT_BY_DIAGNOSIS: Dict[str, str] = {
+    "node_failure": "node_down",
+    "upstream_relay_failure": "node_down",
+    "rf_interference": "radio_per",
+    "excess_path_loss": "radio_per",
+    "congestion": "flood",
 }
 
 #: Topology node kinds and the role each plays in the simulation.
@@ -156,6 +177,13 @@ class Ns3Scenario:
     attachments: List[Tuple[str, str]] = field(default_factory=list)
     sites: List[Site] = field(default_factory=list)
     routes: Dict[Tuple[str, str], str] = field(default_factory=dict)
+    #: (er, medium, NOC next hop, ER next hop) for both media of every site
+    paths: List[Tuple[str, str, str, str]] = field(default_factory=list)
+    #: (time_s, kind, target, value)
+    faults: List[Tuple[float, str, str, str]] = field(default_factory=list)
+    #: (time_s, er, medium): the central failover plan
+    failovers: List[Tuple[float, str, str]] = field(default_factory=list)
+    fault_scenario: Optional[str] = None
     notes: List[str] = field(default_factory=list)
 
     def render(self) -> str:
@@ -179,6 +207,11 @@ class Ns3Scenario:
             f"site {s.er} {s.rm} {s.cpe} {s.primary} {s.index}" for s in self.sites
         ]
         lines += [f"route {node} {dest} {via}" for (node, dest), via in self.routes.items()]
+        lines += [f"path {er} {medium} {noc_via} {er_via}" for er, medium, noc_via, er_via in self.paths]
+        if self.fault_scenario:
+            lines.append(f"# fault scenario '{self.fault_scenario}'; ground truth for scoring only")
+        lines += [f"fault {t:g} {kind} {target} {value}" for t, kind, target, value in self.faults]
+        lines += [f"failover {t:g} {er} {medium}" for t, er, medium in self.failovers]
         return "\n".join(lines) + "\n"
 
     def write(self, path: Path | str) -> None:
@@ -244,9 +277,20 @@ def _path_medium(topology: Topology, path: List[str]) -> str:
 
 
 def build_ns3_scenario(
-    topology: Topology, params: Optional[Mapping[str, object]] = None
+    topology: Topology,
+    params: Optional[Mapping[str, object]] = None,
+    fault_scenario: Optional[str] = None,
 ) -> Ns3Scenario:
-    """Build the dual-homed scenario; raises :class:`ScenarioError` when it cannot."""
+    """
+    Build the dual-homed scenario; raises :class:`ScenarioError` when it cannot.
+
+    PT-BR: Com ``fault_scenario``, injeta as falhas comandadas de um cenario do
+           quadro-negro e grava o plano de failover central que o proprio
+           quadro-negro recomenda, para que o simulador o verifique.
+    EN:    With ``fault_scenario``, injects a blackboard scenario's commanded
+           faults and writes the central failover plan the blackboard itself
+           recommends, so the simulator can check it.
+    """
     p: Dict[str, object] = dict(NS3_PARAMETERS)
     p.update(params or {})
 
@@ -373,5 +417,60 @@ def build_ns3_scenario(
         add_route(site.er, "noc", site.rm if site.primary == "radio900" else site.cpe)
         add_route(site.cpe, site.er, site.er)
         add_route(site.cpe, "noc", "tunnel")
+        scenario.paths.append((site.er, "radio900", path[1], site.rm))
+        scenario.paths.append((site.er, "plte", "tunnel", site.cpe))
 
+    if fault_scenario is not None:
+        _add_faults(scenario, topology, roles, fault_scenario)
     return scenario
+
+
+def _add_faults(
+    scenario: Ns3Scenario, topology: Topology, roles: Mapping[str, str], name: str
+) -> None:
+    # Imported here: the blackboard is only needed when faults are requested.
+    from aisg.blackboard import SCENARIOS, Level, build_scenario, solve
+
+    if name not in SCENARIOS:
+        raise ScenarioError(
+            f"unknown fault scenario {name!r}; available: {', '.join(sorted(SCENARIOS))}"
+        )
+    p = scenario.params
+    board_scenario = build_scenario(name, topology)
+    fault_time = float(p["fault_time_s"])
+    scenario.fault_scenario = name
+    p["fault_scenario"] = name
+
+    radio_links: Dict[str, List[P2PLink]] = {}
+    for link in scenario.links:
+        if link.cls == "radio":
+            radio_links.setdefault(link.a, []).append(link)
+            radio_links.setdefault(link.b, []).append(link)
+
+    for node, diagnosis in sorted(board_scenario.commanded.items()):
+        kind = FAULT_BY_DIAGNOSIS.get(diagnosis)
+        if kind is None:
+            raise ScenarioError(f"{node}: no way to induce {diagnosis!r} in the simulator")
+        if kind == "node_down":
+            scenario.faults.append((fault_time, "node_down", node, "-"))
+        elif kind == "radio_per":
+            links = radio_links.get(node)
+            if not links:
+                raise ScenarioError(f"{node}: {diagnosis} needs a radio link, and it has none")
+            for link in links:
+                scenario.faults.append(
+                    (fault_time, "radio_per", link.id, _fmt(float(p["interference_per"])))
+                )
+        elif kind == "flood":
+            if roles[node] != "enb":
+                raise ScenarioError(f"{node}: congestion is only modelled on an eNodeB")
+            scenario.faults.append((fault_time, "flood", node, str(p["flood_rate"])))
+
+    run = solve(board_scenario, topology)
+    decided_at = fault_time + float(p["central_decision_delay_s"])
+    sites = {site.er for site in scenario.sites}
+    for decision in sorted(
+        run.board.entries(Level.ACCESS, key="decision"), key=lambda e: e.subject
+    ):
+        if decision.value == "switch_medium" and decision.subject in sites:
+            scenario.failovers.append((decided_at, decision.subject, decision.data["to"]))

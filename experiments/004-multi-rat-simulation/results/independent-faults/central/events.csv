@@ -1,0 +1,9 @@
+time_s,subject,event,detail
+10,RELAY_5,fault,"flood 20Mbps to each attached CPE"
+10,L014,fault,"radio_per 0.600000"
+13,ER_03,switch-noc,"plte -> radio900 (central: blackboard plan)"
+13,ER_03,switch-er,"plte -> radio900 (central: blackboard plan)"
+13,ER_04,switch-noc,"plte -> radio900 (central: blackboard plan)"
+13,ER_04,switch-er,"plte -> radio900 (central: blackboard plan)"
+13,ER_07,switch-noc,"plte -> radio900 (central: blackboard plan)"
+13,ER_07,switch-er,"plte -> radio900 (central: blackboard plan)"

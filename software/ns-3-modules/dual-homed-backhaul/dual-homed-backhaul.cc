@@ -19,6 +19,7 @@
  *     periodic telemetry from the edge router
  */
 
+#include "ns3/applications-module.h"
 #include "ns3/core-module.h"
 #include "ns3/flow-monitor-module.h"
 #include "ns3/internet-module.h"
@@ -52,6 +53,25 @@ const Ipv4Address kNocService("10.255.0.1");
 const uint16_t kScadaPort = 5000;
 const uint16_t kTelemetryPort = 6000;
 const uint16_t kTelemetrySourcePort = 6001;
+
+// ---------------------------------------------------------------------------
+// event log: faults and route switches, in the order they happen
+// ---------------------------------------------------------------------------
+struct EventRecord
+{
+    double time;
+    std::string subject;
+    std::string what;
+    std::string detail;
+};
+
+std::vector<EventRecord> g_events;
+
+void
+LogEvent(const std::string& subject, const std::string& what, const std::string& detail)
+{
+    g_events.push_back({Simulator::Now().GetSeconds(), subject, what, detail});
+}
 
 // ---------------------------------------------------------------------------
 // scenario file
@@ -94,6 +114,29 @@ struct RouteSpec
     std::string via;
 };
 
+struct PathSpec
+{
+    std::string er;
+    std::string medium;
+    std::string nocVia;
+    std::string erVia;
+};
+
+struct FaultSpec
+{
+    double time;
+    std::string kind;
+    std::string target;
+    std::string value;
+};
+
+struct FailoverSpec
+{
+    double time;
+    std::string er;
+    std::string medium;
+};
+
 struct Scenario
 {
     std::map<std::string, std::string> params;
@@ -102,6 +145,9 @@ struct Scenario
     std::vector<std::pair<std::string, std::string>> attachments;
     std::vector<SiteSpec> sites;
     std::vector<RouteSpec> routes;
+    std::vector<PathSpec> paths;
+    std::vector<FaultSpec> faults;
+    std::vector<FailoverSpec> failovers;
 
     std::string Param(const std::string& name) const
     {
@@ -190,6 +236,24 @@ LoadScenario(const std::string& path)
             RouteSpec r;
             ss >> r.node >> r.dest >> r.via;
             s.routes.push_back(r);
+        }
+        else if (kind == "path")
+        {
+            PathSpec p;
+            ss >> p.er >> p.medium >> p.nocVia >> p.erVia;
+            s.paths.push_back(p);
+        }
+        else if (kind == "fault")
+        {
+            FaultSpec f;
+            ss >> f.time >> f.kind >> f.target >> f.value;
+            s.faults.push_back(f);
+        }
+        else if (kind == "failover")
+        {
+            FailoverSpec f;
+            ss >> f.time >> f.er >> f.medium;
+            s.failovers.push_back(f);
         }
         else
         {
@@ -382,6 +446,90 @@ class SiteTunnel
 };
 
 // ---------------------------------------------------------------------------
+// failover: swapping a site's host route at either end
+// ---------------------------------------------------------------------------
+struct Hop
+{
+    Ipv4Address nextHop;
+    uint32_t interface;
+};
+
+class SiteRouter
+{
+  public:
+    struct SiteRoutes
+    {
+        Ptr<Ipv4StaticRouting> nocTable;
+        Ptr<Ipv4StaticRouting> erTable;
+        Ipv4Address siteAddress;
+        std::map<std::string, Hop> nocHop; // medium -> NOC next hop towards the site
+        std::map<std::string, Hop> erHop;  // medium -> ER next hop towards the NOC
+        std::string nocMedium;
+        std::string erMedium;
+    };
+
+    void AddSite(const std::string& er, const SiteRoutes& routes)
+    {
+        m_sites[er] = routes;
+    }
+
+    const std::string& NocMedium(const std::string& er) const
+    {
+        return m_sites.at(er).nocMedium;
+    }
+
+    const std::string& ErMedium(const std::string& er) const
+    {
+        return m_sites.at(er).erMedium;
+    }
+
+    static std::string Other(const std::string& medium)
+    {
+        return medium == "plte" ? "radio900" : "plte";
+    }
+
+    void SwitchNoc(const std::string& er, const std::string& medium, const std::string& reason)
+    {
+        SiteRoutes& s = m_sites.at(er);
+        if (s.nocMedium == medium)
+        {
+            return;
+        }
+        Replace(s.nocTable, s.siteAddress, s.nocHop.at(medium));
+        LogEvent(er, "switch-noc", s.nocMedium + " -> " + medium + " (" + reason + ")");
+        s.nocMedium = medium;
+    }
+
+    void SwitchEr(const std::string& er, const std::string& medium, const std::string& reason)
+    {
+        SiteRoutes& s = m_sites.at(er);
+        if (s.erMedium == medium)
+        {
+            return;
+        }
+        Replace(s.erTable, kNocService, s.erHop.at(medium));
+        LogEvent(er, "switch-er", s.erMedium + " -> " + medium + " (" + reason + ")");
+        s.erMedium = medium;
+    }
+
+  private:
+    static void Replace(Ptr<Ipv4StaticRouting> table, Ipv4Address dest, const Hop& hop)
+    {
+        for (uint32_t i = table->GetNRoutes(); i-- > 0;)
+        {
+            Ipv4RoutingTableEntry entry = table->GetRoute(i);
+            if (entry.IsHost() && entry.GetDest() == dest)
+            {
+                table->RemoveRoute(i);
+            }
+        }
+        table->AddHostRouteTo(dest, hop.nextHop, hop.interface);
+    }
+
+    std::map<std::string, SiteRoutes> m_sites;
+};
+
+// ---------------------------------------------------------------------------
 // traffic
 // ---------------------------------------------------------------------------
 struct TrafficConfig
@@ -402,10 +550,17 @@ class SiteTraffic
                 Ipv4Address siteAddress,
                 Ptr<Node> noc,
                 Ptr<Node> er,
-                const TrafficConfig& config)
+                const TrafficConfig& config,
+                SiteRouter* router,
+                bool localFailover,
+                uint32_t missThreshold)
         : m_spec(spec),
           m_address(siteAddress),
-          m_config(config)
+          m_config(config),
+          m_router(router),
+          m_localFailover(localFailover),
+          m_missThreshold(missThreshold),
+          m_lastPollAtEr(config.start)
     {
         m_nocPoll = Socket::CreateSocket(noc, UdpSocketFactory::GetTypeId());
         m_nocPoll->Bind(InetSocketAddress(kNocService, static_cast<uint16_t>(20000 + spec.index)));
@@ -424,6 +579,10 @@ class SiteTraffic
                             this);
         Simulator::Schedule(config.start + MilliSeconds(53 * spec.index % 1000),
                             &SiteTraffic::SendTelemetry,
+                            this);
+        Simulator::Schedule(config.start +
+                                Seconds(config.scadaInterval.GetSeconds() * missThreshold),
+                            &SiteTraffic::WatchPolls,
                             this);
     }
 
@@ -449,8 +608,22 @@ class SiteTraffic
         out << m_spec.index << ',' << m_spec.er << ',' << m_spec.primary << ',' << m_scadaSent
             << ',' << m_scadaReceived << ',' << std::fixed << std::setprecision(2) << loss << ','
             << mean << ',' << m_rttMaxMs << ',' << m_telemetrySent << ',' << m_telemetryReceived
+            << ',' << m_router->NocMedium(m_spec.er) << ',' << m_router->ErMedium(m_spec.er)
             << '\n';
         out.unsetf(std::ios::fixed);
+    }
+
+    void WriteRequests(std::ostream& out) const
+    {
+        for (std::size_t i = 0; i < m_sentAt.size(); ++i)
+        {
+            out << m_spec.er << ',' << i << ',' << m_sentAt[i] << ',';
+            if (m_rttMs[i] >= 0.0)
+            {
+                out << m_rttMs[i];
+            }
+            out << '\n';
+        }
     }
 
   private:
@@ -460,13 +633,59 @@ class SiteTraffic
         {
             return;
         }
-        m_pending[m_sequence] = Simulator::Now();
-        m_nocPoll->SendTo(MakePayload(m_sequence, m_config.requestBytes),
+        uint32_t sequence = m_sequence++;
+        m_pending[sequence] = Simulator::Now();
+        m_sentAt.push_back(Simulator::Now().GetSeconds());
+        m_rttMs.push_back(-1.0);
+        m_nocPoll->SendTo(MakePayload(sequence, m_config.requestBytes),
                           0,
                           InetSocketAddress(m_address, kScadaPort));
-        ++m_sequence;
         ++m_scadaSent;
+        Simulator::Schedule(m_config.scadaInterval, &SiteTraffic::CheckReply, this, sequence);
         Simulator::Schedule(m_config.scadaInterval, &SiteTraffic::Poll, this);
+    }
+
+    // A reply that has not arrived within one polling interval is a miss. With
+    // local failover, the NOC moves the site's downlink to the other medium
+    // after enough consecutive misses.
+    void CheckReply(uint32_t sequence)
+    {
+        auto it = m_pending.find(sequence);
+        if (it == m_pending.end())
+        {
+            return;
+        }
+        m_pending.erase(it);
+        ++m_misses;
+        if (m_localFailover && m_misses >= m_missThreshold)
+        {
+            m_router->SwitchNoc(m_spec.er,
+                                SiteRouter::Other(m_router->NocMedium(m_spec.er)),
+                                "local: " + std::to_string(m_misses) + " missed replies");
+            m_misses = 0;
+        }
+    }
+
+    // With local failover, an edge router that stops hearing polls moves its
+    // uplink to the other medium.
+    void WatchPolls()
+    {
+        if (Simulator::Now() >= m_config.stop)
+        {
+            return;
+        }
+        Time limit = Seconds(m_config.scadaInterval.GetSeconds() * m_missThreshold);
+        if (m_localFailover && Simulator::Now() - m_lastPollAtEr > limit)
+        {
+            m_router->SwitchEr(m_spec.er,
+                               SiteRouter::Other(m_router->ErMedium(m_spec.er)),
+                               "local: no poll for " +
+                                   std::to_string(
+                                       (Simulator::Now() - m_lastPollAtEr).GetSeconds()) +
+                                   " s");
+            m_lastPollAtEr = Simulator::Now();
+        }
+        Simulator::Schedule(m_config.scadaInterval, &SiteTraffic::WatchPolls, this);
     }
 
     void OnRequest(Ptr<Socket> socket)
@@ -477,6 +696,7 @@ class SiteTraffic
         {
             if (packet->GetSize() >= 4)
             {
+                m_lastPollAtEr = Simulator::Now();
                 socket->SendTo(MakePayload(ReadSequence(packet), m_config.responseBytes), 0, from);
             }
         }
@@ -487,16 +707,19 @@ class SiteTraffic
         Ptr<Packet> packet;
         while ((packet = socket->Recv()))
         {
-            auto it = m_pending.find(ReadSequence(packet));
+            uint32_t sequence = ReadSequence(packet);
+            auto it = m_pending.find(sequence);
             if (it == m_pending.end())
             {
-                continue;
+                continue; // unknown, duplicate, or arrived after its timeout
             }
             double rtt = (Simulator::Now() - it->second).GetSeconds() * 1e3;
             m_pending.erase(it);
             ++m_scadaReceived;
             m_rttSumMs += rtt;
             m_rttMaxMs = std::max(m_rttMaxMs, rtt);
+            m_rttMs[sequence] = rtt;
+            m_misses = 0;
         }
     }
 
@@ -516,6 +739,13 @@ class SiteTraffic
     SiteSpec m_spec;
     Ipv4Address m_address;
     TrafficConfig m_config;
+    SiteRouter* m_router;
+    bool m_localFailover;
+    uint32_t m_missThreshold;
+    Time m_lastPollAtEr;
+    uint32_t m_misses{0};
+    std::vector<double> m_sentAt;
+    std::vector<double> m_rttMs;
     Ptr<Socket> m_nocPoll;
     Ptr<Socket> m_erResponder;
     Ptr<Socket> m_erTelemetry;
@@ -610,9 +840,11 @@ main(int argc, char* argv[])
     uint32_t earfcnUlOverride = 0;
     bool animate = false;
     double cpeGainOverride = -999.0;
+    std::string failover = "none";
 
     CommandLine cmd(__FILE__);
     cmd.AddValue("cpeGain", "override the CPE antenna boresight gain, in dBi", cpeGainOverride);
+    cmd.AddValue("failover", "none | local | central", failover);
     cmd.AddValue("scenario", "scenario file exported by `aisg ns3-export`", scenarioPath);
     cmd.AddValue("outDir", "directory for results", outDir);
     cmd.AddValue("simTime", "override the simulated time, in seconds", simTimeOverride);
@@ -621,6 +853,8 @@ main(int argc, char* argv[])
     cmd.AddValue("animate", "write a NetAnim trace", animate);
     cmd.Parse(argc, argv);
     NS_ABORT_MSG_IF(scenarioPath.empty(), "--scenario is required");
+    NS_ABORT_MSG_IF(failover != "none" && failover != "local" && failover != "central",
+                    "--failover must be none, local or central");
 
     Scenario scenario = LoadScenario(scenarioPath);
     SystemPath::MakeDirectories(outDir);
@@ -695,11 +929,13 @@ main(int argc, char* argv[])
         return it->second;
     };
     Ptr<Node> noc;
+    std::string nocId;
     for (const auto& [id, role] : roles)
     {
         if (role == "noc")
         {
             noc = nodes[id];
+            nocId = id;
         }
     }
     NS_ABORT_MSG_IF(!noc, "scenario declares no NOC");
@@ -863,6 +1099,120 @@ main(int argc, char* argv[])
         table->AddHostRouteTo(dest, it->second.second.address, it->second.first.interface);
     }
 
+    // --- per-site routes on both media, for failover ----------------------------------
+    SiteRouter router;
+    std::map<std::string, std::map<std::string, const PathSpec*>> pathBySite;
+    for (const auto& path : scenario.paths)
+    {
+        pathBySite[path.er][path.medium] = &path;
+    }
+    for (const auto& site : scenario.sites)
+    {
+        SiteRouter::SiteRoutes routes;
+        routes.nocTable = routing.GetStaticRouting(noc->GetObject<Ipv4>());
+        routes.erTable = routing.GetStaticRouting(node(site.er)->GetObject<Ipv4>());
+        routes.siteAddress = siteAddress.at(site.er);
+        const SiteTunnel& tunnel = *tunnelByEr.at(site.er);
+        for (const auto& [medium, path] : pathBySite[site.er])
+        {
+            if (path->nocVia == "tunnel")
+            {
+                routes.nocHop[medium] = Hop{tunnel.CpeInner(), tunnel.NocInterface()};
+            }
+            else
+            {
+                const auto& ends = adjacency.at({nocId, path->nocVia});
+                routes.nocHop[medium] = Hop{ends.second.address, ends.first.interface};
+            }
+            const auto& ends = adjacency.at({site.er, path->erVia});
+            routes.erHop[medium] = Hop{ends.second.address, ends.first.interface};
+        }
+        NS_ABORT_MSG_IF(routes.nocHop.size() != 2 || routes.erHop.size() != 2,
+                        site.er << " needs a path on both media");
+        routes.nocMedium = site.primary;
+        routes.erMedium = site.primary;
+        router.AddSite(site.er, routes);
+    }
+
+    // --- faults --------------------------------------------------------------------------
+    for (const auto& fault : scenario.faults)
+    {
+        Time at = Seconds(fault.time);
+        std::string subject = fault.target;
+        if (fault.kind == "node_down")
+        {
+            Ptr<Node> target = node(fault.target);
+            Simulator::Schedule(at, [target, subject]() {
+                Ptr<Ipv4> ipv4 = target->GetObject<Ipv4>();
+                for (uint32_t i = 1; i < ipv4->GetNInterfaces(); ++i)
+                {
+                    ipv4->SetDown(i);
+                }
+                LogEvent(subject, "fault", "node_down");
+            });
+        }
+        else if (fault.kind == "radio_per")
+        {
+            std::vector<Ptr<RateErrorModel>> models;
+            for (const auto& [key, model] : radioErrorModels)
+            {
+                if (key.rfind(fault.target + "@", 0) == 0)
+                {
+                    models.push_back(model);
+                }
+            }
+            NS_ABORT_MSG_IF(models.empty(), "fault on unknown radio link " << fault.target);
+            double rate = std::stod(fault.value);
+            Simulator::Schedule(at, [models, rate, subject]() {
+                for (const auto& model : models)
+                {
+                    model->SetRate(rate);
+                }
+                LogEvent(subject, "fault", "radio_per " + std::to_string(rate));
+            });
+        }
+        else if (fault.kind == "flood")
+        {
+            for (const auto& [cpe, enb] : scenario.attachments)
+            {
+                if (enb != fault.target)
+                {
+                    continue;
+                }
+                PacketSinkHelper sink("ns3::UdpSocketFactory",
+                                      InetSocketAddress(Ipv4Address::GetAny(), 9));
+                sink.Install(node(cpe)).Start(Seconds(0));
+                OnOffHelper flood("ns3::UdpSocketFactory",
+                                  InetSocketAddress(ueAddressById.at(cpe), 9));
+                flood.SetConstantRate(DataRate(fault.value), 1400);
+                ApplicationContainer app = flood.Install(noc);
+                app.Start(at);
+                app.Stop(Seconds(simTime));
+            }
+            std::string value = fault.value;
+            Simulator::Schedule(at, [subject, value]() {
+                LogEvent(subject, "fault", "flood " + value + " to each attached CPE");
+            });
+        }
+        else
+        {
+            NS_ABORT_MSG("unknown fault kind " << fault.kind);
+        }
+    }
+
+    if (failover == "central")
+    {
+        for (const auto& plan : scenario.failovers)
+        {
+            std::string er = plan.er;
+            std::string medium = plan.medium;
+            Simulator::Schedule(Seconds(plan.time), [&router, er, medium]() {
+                router.SwitchNoc(er, medium, "central: blackboard plan");
+                router.SwitchEr(er, medium, "central: blackboard plan");
+            });
+        }
+    }
+
     // --- traffic -------------------------------------------------------------------
     TrafficConfig config{Seconds(scenario.Number("traffic_start_s")),
                          Seconds(simTime - 1.0),
@@ -875,11 +1225,15 @@ main(int argc, char* argv[])
     std::vector<std::unique_ptr<SiteTraffic>> traffic;
     for (const auto& site : scenario.sites)
     {
-        traffic.push_back(std::make_unique<SiteTraffic>(site,
-                                                        siteAddress.at(site.er),
-                                                        noc,
-                                                        node(site.er),
-                                                        config));
+        traffic.push_back(std::make_unique<SiteTraffic>(
+            site,
+            siteAddress.at(site.er),
+            noc,
+            node(site.er),
+            config,
+            &router,
+            failover == "local",
+            static_cast<uint32_t>(scenario.Number("local_miss_threshold"))));
         sink.Register(traffic.back().get());
     }
 
@@ -908,11 +1262,23 @@ main(int argc, char* argv[])
     monitor->SerializeToXmlFile(outDir + "/flowmon.xml", true, true);
     std::ofstream csv(outDir + "/sites.csv");
     csv << "index,site,primary,scada_sent,scada_received,scada_loss_pct,rtt_mean_ms,rtt_max_ms,"
-           "telemetry_sent,telemetry_received\n";
+           "telemetry_sent,telemetry_received,noc_medium_end,er_medium_end\n";
+    std::ofstream requests(outDir + "/requests.csv");
+    requests << "site,sequence,sent_s,rtt_ms\n";
     for (const auto& site : traffic)
     {
         site->WriteCsvRow(csv);
         site->WriteCsvRow(std::cout);
+        site->WriteRequests(requests);
+    }
+    std::ofstream events(outDir + "/events.csv");
+    events << "time_s,subject,event,detail\n";
+    for (const auto& event : g_events)
+    {
+        events << event.time << ',' << event.subject << ',' << event.what << ",\"" << event.detail
+               << "\"\n";
+        std::cout << "event " << event.time << " s  " << event.subject << "  " << event.what
+                  << "  " << event.detail << '\n';
     }
     Simulator::Destroy();
     return 0;

@@ -1,0 +1,24 @@
+aisg dual-homed backhaul: 60 nodes, 52 point-to-point links, 15 sites, CPE antenna 12 dBi, 30 s simulated
+1,ER_01,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+2,ER_02,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+3,ER_03,plte,14,13,7.14,69.39,98.68,27,27,radio900,radio900
+4,ER_04,plte,14,13,7.14,128.78,195.19,27,27,radio900,radio900
+5,ER_05,radio900,14,14,0.00,36.76,36.76,27,27,radio900,radio900
+6,ER_06,radio900,14,14,0.00,106.43,112.26,27,27,radio900,radio900
+7,ER_07,plte,14,9,35.71,90.33,222.47,27,15,radio900,radio900
+8,ER_08,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+9,ER_09,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+10,ER_10,radio900,14,14,0.00,36.80,36.80,27,27,radio900,radio900
+11,ER_11,plte,14,14,0.00,23.93,25.93,27,27,plte,plte
+12,ER_12,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+13,ER_13,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+14,ER_14,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+15,ER_15,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
+event 10 s  RELAY_5  fault  flood 20Mbps to each attached CPE
+event 10 s  L014  fault  radio_per 0.600000
+event 13 s  ER_03  switch-noc  plte -> radio900 (central: blackboard plan)
+event 13 s  ER_03  switch-er  plte -> radio900 (central: blackboard plan)
+event 13 s  ER_04  switch-noc  plte -> radio900 (central: blackboard plan)
+event 13 s  ER_04  switch-er  plte -> radio900 (central: blackboard plan)
+event 13 s  ER_07  switch-noc  plte -> radio900 (central: blackboard plan)
+event 13 s  ER_07  switch-er  plte -> radio900 (central: blackboard plan)

@@ -1,0 +1,369 @@
+aisg-ns3-scenario 1
+# exported by aisg from topology 'SGB-DUAL-60'
+# SYNTHETIC scenario; every parameter is nominal and uncalibrated
+# LTE relays modelled as eNodeBs (ns-3 has no LTE relay): RELAY_1, RELAY_2, RELAY_3, RELAY_4, RELAY_5
+# dropped fibre NOC-eNB_A: eNodeBs reach the core through the EPC S1 interface
+# dropped fibre NOC-eNB_B: eNodeBs reach the core through the EPC S1 interface
+# dropped LTE relay backhaul RELAY_1-eNB_A: replaced by the EPC S1 interface
+# dropped LTE relay backhaul RELAY_2-RELAY_1: replaced by the EPC S1 interface
+# dropped LTE relay backhaul RELAY_3-eNB_B: replaced by the EPC S1 interface
+# dropped LTE relay backhaul RELAY_4-RELAY_3: replaced by the EPC S1 interface
+# dropped LTE relay backhaul RELAY_5-RELAY_1: replaced by the EPC S1 interface
+param central_decision_delay_s 3
+param cpe_antenna_beamwidth_deg 65
+param cpe_antenna_max_gain_dbi 12
+param enb_tx_power_dbm 46
+param fault_scenario saf-chain-outage
+param fault_time_s 10
+param fibre_rate 1Gbps
+param flood_rate 20Mbps
+param interference_per 0.6
+param local_miss_threshold 3
+param lte_bandwidth_rb 25
+param lte_dl_frequency_hz 4.65e+08
+param lte_earfcn_dl 9895
+param lte_earfcn_ul 27235
+param radio_antenna_gain_dbi 10
+param radio_bandwidth_hz 250000
+param radio_frequency_hz 9e+08
+param radio_noise_figure_db 5
+param radio_pathloss_exponent_access 3
+param radio_pathloss_exponent_saf 2.7
+param radio_queue_packets 100
+param radio_rate 256kbps
+param radio_tx_power_dbm 30
+param reference_packet_bytes 512
+param scada_interval_s 2
+param scada_request_bytes 64
+param scada_response_bytes 256
+param sim_time_s 30
+param telemetry_bytes 512
+param telemetry_interval_s 1
+param traffic_start_s 2
+param tunnel_port 6600
+param ue_tx_power_dbm 23
+param wired_rate 100Mbps
+node NOC noc 0 0
+node eNB_A enb 4500 7500
+node eNB_B enb 4500 -7500
+node RELAY_1 enb 11000 8000
+node RELAY_2 enb 19000 7500
+node RELAY_3 enb 11000 -8000
+node RELAY_4 enb 19000 -7500
+node RELAY_5 enb 11500 3800
+node SAF_01 saf 4000 200
+node SAF_02 saf 8000 -300
+node SAF_03 saf 12000 300
+node SAF_04 saf 16000 -300
+node SAF_05 saf 20000 300
+node SAF_06 saf 24000 -200
+node SAF_07 saf 7000 -4300
+node ER_01 er 10500 6200
+node CPE_01 cpe 9800 6900
+node RM_01 rm 9800 5500
+node ER_02 er 18500 5800
+node CPE_02 cpe 17800 6500
+node RM_02 rm 17800 5100
+node ER_03 er 9500 4000
+node CPE_03 cpe 8800 4700
+node RM_03 rm 8800 3300
+node ER_04 er 10800 2600
+node CPE_04 cpe 10100 3300
+node RM_04 rm 10100 1900
+node ER_05 er 4500 600
+node CPE_05 cpe 3800 1300
+node RM_05 rm 3800 -100
+node ER_06 er 8500 -1200
+node CPE_06 cpe 7800 -500
+node RM_06 rm 7800 -1900
+node ER_07 er 16500 -400
+node CPE_07 cpe 15800 300
+node RM_07 rm 15800 -1100
+node ER_08 er 10500 -6200
+node CPE_08 cpe 9800 -5500
+node RM_08 rm 9800 -6900
+node ER_09 er 18500 -5800
+node CPE_09 cpe 17800 -5100
+node RM_09 rm 17800 -6500
+node ER_10 er 8000 -3300
+node CPE_10 cpe 7300 -2600
+node RM_10 rm 7300 -4000
+node ER_11 er 24500 3600
+node CPE_11 cpe 23800 4300
+node RM_11 rm 23800 2900
+node ER_12 er 25000 -3200
+node CPE_12 cpe 24300 -2500
+node RM_12 rm 24300 -3900
+node ER_13 er 21500 -5200
+node CPE_13 cpe 20800 -4500
+node RM_13 rm 20800 -5900
+node ER_14 er 21000 2400
+node CPE_14 cpe 20300 3100
+node RM_14 rm 20300 1700
+node ER_15 er 14500 -3200
+node CPE_15 cpe 13800 -2500
+node RM_15 rm 13800 -3900
+p2p L001 NOC SAF_01 fibre 1Gbps 0.0200 0 10.1.0.0 - -
+p2p L002 NOC SAF_07 fibre 1Gbps 0.0411 0 10.1.1.0 - -
+p2p L003 SAF_01 SAF_02 radio 256kbps 25.0134 0 10.2.0.0 -80.3 34.7
+p2p L004 SAF_02 SAF_03 radio 256kbps 25.0135 0 10.2.1.0 -80.3 34.7
+p2p L005 SAF_03 SAF_04 radio 256kbps 25.0135 0 10.2.2.0 -80.3 34.7
+p2p L006 SAF_04 SAF_05 radio 256kbps 25.0135 0 10.2.3.0 -80.3 34.7
+p2p L007 SAF_05 SAF_06 radio 256kbps 25.0134 0 10.2.4.0 -80.3 34.7
+p2p L008 RM_01 SAF_03 radio 256kbps 12.0188 7.14149e-26 10.2.5.0 -97.0 18.0
+p2p L009 RM_02 SAF_05 radio 256kbps 12.0176 3.85541e-33 10.2.6.0 -96.0 19.0
+p2p L010 RM_03 SAF_02 radio 256kbps 12.0123 1.36622e-115 10.2.7.0 -90.7 24.3
+p2p L011 RM_04 SAF_03 radio 256kbps 12.0083 0 10.2.8.0 -85.1 29.9
+p2p L012 RM_05 SAF_01 radio 256kbps 12.0012 0 10.2.9.0 -59.3 55.7
+p2p L013 RM_06 SAF_02 radio 256kbps 12.0054 0 10.2.10.0 -79.2 35.8
+p2p L014 RM_07 SAF_04 radio 256kbps 12.0028 0 10.2.11.0 -70.2 44.8
+p2p L015 RM_08 SAF_07 radio 256kbps 12.0127 1.05085e-102 10.2.12.0 -91.2 23.8
+p2p L016 RM_09 SAF_04 radio 256kbps 12.0215 2.26489e-15 10.2.13.0 -99.1 15.9
+p2p L017 RM_10 SAF_07 radio 256kbps 12.0014 0 10.2.14.0 -61.4 53.6
+p2p L018 RM_11 SAF_06 radio 256kbps 12.0104 6.17141e-204 10.2.15.0 -88.3 26.7
+p2p L019 RM_12 SAF_06 radio 256kbps 12.0124 5.17637e-113 10.2.16.0 -90.8 24.2
+p2p L020 RM_13 SAF_05 radio 256kbps 12.0209 1.70874e-17 10.2.17.0 -98.6 16.4
+p2p L021 RM_14 SAF_05 radio 256kbps 12.0048 0 10.2.18.0 -77.6 37.4
+p2p L022 RM_15 SAF_04 radio 256kbps 12.0141 3.70153e-73 10.2.19.0 -92.7 22.3
+p2p L023 CPE_01 ER_01 wired 100Mbps 0.4049 0 10.3.0.0 - -
+p2p L024 RM_01 ER_01 wired 100Mbps 0.4049 0 10.3.1.0 - -
+p2p L025 CPE_02 ER_02 wired 100Mbps 0.4049 0 10.3.2.0 - -
+p2p L026 RM_02 ER_02 wired 100Mbps 0.4049 0 10.3.3.0 - -
+p2p L027 CPE_03 ER_03 wired 100Mbps 0.4049 0 10.3.4.0 - -
+p2p L028 RM_03 ER_03 wired 100Mbps 0.4049 0 10.3.5.0 - -
+p2p L029 CPE_04 ER_04 wired 100Mbps 0.4049 0 10.3.6.0 - -
+p2p L030 RM_04 ER_04 wired 100Mbps 0.4049 0 10.3.7.0 - -
+p2p L031 CPE_05 ER_05 wired 100Mbps 0.4049 0 10.3.8.0 - -
+p2p L032 RM_05 ER_05 wired 100Mbps 0.4049 0 10.3.9.0 - -
+p2p L033 CPE_06 ER_06 wired 100Mbps 0.4049 0 10.3.10.0 - -
+p2p L034 RM_06 ER_06 wired 100Mbps 0.4049 0 10.3.11.0 - -
+p2p L035 CPE_07 ER_07 wired 100Mbps 0.4049 0 10.3.12.0 - -
+p2p L036 RM_07 ER_07 wired 100Mbps 0.4049 0 10.3.13.0 - -
+p2p L037 CPE_08 ER_08 wired 100Mbps 0.4049 0 10.3.14.0 - -
+p2p L038 RM_08 ER_08 wired 100Mbps 0.4049 0 10.3.15.0 - -
+p2p L039 CPE_09 ER_09 wired 100Mbps 0.4049 0 10.3.16.0 - -
+p2p L040 RM_09 ER_09 wired 100Mbps 0.4049 0 10.3.17.0 - -
+p2p L041 CPE_10 ER_10 wired 100Mbps 0.4049 0 10.3.18.0 - -
+p2p L042 RM_10 ER_10 wired 100Mbps 0.4049 0 10.3.19.0 - -
+p2p L043 CPE_11 ER_11 wired 100Mbps 0.4049 0 10.3.20.0 - -
+p2p L044 RM_11 ER_11 wired 100Mbps 0.4049 0 10.3.21.0 - -
+p2p L045 CPE_12 ER_12 wired 100Mbps 0.4049 0 10.3.22.0 - -
+p2p L046 RM_12 ER_12 wired 100Mbps 0.4049 0 10.3.23.0 - -
+p2p L047 CPE_13 ER_13 wired 100Mbps 0.4049 0 10.3.24.0 - -
+p2p L048 RM_13 ER_13 wired 100Mbps 0.4049 0 10.3.25.0 - -
+p2p L049 CPE_14 ER_14 wired 100Mbps 0.4049 0 10.3.26.0 - -
+p2p L050 RM_14 ER_14 wired 100Mbps 0.4049 0 10.3.27.0 - -
+p2p L051 CPE_15 ER_15 wired 100Mbps 0.4049 0 10.3.28.0 - -
+p2p L052 RM_15 ER_15 wired 100Mbps 0.4049 0 10.3.29.0 - -
+attach CPE_01 RELAY_1
+attach CPE_02 RELAY_2
+attach CPE_03 RELAY_5
+attach CPE_04 RELAY_5
+attach CPE_05 eNB_A
+attach CPE_06 RELAY_5
+attach CPE_07 RELAY_5
+attach CPE_08 RELAY_3
+attach CPE_09 RELAY_4
+attach CPE_10 eNB_B
+attach CPE_11 RELAY_2
+attach CPE_12 RELAY_4
+attach CPE_13 RELAY_4
+attach CPE_14 RELAY_2
+attach CPE_15 RELAY_3
+site ER_01 RM_01 CPE_01 plte 1
+site ER_02 RM_02 CPE_02 plte 2
+site ER_03 RM_03 CPE_03 plte 3
+site ER_04 RM_04 CPE_04 plte 4
+site ER_05 RM_05 CPE_05 radio900 5
+site ER_06 RM_06 CPE_06 radio900 6
+site ER_07 RM_07 CPE_07 plte 7
+site ER_08 RM_08 CPE_08 plte 8
+site ER_09 RM_09 CPE_09 plte 9
+site ER_10 RM_10 CPE_10 radio900 10
+site ER_11 RM_11 CPE_11 plte 11
+site ER_12 RM_12 CPE_12 plte 12
+site ER_13 RM_13 CPE_13 plte 13
+site ER_14 RM_14 CPE_14 plte 14
+site ER_15 RM_15 CPE_15 plte 15
+route SAF_01 ER_01 SAF_02
+route SAF_02 ER_01 SAF_03
+route SAF_03 ER_01 RM_01
+route RM_01 ER_01 ER_01
+route SAF_01 noc NOC
+route SAF_02 noc SAF_01
+route SAF_03 noc SAF_02
+route RM_01 noc SAF_03
+route NOC ER_01 tunnel
+route ER_01 noc CPE_01
+route CPE_01 ER_01 ER_01
+route CPE_01 noc tunnel
+route SAF_01 ER_02 SAF_02
+route SAF_02 ER_02 SAF_03
+route SAF_03 ER_02 SAF_04
+route SAF_04 ER_02 SAF_05
+route SAF_05 ER_02 RM_02
+route RM_02 ER_02 ER_02
+route SAF_04 noc SAF_03
+route SAF_05 noc SAF_04
+route RM_02 noc SAF_05
+route NOC ER_02 tunnel
+route ER_02 noc CPE_02
+route CPE_02 ER_02 ER_02
+route CPE_02 noc tunnel
+route SAF_01 ER_03 SAF_02
+route SAF_02 ER_03 RM_03
+route RM_03 ER_03 ER_03
+route RM_03 noc SAF_02
+route NOC ER_03 tunnel
+route ER_03 noc CPE_03
+route CPE_03 ER_03 ER_03
+route CPE_03 noc tunnel
+route SAF_01 ER_04 SAF_02
+route SAF_02 ER_04 SAF_03
+route SAF_03 ER_04 RM_04
+route RM_04 ER_04 ER_04
+route RM_04 noc SAF_03
+route NOC ER_04 tunnel
+route ER_04 noc CPE_04
+route CPE_04 ER_04 ER_04
+route CPE_04 noc tunnel
+route SAF_01 ER_05 RM_05
+route RM_05 ER_05 ER_05
+route RM_05 noc SAF_01
+route NOC ER_05 SAF_01
+route ER_05 noc RM_05
+route CPE_05 ER_05 ER_05
+route CPE_05 noc tunnel
+route SAF_01 ER_06 SAF_02
+route SAF_02 ER_06 RM_06
+route RM_06 ER_06 ER_06
+route RM_06 noc SAF_02
+route NOC ER_06 SAF_01
+route ER_06 noc RM_06
+route CPE_06 ER_06 ER_06
+route CPE_06 noc tunnel
+route SAF_01 ER_07 SAF_02
+route SAF_02 ER_07 SAF_03
+route SAF_03 ER_07 SAF_04
+route SAF_04 ER_07 RM_07
+route RM_07 ER_07 ER_07
+route RM_07 noc SAF_04
+route NOC ER_07 tunnel
+route ER_07 noc CPE_07
+route CPE_07 ER_07 ER_07
+route CPE_07 noc tunnel
+route SAF_07 ER_08 RM_08
+route RM_08 ER_08 ER_08
+route SAF_07 noc NOC
+route RM_08 noc SAF_07
+route NOC ER_08 tunnel
+route ER_08 noc CPE_08
+route CPE_08 ER_08 ER_08
+route CPE_08 noc tunnel
+route SAF_01 ER_09 SAF_02
+route SAF_02 ER_09 SAF_03
+route SAF_03 ER_09 SAF_04
+route SAF_04 ER_09 RM_09
+route RM_09 ER_09 ER_09
+route RM_09 noc SAF_04
+route NOC ER_09 tunnel
+route ER_09 noc CPE_09
+route CPE_09 ER_09 ER_09
+route CPE_09 noc tunnel
+route SAF_07 ER_10 RM_10
+route RM_10 ER_10 ER_10
+route RM_10 noc SAF_07
+route NOC ER_10 SAF_07
+route ER_10 noc RM_10
+route CPE_10 ER_10 ER_10
+route CPE_10 noc tunnel
+route SAF_01 ER_11 SAF_02
+route SAF_02 ER_11 SAF_03
+route SAF_03 ER_11 SAF_04
+route SAF_04 ER_11 SAF_05
+route SAF_05 ER_11 SAF_06
+route SAF_06 ER_11 RM_11
+route RM_11 ER_11 ER_11
+route SAF_06 noc SAF_05
+route RM_11 noc SAF_06
+route NOC ER_11 tunnel
+route ER_11 noc CPE_11
+route CPE_11 ER_11 ER_11
+route CPE_11 noc tunnel
+route SAF_01 ER_12 SAF_02
+route SAF_02 ER_12 SAF_03
+route SAF_03 ER_12 SAF_04
+route SAF_04 ER_12 SAF_05
+route SAF_05 ER_12 SAF_06
+route SAF_06 ER_12 RM_12
+route RM_12 ER_12 ER_12
+route RM_12 noc SAF_06
+route NOC ER_12 tunnel
+route ER_12 noc CPE_12
+route CPE_12 ER_12 ER_12
+route CPE_12 noc tunnel
+route SAF_01 ER_13 SAF_02
+route SAF_02 ER_13 SAF_03
+route SAF_03 ER_13 SAF_04
+route SAF_04 ER_13 SAF_05
+route SAF_05 ER_13 RM_13
+route RM_13 ER_13 ER_13
+route RM_13 noc SAF_05
+route NOC ER_13 tunnel
+route ER_13 noc CPE_13
+route CPE_13 ER_13 ER_13
+route CPE_13 noc tunnel
+route SAF_01 ER_14 SAF_02
+route SAF_02 ER_14 SAF_03
+route SAF_03 ER_14 SAF_04
+route SAF_04 ER_14 SAF_05
+route SAF_05 ER_14 RM_14
+route RM_14 ER_14 ER_14
+route RM_14 noc SAF_05
+route NOC ER_14 tunnel
+route ER_14 noc CPE_14
+route CPE_14 ER_14 ER_14
+route CPE_14 noc tunnel
+route SAF_01 ER_15 SAF_02
+route SAF_02 ER_15 SAF_03
+route SAF_03 ER_15 SAF_04
+route SAF_04 ER_15 RM_15
+route RM_15 ER_15 ER_15
+route RM_15 noc SAF_04
+route NOC ER_15 tunnel
+route ER_15 noc CPE_15
+route CPE_15 ER_15 ER_15
+route CPE_15 noc tunnel
+path ER_01 radio900 SAF_01 RM_01
+path ER_01 plte tunnel CPE_01
+path ER_02 radio900 SAF_01 RM_02
+path ER_02 plte tunnel CPE_02
+path ER_03 radio900 SAF_01 RM_03
+path ER_03 plte tunnel CPE_03
+path ER_04 radio900 SAF_01 RM_04
+path ER_04 plte tunnel CPE_04
+path ER_05 radio900 SAF_01 RM_05
+path ER_05 plte tunnel CPE_05
+path ER_06 radio900 SAF_01 RM_06
+path ER_06 plte tunnel CPE_06
+path ER_07 radio900 SAF_01 RM_07
+path ER_07 plte tunnel CPE_07
+path ER_08 radio900 SAF_07 RM_08
+path ER_08 plte tunnel CPE_08
+path ER_09 radio900 SAF_01 RM_09
+path ER_09 plte tunnel CPE_09
+path ER_10 radio900 SAF_07 RM_10
+path ER_10 plte tunnel CPE_10
+path ER_11 radio900 SAF_01 RM_11
+path ER_11 plte tunnel CPE_11
+path ER_12 radio900 SAF_01 RM_12
+path ER_12 plte tunnel CPE_12
+path ER_13 radio900 SAF_01 RM_13
+path ER_13 plte tunnel CPE_13
+path ER_14 radio900 SAF_01 RM_14
+path ER_14 plte tunnel CPE_14
+path ER_15 radio900 SAF_01 RM_15
+path ER_15 plte tunnel CPE_15
+# fault scenario 'saf-chain-outage'; ground truth for scoring only
+fault 10 node_down SAF_02 -
+failover 13 ER_06 plte

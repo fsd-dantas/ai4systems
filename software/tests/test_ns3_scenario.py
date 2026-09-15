@@ -142,6 +142,62 @@ def test_cpe_antenna_is_declared_in_the_rendered_scenario(scenario):
     assert 0 < float(params["cpe_antenna_beamwidth_deg"]) < 360
 
 
+def test_every_site_declares_a_path_on_each_medium(scenario):
+    links = {frozenset((l.a, l.b)) for l in scenario.links}
+    by_site = {}
+    for er, medium, noc_via, er_via in scenario.paths:
+        by_site.setdefault(er, {})[medium] = (noc_via, er_via)
+    for site in scenario.sites:
+        radio_noc, radio_er = by_site[site.er]["radio900"]
+        lte_noc, lte_er = by_site[site.er]["plte"]
+        assert frozenset(("NOC", radio_noc)) in links and radio_er == site.rm
+        assert lte_noc == "tunnel" and lte_er == site.cpe
+
+
+def test_no_faults_without_a_fault_scenario(scenario):
+    assert scenario.faults == [] and scenario.failovers == []
+    assert "\nfault " not in scenario.render()
+
+
+def test_commanded_faults_are_induced(topology):
+    saf = build_ns3_scenario(topology, fault_scenario="saf-chain-outage")
+    assert [(k, t) for _, k, t, _ in saf.faults] == [("node_down", "SAF_02")]
+
+    dual = build_ns3_scenario(topology, fault_scenario="dual-outage")
+    assert sorted(t for _, k, t, _ in dual.faults if k == "node_down") == ["RELAY_5", "SAF_02"]
+
+    independent = build_ns3_scenario(topology, fault_scenario="independent-faults")
+    kinds = {(k, t) for _, k, t, _ in independent.faults}
+    assert ("flood", "RELAY_5") in kinds
+    rm07_links = {l.id for l in independent.links if "RM_07" in (l.a, l.b) and l.cls == "radio"}
+    assert {t for k, t in kinds if k == "radio_per"} == rm07_links
+
+
+def test_central_failover_is_the_blackboard_plan(topology):
+    """
+    Only medium switches become failovers: isolated sites have nowhere to go,
+    and a lost backup medium changes nothing.
+    """
+    saf = build_ns3_scenario(topology, fault_scenario="saf-chain-outage")
+    assert [(er, m) for _, er, m in saf.failovers] == [("ER_06", "plte")]
+
+    dual = build_ns3_scenario(topology, fault_scenario="dual-outage")
+    isolated = {"ER_03", "ER_04", "ER_06", "ER_07"}
+    assert not isolated & {er for _, er, _ in dual.failovers}
+
+    independent = build_ns3_scenario(topology, fault_scenario="independent-faults")
+    assert {(er, m) for _, er, m in independent.failovers} == {
+        ("ER_03", "radio900"), ("ER_04", "radio900"), ("ER_07", "radio900"),
+    }
+    fault_time = float(NS3_PARAMETERS["fault_time_s"])
+    assert all(t > fault_time for t, _, _ in independent.failovers)
+
+
+def test_an_unknown_fault_scenario_is_rejected(topology):
+    with pytest.raises(ScenarioError):
+        build_ns3_scenario(topology, fault_scenario="meteor-strike")
+
+
 def test_a_topology_without_a_control_centre_is_rejected(topology):
     from aisg.domain.topology import Topology
 

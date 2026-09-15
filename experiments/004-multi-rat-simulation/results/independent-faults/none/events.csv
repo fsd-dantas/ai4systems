@@ -1,0 +1,3 @@
+time_s,subject,event,detail
+10,RELAY_5,fault,"flood 20Mbps to each attached CPE"
+10,L014,fault,"radio_per 0.600000"
