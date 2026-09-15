@@ -1,4 +1,4 @@
-[ai4systems](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **002 Multi-expert blackboard**
+[Applied AI for Wireless Communication](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **002 Multi-expert blackboard**
 
 # 002 — Quadro-negro multiespecialista / Multi-expert blackboard
 

@@ -46,8 +46,8 @@ swap=8GB
 
 ```bash
 sudo apt-get update && sudo apt-get install -y git
-git clone https://github.com/fsd-dantas/ai4systems.git ~/ai4systems
-export REPO=~/ai4systems
+git clone https://github.com/fsd-dantas/applied-ai-for-wireless-communication.git ~/applied-ai-for-wireless-communication
+export REPO=~/applied-ai-for-wireless-communication
 sed 's/#.*//' $REPO/software/ns-3-modules/requirements-ubuntu.txt | xargs sudo apt-get install -y
 ```
 

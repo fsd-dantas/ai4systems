@@ -3,8 +3,8 @@
 ## Instalação / Install
 
 ```bash
-git clone https://github.com/fsd-dantas/ai4systems.git
-cd ai4systems
+git clone https://github.com/fsd-dantas/applied-ai-for-wireless-communication.git
+cd applied-ai-for-wireless-communication
 python -m pip install -e ".[dev]"
 ```
 

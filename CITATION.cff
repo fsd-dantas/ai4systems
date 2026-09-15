@@ -1,13 +1,14 @@
 cff-version: 1.2.0
 title: >-
-  ai4systems: artificial intelligence methods for cyber-physical and
-  networked systems
+  applied-ai-for-wireless-communication: a research knowledge base and
+  research framework for applying artificial intelligence to wireless
+  communication systems
 message: If you use this software, please cite it using these metadata.
 type: software
 authors:
   - family-names: Dantas
     given-names: Fernando Sabino
-repository-code: https://github.com/fsd-dantas/ai4systems
+repository-code: https://github.com/fsd-dantas/applied-ai-for-wireless-communication
 license: MIT
 version: 0.11.0
 date-released: "2026-09-15"

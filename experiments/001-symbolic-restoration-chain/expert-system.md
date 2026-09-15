@@ -10,8 +10,8 @@ Codigo / code: [`software/aisg/expert_system/`](../../software/aisg/expert_syste
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/02-expert-system-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/02-expert-system-light.svg" alt="The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/figures/02-expert-system-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/figures/02-expert-system-light.svg" alt="The 41 rules in five layers. Forward chaining rises from measurements to authorisation; backward chaining descends from the goal to the questions it needs." width="100%">
   </picture>
 </p>
 

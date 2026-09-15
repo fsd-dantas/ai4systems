@@ -1,9 +1,9 @@
 
-[ai4systems](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **001 Symbolic restoration chain**
+[Applied AI for Wireless Communication](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **001 Symbolic restoration chain**
 
 # 001 — Symbolic AI for Network Restoration
 
-[![tests](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml)
+[![tests](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/actions/workflows/tests.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](../../LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab)](../../pyproject.toml)
 
@@ -76,8 +76,8 @@ Declared falsifiability: if (i) fails for any pair, A\*'s optimality is no longe
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/01-integration-dark.svg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/figures/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/figures/01-integration-dark.svg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/figures/01-integration-light.svg" alt="The expert system produces a diagnosis that becomes the planner's initial state; the planner asks A* whether an alternative route exists; and the progression planner reuses the same A* function that solves routing." width="100%">
   </picture>
 </p>
 
@@ -152,8 +152,8 @@ The core has no third-party dependencies: only the Python 3.10+ standard library
 ## Procedimento de execução / Execution procedure
 
 ```bash
-git clone https://github.com/fsd-dantas/ai4systems.git
-cd ai4systems
+git clone https://github.com/fsd-dantas/applied-ai-for-wireless-communication.git
+cd applied-ai-for-wireless-communication
 python -m pip install -e ".[dev]"
 
 # 1 — sistema especialista / expert system
@@ -176,7 +176,7 @@ aisg --topology simulated route --compare
 Sem instalar / without installing: `PYTHONPATH=software python -m aisg ...`
 Em inglês / in English: acrescente `--lang en` / add `--lang en`.
 
-Fundamentos teóricos na wiki / theoretical foundations in the wiki: [github.com/fsd-dantas/ai4systems/wiki](https://github.com/fsd-dantas/ai4systems/wiki)
+Fundamentos teóricos na wiki / theoretical foundations in the wiki: [github.com/fsd-dantas/applied-ai-for-wireless-communication/wiki](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/wiki)
 
 ## Métricas / Metrics
 

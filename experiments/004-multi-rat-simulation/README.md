@@ -1,4 +1,4 @@
-[ai4systems](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **004 Multi-RAT simulation**
+[Applied AI for Wireless Communication](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **004 Multi-RAT simulation**
 
 # 004 — Simulação multi-RAT em ns-3 / Multi-RAT ns-3 simulation
 

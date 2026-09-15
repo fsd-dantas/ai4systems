@@ -1,18 +1,18 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-dark.jpg">
-    <img src="https://raw.githubusercontent.com/fsd-dantas/ai4systems/main/docs/assets/banner-light.jpg" alt="Artificial Intelligence for Systems — research on cyber-physical and networked systems. An isometric lattice with energised traces wiring a search tree, a network router, a transmission tower, a gauge, a feedback controller and a network mesh to one AI processor." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/banner-dark.jpg">
+    <img src="https://raw.githubusercontent.com/fsd-dantas/applied-ai-for-wireless-communication/main/docs/assets/banner-light.jpg" alt="Applied AI for Wireless Communication — a knowledge base for wireless AI research. An isometric lattice with energised traces wiring a search tree, a network router, a transmission tower, a gauge, a feedback controller and a network mesh to one AI processor." width="100%">
   </picture>
 </p>
 
-# ai4systems
+# Applied AI for Wireless Communication
 
 **Base de conhecimento de pesquisa e framework de pesquisa para aplicar inteligência artificial a sistemas de comunicação sem fio.**
 *Research knowledge base and research framework for applying artificial intelligence to wireless communication systems.*
 
-[![tests](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml)
+[![tests](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/actions/workflows/tests.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](LICENSE)
-[![wiki](https://img.shields.io/badge/wiki-fundamentos%20%2F%20foundations-555555)](https://github.com/fsd-dantas/ai4systems/wiki)
+[![wiki](https://img.shields.io/badge/wiki-fundamentos%20%2F%20foundations-555555)](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/wiki)
 
 > **PT-BR** — Compêndio de pesquisa sobre **recomendações justificáveis de diagnóstico, intervenção e roteamento sob hipóteses explícitas** em redes de comunicação multi-RAT de sistemas elétricos inteligentes — LTE privativo e rádio em 900 MHz sobre um núcleo em fibra. Cada experimento declara sua questão, seu método, como executá-lo e como seus resultados são verificados.
 >
@@ -67,8 +67,8 @@ Configurations and data behind the results are published. Every scenario is **sy
 
 ## Fundamentos / Foundations
 
-A [wiki](https://github.com/fsd-dantas/ai4systems/wiki) reúne a teoria por trás dos experimentos — raciocínio, busca, planejamento, representação do conhecimento, agentes e aprendizagem.
-The [wiki](https://github.com/fsd-dantas/ai4systems/wiki) gathers the theory behind the experiments — reasoning, search, planning, knowledge representation, agents and learning.
+A [wiki](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/wiki) reúne a teoria por trás dos experimentos — raciocínio, busca, planejamento, representação do conhecimento, agentes e aprendizagem.
+The [wiki](https://github.com/fsd-dantas/applied-ai-for-wireless-communication/wiki) gathers the theory behind the experiments — reasoning, search, planning, knowledge representation, agents and learning.
 
 ## Como citar / How to cite
 

@@ -1,4 +1,4 @@
-[ai4systems](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **003 Eco-resolution**
+[Applied AI for Wireless Communication](../../README.md) › [experiments](../../docs/experiment-catalogue.md) › **003 Eco-resolution**
 
 # 003 — Eco-resolução / Eco-resolution
 
