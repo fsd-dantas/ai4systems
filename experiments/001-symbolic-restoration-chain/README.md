@@ -11,11 +11,58 @@
 >
 > **EN** — Three symbolic Artificial Intelligence systems applied to a single domain: wireless networks for smart grid systems. A diagnostic expert system, an automated action-plan generator (STRIPS / GPS), and an A* search implementation.
 
-[Português](#português) · [English](#english)
+Questão / Question: [RQ1–RQ3](../../research/research-questions.md) · Estado / Status: **concluído / complete**
 
 ---
 
-## Os três sistemas / The three systems
+## Objetivo / Objective
+
+Construir e conectar três sistemas simbólicos de IA — um sistema especialista de diagnóstico, um planejador STRIPS/GPS e uma busca A* — sobre um único domínio de rede, de modo que o diagnóstico de um incidente produza automaticamente o estado inicial de um plano ordenado de intervenção, e que uma ação de desvio de tráfego só seja aplicável quando a busca A* confirma que existe rota alternativa. Nenhum dos três sistemas é demonstrado isoladamente: o objetivo é a cadeia, não as partes.
+
+Build and connect three symbolic AI systems — a diagnostic expert system, a STRIPS/GPS planner and an A* search — over a single network domain, so that diagnosing an incident automatically becomes a plan's initial state, and a reroute-traffic action is applicable only when A* search confirms an alternative route exists. None of the three systems is demonstrated in isolation: the chain is the point, not the parts.
+
+## Questão de pesquisa / Research question
+
+> Na ausência de um conjunto de dados rotulado de falhas, é possível construir um
+> encadeamento **diagnóstico → plano → rota** que seja simultaneamente *auditável*
+> — cada conclusão rastreável até a evidência que a sustenta — e *verificável*,
+> isto é, cujas propriedades de correção sejam asseguradas por testes e não
+> apenas afirmadas em prosa?
+>
+> In the absence of a labelled fault dataset, can a **diagnosis → plan → route**
+> chain be built that is both *auditable* — every conclusion traceable to the
+> evidence supporting it — and *verifiable*, meaning its correctness properties
+> are asserted by tests rather than merely claimed in prose?
+
+A pergunta é metodológica antes de ser técnica. Ela nasce de uma restrição real do laboratório, e não de uma preferência estética por métodos simbólicos: a condição de contorno é a **indisponibilidade de rótulo derivado de medição**, e a resposta precisa ser honesta quanto ao que essa restrição permite concluir.
+
+The question is methodological before it is technical. It arises from a real laboratory constraint rather than an aesthetic preference for symbolic methods: the boundary condition is the **unavailability of measurement-derived labels**, and the answer has to be honest about what that constraint permits concluding.
+
+Três subquestões organizam os três sistemas / three sub-questions organise the three systems:
+
+1. **Representação do conhecimento / Knowledge representation.** Como codificar julgamento de engenharia sob incerteza de modo que a cadeia de inferência permaneça inspecionável e contestável? *(regras de produção com fatores de certeza)* / How can engineering judgement under uncertainty be encoded so the inference chain stays inspectable and contestable? *(production rules with certainty factors)*
+2. **Deliberação / Deliberation.** Como derivar a **ordem** de intervenção — e não apenas o conjunto de ações — expressando restrições como precondições formais, e não como verificações em tempo de execução? *(STRIPS, GPS, planejamento progressivo)* / How is the **order** of intervention derived — not merely the set of actions — expressing constraints as formal preconditions rather than as runtime checks? *(STRIPS, GPS, progression planning)*
+3. **Otimalidade demonstrável / Demonstrable optimality.** Sob que condições uma busca informada garante o caminho de menor custo, e como *demonstrar* que a heurística adotada satisfaz essas condições neste domínio? *(A\*, admissibilidade, consistência)* / Under what conditions does an informed search guarantee the least-cost path, and how is the chosen heuristic *shown* to meet them in this domain? *(A\*, admissibility, consistency)*
+
+## Hipótese / Hypothesis
+
+Um encadeamento **diagnóstico → plano → rota** construído inteiramente com métodos simbólicos — regras de produção com fatores de certeza, STRIPS/GPS e A\* — pode ser auditável e verificável sem qualquer conjunto de dados rotulado de falha, desde que cada propriedade de correção seja testada contra um oráculo que não compartilhe código com o artefato. Três hipóteses específicas, testáveis independentemente, decorrem disso: (i) a heurística em linha reta do A\* é admissível e consistente neste domínio, para todo par de nós; (ii) todo plano gerado pelo GPS ou pela busca progressiva é executável desde o estado inicial e nunca declara sucesso sobre uma falha viva; (iii) a busca informada (A\*) expande menos nós que a busca de custo uniforme sobre o mesmo grafo, para o mesmo par origem-destino.
+
+A **diagnosis → plan → route** chain built entirely from symbolic methods — production rules with certainty factors, STRIPS/GPS and A\* — can be auditable and verifiable without any labelled fault dataset, provided every correctness property is tested against an oracle sharing no code with the artefact. Three specific, independently testable hypotheses follow: (i) A\*'s straight-line heuristic is admissible and consistent in this domain, for every node pair; (ii) every plan produced by GPS or progression search is executable from the initial state and never declares success over a live fault; (iii) informed search (A\*) expands fewer nodes than uniform-cost search over the same graph, for the same origin–destination pair.
+
+Falseabilidade declarada: se (i) falhar para qualquer par, a otimalidade do A\* deixa de estar demonstrada neste domínio; se (ii) falhar para qualquer plano, o planejador não é confiável; (iii) é uma hipótese de eficiência, não de correção, e sua falha não invalida (i) nem (ii) — ver [Limitações](#limitações--limitations).
+
+Declared falsifiability: if (i) fails for any pair, A\*'s optimality is no longer demonstrated in this domain; if (ii) fails for any plan, the planner is not trustworthy; (iii) is an efficiency hypothesis, not a correctness one, and its failure invalidates neither (i) nor (ii) — see [Limitations](#limitações--limitations).
+
+## Tópicos relacionados / Related topics
+
+- [RQ1–RQ3](../../research/research-questions.md) — questões de pesquisa que este experimento responde / the research questions this experiment answers.
+- [Experimento 002](../002-multi-expert-blackboard/) — os especialistas de regra são subconjuntos das mesmas 41 regras simuladas deste experimento, com os mesmos identificadores / the rule experts are subsets of this experiment's same 41 simulated rules, with the same ids.
+- [Experimento 003](../003-eco-resolution/) e [004](../004-multi-rat-simulation/) — reutilizam o mesmo domínio de rede (topologia `dual`, 60 nós) declarado aqui / reuse the same network domain (the `dual` 60-node topology) declared here.
+- [`literature/systematic-review/al-ajlan-2015/`](../../literature/systematic-review/al-ajlan-2015/) — mede encadeamento progressivo × regressivo sobre esta mesma base de 41 regras / measures forward vs backward chaining over this same 41-rule base.
+- Referências completas em [Referências](#referências--references) abaixo / full references in [References](#referências--references) below.
+
+## Modelo do sistema / System model
 
 | # | Sistema / System | Técnica / Technique | Código / Code |
 |---|---|---|---|
@@ -34,22 +81,75 @@
   </picture>
 </p>
 
-| Diagrama / Diagram                                                                                         | Conteúdo / Contents                                                                |
-|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [Integration](../../docs/assets/figures/01-integration-light.svg) · [dark](../../docs/assets/figures/01-integration-dark.svg)          | How the three systems exchange information                                         |
-| [Expert system](../../docs/assets/figures/02-expert-system-light.svg) · [dark](../../docs/assets/figures/02-expert-system-dark.svg)    | The five rule layers and both chaining directions                                  |
-| [Planning](../../docs/assets/figures/03-planning-light.svg) · [dark](../../docs/assets/figures/03-planning-dark.svg)                   | STRIPS operator anatomy and the GPS means-ends recursion                           |
-| [A* search](../../docs/assets/figures/04-astar-light.svg) · [dark](../../docs/assets/figures/04-astar-dark.svg)                        | f = g + h, the admissibility proof, and the strategy comparison                    |
-| [Scenario, 30 nodes](../../docs/assets/figures/05-simulated-30-light.svg) · [dark](../../docs/assets/figures/05-simulated-30-dark.svg) | The simulated scenario and the A* route across it                                  |
-| [Scenario, 60 nodes](../../docs/assets/figures/06-dual-60-light.svg) · [dark](../../docs/assets/figures/06-dual-60-dark.svg)           | 15 dual-homed sites reached by both a pLTE star and a 900 MHz mesh                 |
-| [State machine](../../docs/assets/figures/07-state-machine-light.svg) · [dark](../../docs/assets/figures/07-state-machine-dark.svg)    | The restoration state space, and why the goal is unreachable while a fault is live |
+| Diagrama / Diagram | Conteúdo / Contents |
+|---|---|
+| [Integration](../../docs/assets/figures/01-integration-light.svg) · [dark](../../docs/assets/figures/01-integration-dark.svg) | How the three systems exchange information |
+| [Expert system](../../docs/assets/figures/02-expert-system-light.svg) · [dark](../../docs/assets/figures/02-expert-system-dark.svg) | The five rule layers and both chaining directions |
+| [Planning](../../docs/assets/figures/03-planning-light.svg) · [dark](../../docs/assets/figures/03-planning-dark.svg) | STRIPS operator anatomy and the GPS means-ends recursion |
+| [A* search](../../docs/assets/figures/04-astar-light.svg) · [dark](../../docs/assets/figures/04-astar-dark.svg) | f = g + h, the admissibility proof, and the strategy comparison |
+| [Scenario, 30 nodes](../../docs/assets/figures/05-simulated-30-light.svg) · [dark](../../docs/assets/figures/05-simulated-30-dark.svg) | The `simulated` comparison scenario and the A* route across it |
+| [Scenario, 60 nodes](../../docs/assets/figures/06-dual-60-light.svg) · [dark](../../docs/assets/figures/06-dual-60-dark.svg) | 15 dual-homed sites reached by both a pLTE star and a 900 MHz mesh |
+| [State machine](../../docs/assets/figures/07-state-machine-light.svg) · [dark](../../docs/assets/figures/07-state-machine-dark.svg) | The restoration state space, and why the goal is unreachable while a fault is live |
 
----
+O código deste experimento está em [`software/aisg/`](../../software/aisg/) (módulos `domain`, `expert_system`, `planning`, `search`) e os testes em [`software/tests/`](../../software/tests/). Ver [docs/architecture.md](../../docs/architecture.md).
 
-## Instalação / Install
+The code for this experiment lives in [`software/aisg/`](../../software/aisg/) (modules `domain`, `expert_system`, `planning`, `search`) and the tests in [`software/tests/`](../../software/tests/). See [docs/architecture.md](../../docs/architecture.md).
 
-Não há dependências externas no núcleo: apenas a biblioteca padrão do Python 3.10+.
-The core has no third-party dependencies: only the Python 3.10+ standard library.
+## Cenário e premissas / Scenario and assumptions
+
+O domínio é a rede de comunicação que liga ativos distribuídos de um sistema elétrico ao centro de operação: um núcleo em fibra, setores de rádio em 900 MHz, uma cadeia de repetidores *armazena-e-encaminha* e uma sobreposição de LTE privativo. Dois cenários estão disponíveis hoje:
+
+The domain is the communication network linking distributed assets of an electric system to the operations centre: a fibre core, 900 MHz radio sectors, a *store-and-forward* relay chain, and a private LTE overlay. Two scenarios are available today:
+
+| Cenário / Scenario | Nós / Nodes | Enlaces / Links | Uso / Use |
+|---|---|---|---|
+| `dual` (padrão / default) | 60 | 74 | 15 sites em duplo acesso; usado pelos comandos de exemplo abaixo (`aisg route --to ER_03`) e pelos experimentos 002–004 / 15 dual-homed sites; used by the example commands below (`aisg route --to ER_03`) and by experiments 002–004 |
+| `simulated` | 30 | 44 | Três setores; usado especificamente para comparar o esforço de busca entre grafos de tamanhos diferentes (`aisg --topology simulated route --compare`) / three sectors; used specifically to compare search effort between graphs of different sizes |
+
+**A topologia é SINTÉTICA.** É um modelo didático da *classe* de cenários estudada em laboratórios de pesquisa em backhaul sem fio. Não contém inventário real, endereçamento, identificação de equipamento, configuração de RF nem topologia de campo de qualquer laboratório ou concessionária. Ver [`docs/domain-model.md`](../../docs/domain-model.md).
+
+**The topology is SYNTHETIC.** It is a didactic model of the *class* of scenarios studied in wireless backhaul research testbeds. It contains no real inventory, addressing, equipment identification, RF configuration, or field topology of any laboratory or utility. See [`docs/domain-model.md`](../../docs/domain-model.md).
+
+**Simulado, e não de campo — por escolha metodológica.** O cenário é simulado, o que inverte a relação usual entre validade interna e externa a favor deste trabalho: uma condição de falha *comandada* é repetível e rotulável, ao passo que uma condição *observada* em campo é apenas provável. Cada diagnóstico declara, no bloco `INDUCIBLE_BY`, **como é induzido no simulador** — o que torna o conjunto de casos reprodutível por terceiros. O custo dessa escolha é explícito e está declarado: os resultados valem para o modelo, não para uma planta.
+
+**Simulated rather than field, by methodological choice.** The scenario is simulated, which inverts the usual internal/external validity trade-off in this work's favor: a *commanded* fault condition is repeatable and labellable, whereas an *observed* field condition is merely probable. Each diagnosis declares in the `INDUCIBLE_BY` block **how it is induced in the simulator**, which makes the case set reproducible by third parties. The cost of that choice is explicit and declared: the results hold for the model, not for a plant.
+
+**Premissa de modelagem.** `authorized(?n)` é precondição dos operadores que alteram o cenário, o que torna a restrição uma propriedade do espaço de estados em vez de uma verificação em tempo de execução — uma técnica de modelagem STRIPS, exercitada aqui sobre um cenário simulado.
+
+**Modelling assumption.** `authorized(?n)` is a precondition of the operators that change the scenario, which makes the constraint a property of the state space rather than a runtime check — a STRIPS modelling technique, exercised here over a simulated scenario.
+
+**Nota de proveniência.** Uma topologia de 17 nós existiu como cenário base até a v0.10.0 e foi removida junto com a base de conhecimento de campo (ver `CHANGELOG.md`); qualquer afirmação anterior ancorada nela deixou de ser reproduzível — ver [Limitações](#limitações--limitations).
+
+**Provenance note.** A 17-node topology existed as the base scenario up to v0.10.0 and was removed together with the field knowledge base (see `CHANGELOG.md`); any earlier claim anchored to it is no longer reproducible — see [Limitations](#limitações--limitations).
+
+## Software e versões / Software and versions
+
+Não há dependências externas no núcleo: apenas a biblioteca padrão do Python 3.10+. `matplotlib` e `pytest` são extras de desenvolvimento/notebook, declarados em [`pyproject.toml`](../../pyproject.toml) (`pip install -e ".[dev]"`). Pacote `aisg`, versão 0.11.0.
+
+The core has no third-party dependencies: only the Python 3.10+ standard library. `matplotlib` and `pytest` are development/notebook extras, declared in [`pyproject.toml`](../../pyproject.toml) (`pip install -e ".[dev]"`). Package `aisg`, version 0.11.0.
+
+## Configuração / Configuration
+
+**(i) Declaração de incerteza.** Todo limiar numérico usado por regra vive num único bloco (`THRESHOLDS`, em [`expert_system/`](../../software/aisg/expert_system/)) e está marcado como **nominal e não calibrado**. Nenhuma medição de laboratório o sustenta. A separação entre *estrutura* (as regras) e *parâmetro* (os limiares) é deliberada: a calibração futura ajusta valores sem reescrever conhecimento.
+
+**(i) Declared uncertainty.** Every numeric threshold used by a rule lives in one block (`THRESHOLDS`, in [`expert_system/`](../../software/aisg/expert_system/)) and is marked **nominal and uncalibrated**. No laboratory measurement supports it. Separating *structure* (the rules) from *parameter* (the thresholds) is deliberate: future calibration adjusts values without rewriting knowledge.
+
+**(ii) Verificação por oráculo independente.** Propriedades de correção não são argumentadas — são testadas contra um procedimento que **não compartilha código** com o artefato verificado. A otimalidade do A\* é conferida contra Floyd–Warshall; a consistência do domínio de planejamento, contra a análise por grafo de planejamento (Graphplan). Verificar o A\* com custo uniforme seria circular, pois `uniform_cost` é literalmente `astar` com `h = 0`.
+
+**(ii) Verification by an independent oracle.** Correctness properties are not argued — they are tested against a procedure that **shares no code** with the artefact under test. A\*'s optimality is checked against Floyd–Warshall; the planning domain's consistency, against planning-graph (Graphplan) analysis. Checking A\* against uniform cost would be circular, since `uniform_cost` is literally `astar` with `h = 0`.
+
+**(iii) Falseabilidade e resultado negativo.** O projeto registra o que **não** conseguiu demonstrar com o mesmo cuidado com que registra o que demonstrou — ver [Limitações](#limitações--limitations).
+
+**(iii) Falsifiability and negative results.** The project records what it could **not** demonstrate as carefully as what it could — see [Limitations](#limitações--limitations).
+
+## Dados de entrada / Input data
+
+- Base de conhecimento simulada (`kb_simulated.py`): 41 regras de produção, 13 variáveis observáveis, fatores de certeza estilo MYCIN. / Simulated knowledge base (`kb_simulated.py`): 41 production rules, 13 observable variables, MYCIN-style certainty factors.
+- 8 casos de diagnóstico simulados (p. ex. `rf_interference`, `mac_contention`, `congestion`), cada um com seu bloco `INDUCIBLE_BY`. / 8 simulated diagnosis cases (e.g. `rf_interference`, `mac_contention`, `congestion`), each with its own `INDUCIBLE_BY` block.
+- Topologias declaradas em [`software/aisg/domain/data/`](../../software/aisg/domain/data/): `backhaul-topology-60.json` (`dual`) e `backhaul-topology-30.json` (`simulated`). / Topologies declared in [`software/aisg/domain/data/`](../../software/aisg/domain/data/): `backhaul-topology-60.json` (`dual`) and `backhaul-topology-30.json` (`simulated`).
+- Domínio de planejamento STRIPS: operadores e precondições em [`planning/`](../../software/aisg/planning/), validados pela análise por grafo de planejamento — ver [`planner-design-process.md`](planner-design-process.md). / STRIPS planning domain: operators and preconditions in [`planning/`](../../software/aisg/planning/), validated by planning-graph analysis — see [`planner-design-process.md`](planner-design-process.md).
+
+## Procedimento de execução / Execution procedure
 
 ```bash
 git clone https://github.com/fsd-dantas/ai4systems.git
@@ -68,284 +168,81 @@ aisg route --from NOC --to ER_03 --compare --expansion
 
 # os três em sequência / all three in sequence
 aisg pipeline --case congestion --node SAF_01 --target ER_03
+
+# comparação de esforço de busca entre grafos / search-effort comparison between graphs
+aisg --topology simulated route --compare
 ```
 
 Sem instalar / without installing: `PYTHONPATH=software python -m aisg ...`
 Em inglês / in English: acrescente `--lang en` / add `--lang en`.
 
-Testes / tests: `python -m pytest` (207 testes no repositório / 207 tests in the repository).
+Fundamentos teóricos na wiki / theoretical foundations in the wiki: [github.com/fsd-dantas/ai4systems/wiki](https://github.com/fsd-dantas/ai4systems/wiki)
 
-Fundamentos teóricos na wiki / theoretical foundations in the wiki:
-[github.com/fsd-dantas/ai4systems/wiki](https://github.com/fsd-dantas/ai4systems/wiki)
+## Métricas / Metrics
 
-
----
-
-## Português
-
-### Questão de pesquisa
-
-> Na ausência de um conjunto de dados rotulado de falhas, é possível construir um
-> encadeamento **diagnóstico → plano → rota** que seja simultaneamente *auditável*
-> — cada conclusão rastreável até a evidência que a sustenta — e *verificável*,
-> isto é, cujas propriedades de correção sejam asseguradas por testes e não
-> apenas afirmadas em prosa?
-
-A pergunta é metodológica antes de ser técnica. Ela nasce de uma restrição real
-do laboratório, e não de uma preferência estética por métodos simbólicos: a
-condição de contorno é a **indisponibilidade de rótulo derivado de medição**, e a
-resposta precisa ser honesta quanto ao que essa restrição permite concluir.
-
-Três subquestões organizam os três sistemas:
-
-1. **Representação do conhecimento.** Como codificar julgamento de engenharia sob
-   incerteza de modo que a cadeia de inferência permaneça inspecionável e
-   contestável? *(regras de produção com fatores de certeza)*
-2. **Deliberação.** Como derivar a **ordem** de intervenção — e não apenas o
-   conjunto de ações — expressando restrições como precondições formais, e não
-   como verificações em tempo de execução? *(STRIPS, GPS, planejamento progressivo)*
-3. **Otimalidade demonstrável.** Sob que condições uma busca informada garante o
-   caminho de menor custo, e como *demonstrar* que a heurística adotada satisfaz
-   essas condições neste domínio? *(A\*, admissibilidade, consistência)*
-
-### Posicionamento metodológico
-
-O trabalho adota três compromissos declarados, herdados da disciplina de medição
-que se espera de um artefato de pesquisa:
-
-**(i) Declaração de incerteza.** Todo limiar numérico usado por regra vive num
-único bloco (`THRESHOLDS`) e está marcado como **nominal e não calibrado**.
-Nenhuma medição de laboratório o sustenta. A separação entre *estrutura* (as
-regras) e *parâmetro* (os limiares) é deliberada: a calibração futura ajusta
-valores sem reescrever conhecimento.
-
-**(ii) Verificação por oráculo independente.** Propriedades de correção não são
-argumentadas — são testadas contra um procedimento que **não compartilha código**
-com o artefato verificado. A otimalidade do A\* é conferida contra
-Floyd–Warshall; a consistência do domínio de planejamento, contra a análise por
-grafo de planejamento (Graphplan). Verificar o A\* com custo uniforme seria
-circular, pois `uniform_cost` é literalmente `astar` com `h = 0`.
-
-**(iii) Falseabilidade e resultado negativo.** O projeto registra o que **não**
-conseguiu demonstrar com o mesmo cuidado com que registra o que demonstrou. Dois
-exemplos vivem na documentação: a não-otimalidade do GPS é uma propriedade real,
-porém **este domínio não é capaz de exibi-la** (nenhum literal tem mais de um
-operador que o produza, logo a análise meios-fins não tem escolha para errar); e
-o ganho do A\* sobre o custo uniforme (9,4% e 25,9% de nós expandidos a menos, em
-17 e 30 nós) é uma **medição em dois pontos**, não uma lei de escala.
-
-### O domínio
-
-O domínio é a rede de comunicação que liga ativos distribuídos de um sistema
-elétrico ao centro de operação: um núcleo em fibra, setores de rádio em 900 MHz,
-uma cadeia de repetidores *armazena-e-encaminha* e uma sobreposição de LTE
-privativo. O cenário base tem 17 nós e 24 enlaces; o cenário simulado, usado nas
-demonstrações e na apresentação, tem **30 nós e 44 enlaces** distribuídos em três
-setores.
-
-**A topologia é SINTÉTICA.** É um modelo didático da *classe* de cenários
-estudada em laboratórios de pesquisa em backhaul sem fio. Não contém inventário
-real, endereçamento, identificação de equipamento, configuração de RF nem
-topologia de campo de qualquer laboratório ou concessionária. Ver
-[`docs/domain-model.md`](../../docs/domain-model.md).
-
-**Simulado, e não de campo — por escolha metodológica.** O cenário é simulado,
-o que inverte a relação usual entre validade interna e externa a favor
-deste trabalho: uma condição de falha *comandada* é repetível e rotulável, ao
-passo que uma condição *observada* em campo é apenas provável. Cada diagnóstico
-declara, no bloco `INDUCIBLE_BY`, **como é induzido no simulador** — o que torna
-o conjunto de casos reprodutível por terceiros. O custo dessa escolha é explícito
-e está declarado: os resultados valem para o modelo, não para uma planta.
-
-### Por que o DIAGNÓSTICO não é aprendido
-
-A afirmação central é uma restrição de **validade de medição**, não um juízo
-sobre métodos indutivos. Não existe, para este domínio, conjunto de dados
-rotulado de falhas. Rotular um enlace como *degradado* ou *em falha* exige um
-instrumento de degradação controlada e uma linha de base de observabilidade
-autenticada; sem ambos, nenhum rótulo deriva de medição — deriva de suposição. Um
-método indutivo treinado apenas sobre o estado normal não infere degradação de
-modo confiável, e um classificador ajustado a rótulos supostos herdaria a
-suposição sem tornar visível que a herdou. É precisamente essa invisibilidade que
-o método simbólico evita: uma regra errada pode ser lida, discutida e refutada
-por um engenheiro; um peso errado, não.
-
-> **O escopo desta afirmação é a tarefa de diagnóstico** — não o projeto inteiro. Aprender a *heurística* da busca, por exemplo, é uma tarefa diferente e perfeitamente viável: o alvo de regressão é o custo real restante `h*(n)`, calculável exatamente com uma busca de custo uniforme a partir do objetivo. A supervisão é gratuita e exata, e não depende de rótulo de falha nenhum. O que impede seu uso direto não é a falta de dados, e sim a **admissibilidade**: uma heurística aprendida por regressão pode superestimar, e então o A* perde a otimalidade em silêncio. Ver [`astar.md`](astar.md).
->
-> **The scope of this claim is the diagnosis task**, not the whole project. Learning the search *heuristic* is a different and perfectly viable task: the regression target is the true remaining cost `h*(n)`, computable exactly by uniform-cost search from the goal. Supervision is free and exact, and needs no fault labels. What stands in the way is not data but **admissibility**.
-
-Quando não há dados rotulados, o caminho defensável é codificar **conhecimento
-de engenharia** em regras explícitas, auditáveis e contestáveis — que é
-exatamente o que um sistema especialista faz. O sistema declara a limitação na
-própria saída, e não apenas na documentação.
-
-Duas consequências de projeto decorrem disso:
-
-- **A cadeia de inferência é recuperável.** O motor responde *por que* pergunta
-  algo durante a consulta e *como* chegou a uma conclusão depois dela,
-  percorrendo as regras de apoio até os fatos fornecidos pelo usuário.
-- **Restrições viram precondições.** `authorized(?n)` é precondição dos
-  operadores que alteram o cenário, o que torna a restrição uma propriedade do
-  espaço de estados em vez de uma verificação em tempo de execução. É uma
-  técnica de modelagem STRIPS, exercitada aqui sobre um cenário simulado.
-
-### Estratégia de validação
-
-| Propriedade afirmada | Como é verificada | Oráculo |
-|---|---|---|
-| O A\* devolve o caminho de custo mínimo | todos os pares ordenados, nos dois cenários | Floyd–Warshall |
-| A heurística é admissível e consistente | todos os pares ordenados | comparação com o `h*` exato |
-| O plano é executável e atinge o objetivo | reexecução passo a passo desde o estado inicial | `Plan.validate` |
-| O domínio não declara sucesso sobre falha viva | exclusão mútua no ponto fixo | grafo de planejamento |
-| Nenhum operador é inalcançável | presença nos níveis de ação | grafo de planejamento |
-| Limite inferior do tamanho do plano | nível do objetivo sem exclusão mútua | grafo de planejamento |
-
-São **207 testes** no repositório, que asseguram *propriedades* — admissibilidade, validade de
-plano, invariantes do domínio — e não apenas saídas esperadas.
-
-### Documentação
-
-| Documento | Conteúdo |
+| Métrica / Metric | Onde é usada / Where it is used |
 |---|---|
-| [`expert-system.md`](expert-system.md) | Variáveis, 41 regras na base simulada, fatores de certeza, encadeamentos, resolução de conflito, explicação |
-| [`planning.md`](planning.md) | STRIPS, GPS e análise meios-fins, planejador A*, limitações do GPS |
-| [`planner-design-process.md`](planner-design-process.md) | **Como o domínio de planejamento foi definido**, e a análise por grafo de planejamento que o valida |
-| [`astar.md`](astar.md) | A*, prova de admissibilidade e consistência, comparação entre estratégias |
-| [`docs/domain-model.md`](../../docs/domain-model.md) | Topologia, modelo de custo e limites de validade |
+| Fator de certeza (CF) da conclusão / Conclusion certainty factor (CF) | diagnóstico, comparação encadeamento progressivo × regressivo / diagnosis, forward vs backward chaining comparison |
+| Regras disparadas, fatos consultados / Rules fired, facts consulted | custo do encadeamento / chaining cost |
+| Custo do caminho, nós expandidos, gerados e pico da fronteira / Path cost, nodes expanded, generated and frontier peak | comparação entre estratégias de busca / search-strategy comparison |
+| Validade do plano (execução passo a passo) / Plan validity (step-by-step replay) | correção do planejador / planner correctness |
+| Exclusão mútua no ponto fixo, nível do objetivo / Mutual exclusion at the fixpoint, goal level | consistência do domínio de planejamento / planning-domain consistency |
 
----
+## Resultados / Results
 
-## English
-
-### Research question
-
-> In the absence of a labelled fault dataset, can a **diagnosis → plan → route**
-> chain be built that is both *auditable* — every conclusion traceable to the
-> evidence supporting it — and *verifiable*, meaning its correctness properties
-> are asserted by tests rather than merely claimed in prose?
-
-The question is methodological before it is technical. It arises from a real
-laboratory constraint rather than an aesthetic preference for symbolic methods:
-the boundary condition is the **unavailability of measurement-derived labels**,
-and the answer has to be honest about what that constraint permits concluding.
-
-Three sub-questions organise the three systems:
-
-1. **Knowledge representation.** How can engineering judgement under uncertainty
-   be encoded so the inference chain stays inspectable and contestable?
-   *(production rules with certainty factors)*
-2. **Deliberation.** How is the **order** of intervention derived — not merely
-   the set of actions — expressing constraints as formal preconditions rather
-   than as runtime checks? *(STRIPS, GPS, progression planning)*
-3. **Demonstrable optimality.** Under what conditions does an informed search
-   guarantee the least-cost path, and how is the chosen heuristic *shown* to meet
-   them in this domain? *(A\*, admissibility, consistency)*
-
-### Methodological stance
-
-Three declared commitments, inherited from the measurement discipline expected
-of a research artefact:
-
-**(i) Declared uncertainty.** Every numeric threshold used by a rule lives in one
-block (`THRESHOLDS`) and is marked **nominal and uncalibrated**. No laboratory
-measurement supports it. Separating *structure* (the rules) from *parameter* (the
-thresholds) is deliberate: future calibration adjusts values without rewriting
-knowledge.
-
-**(ii) Verification by an independent oracle.** Correctness properties are not
-argued — they are tested against a procedure that **shares no code** with the
-artefact under test. A\*'s optimality is checked against Floyd–Warshall; the
-planning domain's consistency, against planning-graph (Graphplan) analysis.
-Checking A\* against uniform cost would be circular, since `uniform_cost` is
-literally `astar` with `h = 0`.
-
-**(iii) Falsifiability and negative results.** The project records what it could
-**not** demonstrate as carefully as what it could. Two examples live in the
-documentation: GPS non-optimality is a real property, yet **this domain cannot
-exhibit it** (no literal has more than one producing operator, so means-ends
-analysis has no choice to get wrong); and A\*'s advantage over uniform cost
-(9.4% and 25.9% fewer nodes expanded, at 17 and 30 nodes) is a **two-point
-measurement**, not a scaling law.
-
-### The domain
-
-The domain is the communication network linking distributed assets of an
-electric system to the operations centre: a fibre core, 900 MHz radio sectors, a
-*store-and-forward* relay chain, and a private LTE overlay. The base scenario has
-17 nodes and 24 links; the simulated scenario used in the demonstrations and the
-presentation has **30 nodes and 44 links** across three sectors.
-
-**The topology is SYNTHETIC.** It is a didactic model of the *class* of scenarios
-studied in wireless backhaul research testbeds. It contains no real inventory,
-addressing, equipment identification, RF configuration, or field topology of any
-laboratory or utility. See [`docs/domain-model.md`](../../docs/domain-model.md).
-
-**Simulated rather than field, by methodological choice.** The scenario is
-simulated, which inverts the usual internal/external validity trade-off in this work's
-favor: a *commanded* fault condition is repeatable and labellable, whereas an
-*observed* field condition is merely probable. Each diagnosis declares in the
-`INDUCIBLE_BY` block **how it is induced in the simulator**, which makes the case
-set reproducible by third parties. The cost of that choice is explicit and
-declared: the results hold for the model, not for a plant.
-
-### Why the DIAGNOSIS is not learned
-
-The central claim is a **measurement-validity** constraint, not a judgement about
-inductive methods. No labelled fault dataset exists for this domain. Labelling a
-link as *degraded* or *failed* requires a controlled degradation instrument and
-an authenticated observability baseline; without both, no label derives from
-measurement — it derives from assumption. An inductive method trained only on the
-normal state cannot reliably infer degradation, and a classifier fitted to
-assumed labels would inherit the assumption without making that inheritance
-visible. It is precisely that invisibility the symbolic method avoids: a wrong
-rule can be read, argued with, and refuted by an engineer; a wrong weight cannot.
-
-When labelled data does not exist, the defensible path is to encode **engineering
-knowledge** as explicit, auditable, contestable rules — which is exactly what an
-expert system does. The system declares the limitation in its own output, not
-only in the documentation.
-
-Two design consequences follow:
-
-- **The inference chain is recoverable.** The engine answers *why* it asks
-  something during a consultation and *how* it reached a conclusion afterwards,
-  walking the supporting rules down to the facts the user supplied.
-- **Constraints become preconditions.** `authorized(?n)` is a precondition of the
-  operators that change the scenario, which makes the constraint a property of
-  the state space rather than a runtime check. It is a STRIPS modelling
-  technique, exercised here over a simulated scenario.
-
-### Validation strategy
-
-| Claimed property | How it is checked | Oracle |
+| Propriedade afirmada / Claimed property | Como é verificada / How it is checked | Oráculo / Oracle |
 |---|---|---|
-| A\* returns the least-cost path | every ordered pair, both scenarios | Floyd–Warshall |
-| The heuristic is admissible and consistent | every ordered pair | comparison against exact `h*` |
-| A plan is executable and reaches the goal | step-by-step replay from the initial state | `Plan.validate` |
-| The domain never declares success over a live fault | mutual exclusion at the fixpoint | planning graph |
-| No operator is unreachable | presence in the action levels | planning graph |
-| Lower bound on plan length | goal level free of mutexes | planning graph |
+| O A\* devolve o caminho de custo mínimo / A\* returns the least-cost path | todos os pares ordenados, nos dois cenários / every ordered pair, both scenarios | Floyd–Warshall |
+| A heurística é admissível e consistente / The heuristic is admissible and consistent | todos os pares ordenados / every ordered pair | comparação com o `h*` exato / comparison against exact `h*` |
+| O plano é executável e atinge o objetivo / A plan is executable and reaches the goal | reexecução passo a passo desde o estado inicial / step-by-step replay from the initial state | `Plan.validate` |
+| O domínio não declara sucesso sobre falha viva / The domain never declares success over a live fault | exclusão mútua no ponto fixo / mutual exclusion at the fixpoint | grafo de planejamento / planning graph |
+| Nenhum operador é inalcançável / No operator is unreachable | presença nos níveis de ação / presence in the action levels | grafo de planejamento / planning graph |
+| Limite inferior do tamanho do plano / Lower bound on plan length | nível do objetivo sem exclusão mútua / goal level free of mutexes | grafo de planejamento / planning graph |
 
-There are **207 tests** in the repository, asserting *properties* — admissibility, plan validity,
-domain invariants — rather than merely expected outputs.
+São **207 testes** no repositório, que asseguram *propriedades* — admissibilidade, validade de plano, invariantes do domínio — e não apenas saídas esperadas.
 
-### Documentation
+There are **207 tests** in the repository, asserting *properties* — admissibility, plan validity, domain invariants — rather than merely expected outputs.
 
-| Document | Contents |
+**A* expande menos nós que o custo uniforme.** A afirmação histórica de ganho em dois pontos (17 e 30 nós) não é mais reproduzível, pois o cenário de 17 nós foi removido na v0.10.0 (ver [Cenário e premissas](#cenário-e-premissas--scenario-and-assumptions)). No cenário atual `dual` (60 nós), para o par `NOC → ER_03`, o A\* expande 23 nós contra 28 do custo uniforme — 17,9% a menos — ambos convergindo para o mesmo caminho de custo 360,35. Este é um único par, ilustrativo, não uma medição exaustiva; a hipótese (iii) continua sem uma medição agregada e atual — ver [Limitações](#limitações--limitations).
+
+**A\* expands fewer nodes than uniform cost.** The historical two-point gain claim (17 and 30 nodes) is no longer reproducible, since the 17-node scenario was removed in v0.10.0 (see [Scenario and assumptions](#cenário-e-premissas--scenario-and-assumptions)). On the current `dual` scenario (60 nodes), for the pair `NOC → ER_03`, A\* expands 23 nodes against uniform cost's 28 — 17.9% fewer — both converging on the same cost-360.35 path. This is a single, illustrative pair, not an exhaustive measurement; hypothesis (iii) still lacks a current, aggregate measurement — see [Limitations](#limitações--limitations).
+
+Documentação de apoio / supporting documentation:
+
+| Documento / Document | Conteúdo / Contents |
 |---|---|
-| [`expert-system.md`](expert-system.md) | Variables, 41 rules in the simulated base, certainty factors, both chainings, conflict resolution, explanation |
-| [`planning.md`](planning.md) | STRIPS, GPS and means-ends analysis, the A* planner, GPS's limitations |
-| [`planner-design-process.md`](planner-design-process.md) | **How the planning domain was defined**, and the planning-graph analysis that validates it |
-| [`astar.md`](astar.md) | A*, admissibility and consistency proofs, strategy comparison |
-| [`docs/domain-model.md`](../../docs/domain-model.md) | Topology, cost model, and validity limits |
+| [`expert-system.md`](expert-system.md) | Variáveis, 41 regras na base simulada, fatores de certeza, encadeamentos, resolução de conflito, explicação / Variables, 41 rules in the simulated base, certainty factors, both chainings, conflict resolution, explanation |
+| [`planning.md`](planning.md) | STRIPS, GPS e análise meios-fins, planejador A*, limitações do GPS / STRIPS, GPS and means-ends analysis, the A* planner, GPS's limitations |
+| [`planner-design-process.md`](planner-design-process.md) | Como o domínio de planejamento foi definido, e a análise por grafo de planejamento que o valida / How the planning domain was defined, and the planning-graph analysis that validates it |
+| [`astar.md`](astar.md) | A*, prova de admissibilidade e consistência, comparação entre estratégias / A*, admissibility and consistency proofs, strategy comparison |
+| [`docs/domain-model.md`](../../docs/domain-model.md) | Topologia, modelo de custo e limites de validade / Topology, cost model, and validity limits |
+
+## Limitações / Limitations
+
+**GPS não-ótimo é uma propriedade real, mas este domínio não consegue exibi-la.** Nenhum literal tem mais de um operador que o produza, logo a análise meios-fins não tem escolha para errar. Ver [`planning.md`](planning.md).
+
+**GPS non-optimality is a real property, yet this domain cannot exhibit it.** No literal has more than one producing operator, so means-ends analysis has no choice to get wrong. See [`planning.md`](planning.md).
+
+**A referência histórica ao ganho do A\* em 17 e 30 nós está obsoleta.** A topologia de 17 nós foi removida na v0.10.0; nenhum teste ou script no repositório recalcula essa comparação hoje. O número em [Resultados](#resultados--results) é um substituto de um único par, não uma nova medição exaustiva equivalente — falta reexecutar a comparação sobre todos os pares nos dois cenários atuais (`dual`, `simulated`) para restabelecer uma estatística agregada.
+
+**The historical A\* gain claim at 17 and 30 nodes is stale.** The 17-node topology was removed in v0.10.0; no test or script in the repository recomputes that comparison today. The figure in [Results](#resultados--results) is a single-pair substitute, not an equivalent new exhaustive measurement — re-running the comparison over every pair on the two current scenarios (`dual`, `simulated`) is still needed to re-establish an aggregate statistic.
+
+Os limiares nominais (`THRESHOLDS`) não são calibrados por medição de laboratório; os resultados valem para o modelo simulado, não para uma planta real — ver [Cenário e premissas](#cenário-e-premissas--scenario-and-assumptions).
+
+Nominal thresholds (`THRESHOLDS`) are not calibrated by laboratory measurement; results hold for the simulated model, not for a real plant — see [Scenario and assumptions](#cenário-e-premissas--scenario-and-assumptions).
+
+## Estado de reprodutibilidade / Reproducibility status
+
+**Reproduzível.** `python -m pytest` (ou `make check`) executa os 207 testes; o workflow [`tests.yml`](../../.github/workflows/tests.yml) roda a mesma suíte em CI a cada push/PR na `main`. Cada diagnóstico simulado declara `INDUCIBLE_BY`, o que torna o conjunto de casos reproduzível por terceiros sem acesso a nenhum laboratório. O único item não reproduzível hoje é a estatística agregada de ganho do A\* em dois pontos, discutida em [Limitações](#limitações--limitations).
+
+**Reproducible.** `python -m pytest` (or `make check`) runs the 207 tests; the [`tests.yml`](../../.github/workflows/tests.yml) workflow runs the same suite in CI on every push/PR to `main`. Every simulated diagnosis declares `INDUCIBLE_BY`, which makes the case set reproducible by third parties with no access to any laboratory. The one non-reproducible item today is the two-point aggregate A\* gain statistic, discussed in [Limitations](#limitações--limitations).
+
+## Material de manuscrito relacionado / Related manuscript material
+
+- [`literature/systematic-review/al-ajlan-2015/`](../../literature/systematic-review/al-ajlan-2015/) — análise crítica que mede encadeamento progressivo × regressivo sobre esta mesma base de 41 regras / critical analysis measuring forward vs backward chaining over this same 41-rule base.
+- `manuscripts/presentations/` — deck, roteiro de fala e notebook de apresentação: locais, não publicados neste repositório; a wiki é a companhia pública. / deck, speaking script and presentation notebook: local, not published in this repository; the wiki is the public companion.
 
 ---
-
-## Estrutura / Layout
-
-O código deste experimento está em [`software/aisg/`](../../software/aisg/) (módulos `domain`, `expert_system`, `planning`, `search`) e os testes em [`software/tests/`](../../software/tests/). Ver [docs/architecture.md](../../docs/architecture.md).
-
-The code for this experiment lives in [`software/aisg/`](../../software/aisg/) (modules `domain`, `expert_system`, `planning`, `search`) and the tests in [`software/tests/`](../../software/tests/). See [docs/architecture.md](../../docs/architecture.md).
 
 ## Referências / References
 
