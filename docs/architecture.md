@@ -10,6 +10,7 @@ The `aisg` package (under `software/aisg/`) holds the decision components. Each 
 | `planning/` | STRIPS, GPS, planejador A\*, grafo de planejamento / STRIPS, GPS, A\* planner, planning graph | 001 |
 | `search/` | A\* e estratégias não informadas / A\* and uninformed strategies | 001 |
 | `blackboard/` | Quadro-negro, especialistas, controlador, cenários / Blackboard, experts, controller, scenarios | 002 |
+| `eco/` | Motor de eco-resolução, mundo dos blocos, fluxos da rede / Eco-resolution engine, Blocks World, network flows | 003 |
 | `simulation/` | Exportação do backhaul em duplo acesso para o ns-3 / Export of the dual-homed backhaul to ns-3 | 004 |
 | `observation.py`, `prometheus.py` | Registros de observação e coleta de evidência / Observation records and evidence collection | 001 |
 | `cli.py` | Interface de linha de comando / Command-line interface | todos / all |

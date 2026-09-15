@@ -17,12 +17,15 @@ EN:    Five subcommands: ``diagnose`` (expert system), ``plan`` (STRIPS/GPS/A*
     python -m aisg plan --diagnosis mac_contention --node ER_03 --solver both
     python -m aisg pipeline --case congestion --node SAF_01 --target ER_03
     python -m aisg blackboard --scenario dual-outage --experts --explain ER_03
+    python -m aisg eco --problem blocks --sweep
+    python -m aisg eco --problem network --scenario saf-chain-outage --trace
 """
 
 from __future__ import annotations
 
 import argparse
 import sys
+from collections import Counter
 from typing import Optional, Sequence, Tuple
 
 from aisg import __version__
@@ -37,6 +40,13 @@ from aisg.blackboard import (
     medium_label,
 )
 from aisg.domain import BUNDLED_TOPOLOGIES, load_topology
+from aisg.eco import (
+    COURSE_EXAMPLE,
+    BlocksWorld,
+    blocks_ecosystem,
+    enumerate_configurations,
+    network_ecosystem,
+)
 from aisg.expert_system import (
     SIM_CASES,
     ConflictResolution,
@@ -556,6 +566,99 @@ def cmd_blackboard(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# eco-resolution
+# ---------------------------------------------------------------------------
+def _eco_verdict(result, pt: bool) -> None:
+    status = ("convergiu" if pt else "converged") if result.converged else (
+        "nao convergiu" if pt else "did not converge")
+    print(f"  {status}: {result.reason}")
+    print(f"  {'movimentos' if pt else 'moves'}: {result.steps}, "
+          f"{'rodadas' if pt else 'rounds'}: {result.rounds}")
+    if result.unsatisfied:
+        print(f"  {'insatisfeitos' if pt else 'unsatisfied'}: {', '.join(result.unsatisfied)}")
+
+
+def _eco_sweep(lang: str) -> int:
+    pt = lang == "pt"
+    tables = ("T1", "T2", "T3")
+    configurations = enumerate_configurations(("A", "B", "C"), tables)
+    reasons: Counter = Counter()
+    lengths: Counter = Counter()
+    for initial in configurations:
+        for goal in configurations:
+            result = blocks_ecosystem(tables, initial, goal).solve()
+            reasons[result.reason] += 1
+            if result.converged:
+                lengths[result.steps] += 1
+    total = len(configurations) ** 2
+    print(_header(
+        f"Convergencia: {len(configurations)} estados iniciais x {len(configurations)} objetivos"
+        if pt else
+        f"Convergence: {len(configurations)} initial states x {len(configurations)} goals"
+    ))
+    for reason, count in reasons.most_common():
+        print(f"  {reason:<32} {count:>5}  ({100 * count / total:.1f}%)")
+    converged = sum(lengths.values())
+    if converged:
+        mean = sum(k * n for k, n in lengths.items()) / converged
+        print(f"  {'movimentos (convergidos)' if pt else 'moves (converged)'}: "
+              f"{'media' if pt else 'mean'} {mean:.2f}, max {max(lengths)}")
+        for steps in sorted(lengths):
+            print(f"    {steps:>2} {'#' * max(1, lengths[steps] // 20)} {lengths[steps]}")
+    return 0 if converged == total else 1
+
+
+def cmd_eco(args: argparse.Namespace) -> int:
+    lang = args.lang
+    pt = lang == "pt"
+    if args.problem == "blocks":
+        if args.sweep:
+            return _eco_sweep(lang)
+        tables, initial, goal = COURSE_EXAMPLE
+        ecosystem = blocks_ecosystem(tables, initial, goal)
+        print(_header("Eco-resolucao: mundo dos blocos (exemplo da aula)" if pt
+                      else "Eco-resolution: Blocks World (course example)"))
+        print(f"  {'inicial ' if pt else 'initial '}: {BlocksWorld(tables, initial).render()}")
+        print(f"  {'objetivo' if pt else 'goal    '}: {BlocksWorld(tables, goal).render()}")
+        result = ecosystem.solve()
+        print(_header("Rastro" if pt else "Trace"))
+        for entry in result.trace:
+            print(entry.render(lang))
+        print(_header("Resultado" if pt else "Result"))
+        print(f"  final   : {ecosystem.world.render()}")
+        print(f"  {'sequencia' if pt else 'sequence '}: {' ; '.join(str(m) for m in result.moves)}")
+        _eco_verdict(result, pt)
+        return 0 if result.converged else 1
+
+    problem = network_ecosystem(load_topology(getattr(args, "topology", "dual")), args.scenario)
+    result = problem.ecosystem.solve()
+    print(_header(
+        (f"Eco-resolucao na rede: {args.scenario}" if pt else f"Eco-resolution on the network: {args.scenario}")
+    ))
+    print(f"  {'nos parados' if pt else 'stopped nodes'}: {', '.join(sorted(problem.down)) or '-'}")
+    print(f"  {'nos degradados' if pt else 'degraded nodes'}: {', '.join(sorted(problem.degraded)) or '-'}")
+    print(f"  {'congestionados' if pt else 'congested'}: {', '.join(sorted(problem.congested)) or '-'}")
+    print(f"  {len(problem.world.flows)} {'fluxos (SCADA prioridade 2, telemetria 1)' if pt else 'flows (SCADA priority 2, telemetry 1)'}")
+    if args.trace:
+        print(_header("Rastro" if pt else "Trace"))
+        for entry in result.trace:
+            print(entry.render(lang))
+    print(_header("Mudancas" if pt else "Changes"))
+    changed = [
+        (flow, problem.initial[flow], medium)
+        for flow, medium in problem.world.assignment.items()
+        if problem.initial[flow] != medium
+    ]
+    if not changed:
+        print("  nenhuma" if pt else "  none")
+    for flow, before, after in changed:
+        print(f"  {flow:<16} {before:>9} -> {after}")
+    print(_header("Resultado" if pt else "Result"))
+    _eco_verdict(result, pt)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # ns-3 export
 # ---------------------------------------------------------------------------
 def cmd_ns3_export(args: argparse.Namespace) -> int:
@@ -700,6 +803,16 @@ def build_parser() -> argparse.ArgumentParser:
     ns.add_argument("--fault-scenario", choices=sorted(SCENARIOS),
                     help="inject a blackboard scenario's faults and its central failover plan")
     ns.set_defaults(func=cmd_ns3_export)
+
+    # eco-resolution
+    eco = sub.add_parser("eco", help="eco-resolution / eco-resolucao")
+    eco.add_argument("--problem", choices=("blocks", "network"), default="blocks")
+    eco.add_argument("--scenario", choices=sorted(SCENARIOS), default="saf-chain-outage",
+                     help="network: the blackboard fault scenario")
+    eco.add_argument("--sweep", action="store_true",
+                     help="blocks: every 3-block initial state against every goal")
+    eco.add_argument("--trace", action="store_true", help="network: show the agents' trace")
+    eco.set_defaults(func=cmd_eco)
 
     return parser
 

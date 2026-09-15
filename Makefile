@@ -14,5 +14,7 @@ cli-smoke:
 	aisg --lang en route --compare
 	aisg --lang en pipeline --case congestion
 	aisg --lang en blackboard --scenario dual-outage
+	aisg --lang en eco --problem blocks
+	aisg --lang en eco --problem network --scenario saf-chain-outage
 
 check: test cli-smoke

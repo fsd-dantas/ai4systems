@@ -31,6 +31,11 @@ aisg pipeline --case congestion --node SAF_01 --target ER_03
 aisg blackboard --list
 aisg blackboard --scenario dual-outage --experts --explain ER_03
 
+# eco-resolução / eco-resolution
+aisg eco --problem blocks
+aisg eco --problem blocks --sweep
+aisg eco --problem network --scenario saf-chain-outage --trace
+
 # cenário ns-3 do backhaul em duplo acesso / ns-3 scenario of the dual-homed backhaul
 aisg ns3-export --out dual-homed-60.scn
 ```
