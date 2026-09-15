@@ -30,7 +30,12 @@ aisg pipeline --case congestion --node SAF_01 --target ER_03
 # quadro-negro multiespecialista / multi-expert blackboard
 aisg blackboard --list
 aisg blackboard --scenario dual-outage --experts --explain ER_03
+
+# cenário ns-3 do backhaul em duplo acesso / ns-3 scenario of the dual-homed backhaul
+aisg ns3-export --out dual-homed-60.scn
 ```
+
+Para executar o cenário no ns-3, ver / to run the scenario in ns-3, see [software/ns-3-modules/README.md](../software/ns-3-modules/README.md).
 
 Em inglês / in English: `aisg --lang en ...`
 

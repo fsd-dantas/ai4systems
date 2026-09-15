@@ -58,6 +58,7 @@ from aisg.planning import (
 from aisg.planning.domain_restoration import DESTINATION_KINDS
 from aisg.search import RoutingProblem, astar, compare
 from aisg.search.algorithms import SearchResult
+from aisg.simulation import ScenarioError, build_ns3_scenario
 
 RULE = "=" * 78
 THIN = "-" * 78
@@ -555,6 +556,39 @@ def cmd_blackboard(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# ns-3 export
+# ---------------------------------------------------------------------------
+def cmd_ns3_export(args: argparse.Namespace) -> int:
+    pt = args.lang == "pt"
+    topology = load_topology(getattr(args, "topology", "dual"))
+    overrides = {}
+    if args.sim_time is not None:
+        overrides["sim_time_s"] = args.sim_time
+    try:
+        scenario = build_ns3_scenario(topology, overrides)
+    except ScenarioError as exc:
+        print(exc)
+        return 2
+    if not args.out:
+        sys.stdout.write(scenario.render())
+        return 0
+    scenario.write(args.out)
+    primaries = {}
+    for site in scenario.sites:
+        primaries[site.primary] = primaries.get(site.primary, 0) + 1
+    media = ", ".join(f"{medium_label(m, args.lang)}: {n}" for m, n in sorted(primaries.items()))
+    print(f"{'cenario ns-3 gravado em' if pt else 'ns-3 scenario written to'} {args.out}")
+    print(f"  {len(scenario.nodes)} {'nos' if pt else 'nodes'}, "
+          f"{len(scenario.links)} {'enlaces ponto a ponto' if pt else 'point-to-point links'}, "
+          f"{len(scenario.attachments)} {'CPEs em LTE' if pt else 'LTE CPEs'}, "
+          f"{len(scenario.sites)} sites")
+    print(f"  {'meio primario' if pt else 'primary medium'}: {media}")
+    for note in scenario.notes:
+        print(f"  - {note}")
+    return 0
+
+
+# ---------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aisg",
@@ -650,6 +684,14 @@ def build_parser() -> argparse.ArgumentParser:
     bb.add_argument("--explain", metavar="NODE",
                     help="every conclusion about one node, with its justification")
     bb.set_defaults(func=cmd_blackboard)
+
+    # ns-3 export
+    ns = sub.add_parser(
+        "ns3-export", help="export the dual-homed backhaul to ns-3 / exportar o backhaul para o ns-3"
+    )
+    ns.add_argument("--out", metavar="FILE", help="scenario file to write (default: stdout)")
+    ns.add_argument("--sim-time", type=float, help="simulated time, in seconds")
+    ns.set_defaults(func=cmd_ns3_export)
 
     return parser
 
