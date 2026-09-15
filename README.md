@@ -57,6 +57,8 @@ aisg blackboard --scenario dual-outage --experts
 
 Mais em / more in [docs/getting-started.md](docs/getting-started.md).
 
+Simulação em ns-3, instalação do zero / ns-3 simulation, setup from scratch: [software/ns-3-modules/README.md](software/ns-3-modules/README.md).
+
 ## Dados e configurações abertos / Open data and configurations
 
 Configurações e dados que sustentam os resultados são publicados. Todos os cenários são **sintéticos**: nenhum inventário, endereçamento, identificador ou topologia de campo real. Ver a lista de verificação em [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -40,7 +40,7 @@ aisg eco --problem network --scenario saf-chain-outage --trace
 aisg ns3-export --out dual-homed-60.scn
 ```
 
-Para executar o cenário no ns-3, ver / to run the scenario in ns-3, see [software/ns-3-modules/README.md](../software/ns-3-modules/README.md).
+Para instalar o ns-3 do zero e executar o cenário, ver / to install ns-3 from scratch and run the scenario, see [software/ns-3-modules/README.md](../software/ns-3-modules/README.md).
 
 Em inglês / in English: `aisg --lang en ...`
 

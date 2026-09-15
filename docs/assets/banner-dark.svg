@@ -316,8 +316,9 @@
     <circle cx="1228.0" cy="294.0" r="5" fill="#061219" stroke="#7dd3fc" stroke-width="1.8"/>
     <circle cx="1184.0" cy="296.0" r="5" fill="#061219" stroke="#7dd3fc" stroke-width="1.8"/>
     <circle cx="1206.0" cy="266.0" r="5.5" fill="#7dd3fc" stroke="#7dd3fc" stroke-width="1.8"/>
-    <text x="640" y="160" font-size="43" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Artificial Intelligence</text>
-    <text x="640" y="206" font-size="43" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">for Systems</text>
-    <text x="640" y="246" font-size="19" font-weight="600" fill="#9fc6d8" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Research on cyber-physical and networked systems</text>
+    <text x="640" y="160" font-size="43" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Applied Artificial Intelligence</text>
+    <text x="640" y="206" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">for</text>
+    <text x="640" y="160" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Wireless Communication</text>
+    <text x="640" y="246" font-size="20" font-weight="600" fill="#9fc6d8" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Research, simulation, and experimentation for intelligent wireless networks</text>
   </g>
 </svg>

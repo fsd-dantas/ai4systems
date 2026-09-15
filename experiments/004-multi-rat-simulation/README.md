@@ -40,9 +40,14 @@ A topologia é a única fonte de verdade; o arquivo de cenário é derivado e re
 
 As falhas são as comandadas nos cenários do [experimento 002](../002-multi-expert-blackboard/); o plano central é a decisão de troca de meio do próprio quadro-negro, aplicada 3 s após a falha. / The faults are those commanded by the [experiment 002](../002-multi-expert-blackboard/) scenarios; the central plan is the blackboard's own medium-switch decision, applied 3 s after the fault.
 
+Instalação do ns-3 e compilação do programa / installing ns-3 and building the program: [`software/ns-3-modules/README.md`](../../software/ns-3-modules/README.md).
+
 ```bash
-aisg ns3-export --fault-scenario saf-chain-outage --out configuration/dual-homed-60-saf-chain-outage.scn
-./ns3 run "dual-homed-backhaul --scenario=.../dual-homed-60-saf-chain-outage.scn --outDir=... --failover=none|local|central"
+# na raiz do repositório / from the repository root
+aisg ns3-export --fault-scenario saf-chain-outage --out experiments/004-multi-rat-simulation/configuration/dual-homed-60-saf-chain-outage.scn
+software/ns-3-modules/dual-homed-backhaul/build/dual-homed-backhaul \
+  --scenario=experiments/004-multi-rat-simulation/configuration/dual-homed-60-saf-chain-outage.scn \
+  --outDir=/tmp/saf-chain-outage-none --failover=none   # none | local | central
 ```
 
 | Modo / Mode | Comportamento / Behaviour |

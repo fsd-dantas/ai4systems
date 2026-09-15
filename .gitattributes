@@ -5,3 +5,4 @@ Makefile      text eol=lf
 *.cc          text eol=lf
 *.h           text eol=lf
 *.sh          text eol=lf
+requirements-*.txt text eol=lf

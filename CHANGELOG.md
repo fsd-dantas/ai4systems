@@ -5,6 +5,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the pr
 
 ## [Unreleased]
 
+### Added
+- From-scratch setup guide for the ns-3 simulation in [`software/ns-3-modules/README.md`](software/ns-3-modules/README.md), with the Ubuntu package list `requirements-ubuntu.txt` and a check against the versioned results of experiment 004.
+
+### Changed
+- `dual-homed-backhaul` builds as a standalone CMake project against an installed ns-3 (`./ns3 install` and `find_package(ns3)`), instead of being linked into the ns-3 `scratch/` folder.
+
 ## [0.11.0] — 2026-09-15
 
 ### Added

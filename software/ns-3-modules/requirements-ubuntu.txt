@@ -1,0 +1,36 @@
+# System packages for building ns-3.48 and the dual-homed-backhaul program.
+# Pacotes de sistema para compilar o ns-3.48 e o programa dual-homed-backhaul.
+#
+# Tested on Ubuntu 24.04 LTS (native or WSL2). One package per line.
+# Testado no Ubuntu 24.04 LTS (nativo ou WSL2). Um pacote por linha.
+#
+#   sed 's/#.*//' requirements-ubuntu.txt | xargs sudo apt-get install -y
+
+# Toolchain: ns-3.48 is built as C++23 and needs GCC 13 or newer
+g++
+cmake
+ninja-build
+ccache
+pkg-config
+
+# ns-3 build driver (./ns3) and the aisg exporter
+python3
+python3-venv
+
+# Download, unpack and patch the ns-3 release
+wget
+bzip2
+tar
+patch
+git
+
+# Optional ns-3 features enabled in the tested build (SQLite, LibXml2)
+libsqlite3-dev
+libxml2-dev
+
+# Optional: NetAnim viewer (Qt 5) and debugging; uncomment to install
+# qtbase5-dev
+# qtbase5-dev-tools
+# qt5-qmake
+# qtchooser
+# gdb
