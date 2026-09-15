@@ -7,8 +7,8 @@
 
 # ai4systems
 
-**AI for Systems** — métodos de Inteligência Artificial para sistemas ciber-físicos e em rede.
-*Artificial Intelligence methods for cyber-physical and networked systems.*
+**Base de conhecimento de pesquisa e framework de pesquisa para aplicar inteligência artificial a sistemas de comunicação sem fio.**
+*Research knowledge base and research framework for applying artificial intelligence to wireless communication systems.*
 
 [![tests](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml/badge.svg)](https://github.com/fsd-dantas/ai4systems/actions/workflows/tests.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-555555)](LICENSE)

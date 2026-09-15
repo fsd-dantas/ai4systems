@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" font-family="Segoe UI, Helvetica, Arial, sans-serif">
-  <title>ai4systems</title>
-  <desc>Artificial Intelligence for Systems. Research on cyber-physical and networked systems. An isometric lattice with energised traces wiring a search tree, a network router, a transmission tower, a gauge, a feedback controller and a network mesh to one AI processor.</desc>
+  <title>Applied AI for Wireless Communication</title>
+  <desc>Applied AI for Wireless Communication. A knowledge base for wireless AI research. An isometric lattice with energised traces wiring a search tree, a network router, a transmission tower, a gauge, a feedback controller and a network mesh to one AI processor.</desc>
   <rect x="0" y="0.00" width="1280" height="7.00" fill="#eaf2f6"/>
   <rect x="0" y="6.00" width="1280" height="7.00" fill="#eaf2f6"/>
   <rect x="0" y="12.00" width="1280" height="7.00" fill="#e9f2f6"/>
@@ -316,8 +316,8 @@
     <circle cx="1228.0" cy="294.0" r="5" fill="#dbe8ef" stroke="#155e75" stroke-width="1.8"/>
     <circle cx="1184.0" cy="296.0" r="5" fill="#dbe8ef" stroke="#155e75" stroke-width="1.8"/>
     <circle cx="1206.0" cy="266.0" r="5.5" fill="#155e75" stroke="#155e75" stroke-width="1.8"/>
-    <text x="640" y="160" font-size="43" font-weight="700" fill="#08202b" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Artificial Intelligence</text>
-    <text x="640" y="206" font-size="43" font-weight="700" fill="#08202b" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">for Systems</text>
-    <text x="640" y="246" font-size="19" font-weight="600" fill="#37606f" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Research on cyber-physical and networked systems</text>
+    <text x="640" y="160" font-size="43" font-weight="700" fill="#08202b" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Applied AI for</text>
+    <text x="640" y="206" font-size="43" font-weight="700" fill="#08202b" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">Wireless Communication</text>
+    <text x="640" y="246" font-size="19" font-weight="600" fill="#37606f" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">A knowledge base for wireless AI research</text>
   </g>
 </svg>

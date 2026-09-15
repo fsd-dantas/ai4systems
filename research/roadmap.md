@@ -25,6 +25,19 @@ Folders are created when they receive content; this roadmap records what is plan
 | Failover | local no roteador de borda e central no centro de operação / local at the edge router and central at the operations centre |
 | Verificação / Verification | execução de resolução e animação / resolution run and animation |
 
+## Revisão de literatura / Literature review (`literature/`)
+
+`literature/systematic-review/` guarda uma pasta por artigo revisado; hoje contém apenas `al-ajlan-2015/`. Os demais arquivos abaixo entram quando tiverem conteúdo real.
+`literature/systematic-review/` holds one folder per reviewed paper; today it holds only `al-ajlan-2015/`. The files below arrive once they carry real content.
+
+| Arquivo planejado / Planned file | Conteúdo / Contents |
+|---|---|
+| `review-protocol.md` | protocolo da revisão sistemática (pergunta, método, papéis) / systematic review protocol (question, method, roles) |
+| `search-strategy.md` | bases de dados, strings de busca, período / databases, search strings, date range |
+| `inclusion-exclusion-criteria.md` | critérios de inclusão e exclusão / inclusion and exclusion criteria |
+| `evidence-matrix.csv` | matriz de evidência por artigo revisado / evidence matrix per reviewed paper |
+| `annotated-bibliography.md` | bibliografia anotada, um resumo por referência / annotated bibliography, one summary per reference |
+
 ## Tópicos de literatura planejados / Planned literature topics
 
 Smart-grid architectures · utility communications · LTE and private LTE · band 31 and 900 MHz · SDN and NFV · network resilience · machine learning for networks · fuzzy logic · ICCP and grid protocols · network simulation.

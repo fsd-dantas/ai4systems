@@ -50,4 +50,4 @@ RUSSELL, S.; NORVIG, P. *Artificial Intelligence*: a modern approach. 4. ed. Har
 
 SHORTLIFFE, E. H.; BUCHANAN, B. G. A model of inexact reasoning in medicine. *Mathematical Biosciences*, v. 23, n. 3-4, p. 351–379, 1975.
 
-DANTAS, F. S. *ai4systems*: artificial intelligence methods for cyber-physical and networked systems. Versão 0.11.0. 2026. Software. Medições: `coursework/critical-analysis-chaining/measure_chaining.py`.
+DANTAS, F. S. *ai4systems*: artificial intelligence methods for cyber-physical and networked systems. Versão 0.11.0. 2026. Software. Medições: `literature/systematic-review/al-ajlan-2015/measure_chaining.py`.

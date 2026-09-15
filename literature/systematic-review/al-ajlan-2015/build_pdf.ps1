@@ -1,5 +1,5 @@
 # Render analise-critica.md to PDF: pandoc (Markdown -> HTML) then headless Chrome or Edge (HTML -> PDF).
-# Usage: pwsh coursework/critical-analysis-chaining/build_pdf.ps1
+# Usage: pwsh literature/systematic-review/al-ajlan-2015/build_pdf.ps1
 
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path

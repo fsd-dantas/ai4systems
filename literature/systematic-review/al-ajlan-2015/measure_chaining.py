@@ -11,7 +11,7 @@ EN:    Evidence for the critical analysis. The simulated base's 8 cases are solv
        observable facts up front; backward chaining asks only what the goal
        needs, answered from the same case.
 
-    PYTHONPATH=software python coursework/critical-analysis-chaining/measure_chaining.py
+    PYTHONPATH=software python literature/systematic-review/al-ajlan-2015/measure_chaining.py
 """
 
 from __future__ import annotations

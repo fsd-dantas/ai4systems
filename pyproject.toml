@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aisg"
 version = "0.11.0"
-description = "Justifiable diagnosis, intervention and routing for multi-RAT smart-grid communication networks: expert systems, STRIPS/GPS planning, A* search and a multi-expert blackboard"
+description = "Research knowledge base and research framework for applying artificial intelligence to wireless communication systems"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
