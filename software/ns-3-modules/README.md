@@ -14,6 +14,7 @@ Testado com / tested with **ns-3.48**. Cenário e parâmetros sintéticos e nomi
 | Rádio 900 MHz armazena-e-encaminha / 900 MHz store-and-forward radio | `PointToPoint` + `DropTailQueue` + `RateErrorModel` | taxa nominal; atraso = propagação + sobrecarga do modelo de custo; PER do orçamento de enlace / nominal rate; delay = propagation + cost-model overhead; PER from the link budget |
 | Cabo até o roteador de borda / Cable to the edge router | `PointToPoint` | 100 Mbps |
 | LTE privativo / Private LTE | `LteHelper` + `PointToPointEpcHelper`, Okumura-Hata | banda 31 (465 MHz DL), 5 MHz / band 31 (465 MHz DL), 5 MHz |
+| Antena do CPE / CPE antenna | `CosineAntennaModel` apontada para o eNodeB servidor / aimed at the serving eNodeB | 12 dBi, 65°; `--cpeGain` sobrepõe o ganho / overrides the gain |
 | Repetidores LTE / LTE relays | modelados como eNodeBs / modelled as eNodeBs | o ns-3 não implementa repetidores LTE / ns-3 implements no LTE relays |
 | Roteador atrás do CPE / Router behind the CPE | túnel UDP NOC ↔ CPE (`VirtualNetDevice`) / NOC ↔ CPE UDP tunnel | o PGW só entrega tráfego a endereços de UE / the PGW only delivers to UE addresses |
 | Tráfego / Traffic | sockets UDP / UDP sockets | SCADA pedido/resposta a partir do NOC; telemetria periódica do site / SCADA request/response from the NOC; periodic site telemetry |

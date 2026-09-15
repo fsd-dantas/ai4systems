@@ -86,6 +86,10 @@ NS3_PARAMETERS: Dict[str, object] = {
     "lte_bandwidth_rb": 25,
     "enb_tx_power_dbm": 46.0,
     "ue_tx_power_dbm": 23.0,
+    # Fixed outdoor CPE: a directional antenna aimed at its serving eNodeB. With
+    # an isotropic 23 dBm CPE the uplink of the farthest sites does not close.
+    "cpe_antenna_max_gain_dbi": 12.0,
+    "cpe_antenna_beamwidth_deg": 65.0,
     # traffic
     "scada_interval_s": 2.0,
     "scada_request_bytes": 64,

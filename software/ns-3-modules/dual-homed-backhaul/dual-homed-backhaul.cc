@@ -609,8 +609,10 @@ main(int argc, char* argv[])
     uint32_t earfcnDlOverride = 0;
     uint32_t earfcnUlOverride = 0;
     bool animate = false;
+    double cpeGainOverride = -999.0;
 
     CommandLine cmd(__FILE__);
+    cmd.AddValue("cpeGain", "override the CPE antenna boresight gain, in dBi", cpeGainOverride);
     cmd.AddValue("scenario", "scenario file exported by `aisg ns3-export`", scenarioPath);
     cmd.AddValue("outDir", "directory for results", outDir);
     cmd.AddValue("simTime", "override the simulated time, in seconds", simTimeOverride);
@@ -647,9 +649,20 @@ main(int argc, char* argv[])
     lteHelper->SetPathlossModelAttribute("Environment", EnumValue(SubUrbanEnvironment));
     lteHelper->SetPathlossModelAttribute("CitySize", EnumValue(SmallCity));
 
+    // A fixed outdoor CPE uses a directional antenna aimed at its serving
+    // eNodeB; each one is oriented after the UE devices exist.
+    double cpeGain = cpeGainOverride > -900.0 ? cpeGainOverride
+                                             : scenario.Number("cpe_antenna_max_gain_dbi");
+    lteHelper->SetUeAntennaModelType("ns3::CosineAntennaModel");
+    lteHelper->SetUeAntennaModelAttribute("MaxGain", DoubleValue(cpeGain));
+    lteHelper->SetUeAntennaModelAttribute(
+        "HorizontalBeamwidth",
+        DoubleValue(scenario.Number("cpe_antenna_beamwidth_deg")));
+
     // --- nodes -------------------------------------------------------------
     std::map<std::string, Ptr<Node>> nodes;
     std::map<std::string, std::string> roles;
+    std::map<std::string, const NodeSpec*> specById;
     NodeContainer enbNodes;
     NodeContainer cpeNodes;
     NodeContainer ipNodes;
@@ -658,6 +671,7 @@ main(int argc, char* argv[])
         Ptr<Node> node = CreateObject<Node>();
         nodes[spec.id] = node;
         roles[spec.id] = spec.role;
+        specById[spec.id] = &spec;
         Ptr<ConstantPositionMobilityModel> position =
             CreateObject<ConstantPositionMobilityModel>();
         position->SetPosition(Vector(spec.x, spec.y, HeightFor(spec.role)));
@@ -795,6 +809,16 @@ main(int argc, char* argv[])
     {
         NS_ABORT_MSG_IF(!ueDeviceById.count(cpe) || !enbDeviceById.count(enb),
                         "cannot attach " << cpe << " to " << enb);
+        // Aim the CPE antenna at its serving eNodeB. The UE's downlink and
+        // uplink share one antenna object, so one orientation covers both.
+        const NodeSpec* from = specById.at(cpe);
+        const NodeSpec* to = specById.at(enb);
+        double azimuthDeg = std::atan2(to->y - from->y, to->x - from->x) * 180.0 / 3.141592653589793;
+        DynamicCast<LteUeNetDevice>(ueDeviceById[cpe])
+            ->GetPhy()
+            ->GetDlSpectrumPhy()
+            ->GetAntenna()
+            ->SetAttribute("Orientation", DoubleValue(azimuthDeg));
         lteHelper->Attach(ueDeviceById[cpe], enbDeviceById[enb]);
     }
 
@@ -875,8 +899,9 @@ main(int argc, char* argv[])
 
     NS_LOG_UNCOND("aisg dual-homed backhaul: " << scenario.nodes.size() << " nodes, "
                                                << scenario.links.size() << " point-to-point links, "
-                                               << scenario.sites.size() << " sites, "
-                                               << simTime << " s simulated");
+                                               << scenario.sites.size() << " sites, CPE antenna "
+                                               << cpeGain << " dBi, " << simTime
+                                               << " s simulated");
     Simulator::Stop(Seconds(simTime));
     Simulator::Run();
 

@@ -32,6 +32,7 @@ A topologia é a única fonte de verdade; o arquivo de cenário é derivado e re
 
 - **Repetidores LTE viram eNodeBs.** O ns-3 não implementa repetidores LTE. / **LTE relays become eNodeBs.** ns-3 implements no LTE relays.
 - **Roteador atrás do CPE por túnel.** O PGW só entrega tráfego a endereços de UE; um túnel UDP NOC ↔ CPE leva o tráfego até o site. / **Router behind the CPE through a tunnel.** The PGW only delivers to UE addresses; a NOC ↔ CPE UDP tunnel carries traffic to the site.
+- **CPE com antena diretiva.** Um CPE fixo externo usa antena diretiva apontada para o eNodeB (12 dBi, 65°, nominal). Com CPE isotrópico de 23 dBm, o uplink dos sites mais distantes não fecha: ER_11, ER_12 e ER_15 perdiam todo o tráfego de subida. / **Directional CPE antenna.** A fixed outdoor CPE uses a directional antenna aimed at its eNodeB (12 dBi, 65°, nominal). With an isotropic 23 dBm CPE, the uplink of the farthest sites does not close: ER_11, ER_12 and ER_15 lost all uplink traffic.
 - **Rádio 900 MHz abstrato e declarado.** Não há modelo do rádio proprietário; cada salto é ponto a ponto com taxa, atraso e erro de pacote nominais. / **Abstract, declared 900 MHz radio.** No model of the proprietary radio exists; every hop is point-to-point with nominal rate, delay and packet error.
 - **Meio primário = rota nominal de menor custo.** A rota pela malha de 900 MHz fica sempre instalada; o failover só muda as extremidades. / **Primary medium = nominal least-cost route.** The 900 MHz route is always installed; failover only changes the ends.
 

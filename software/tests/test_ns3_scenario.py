@@ -132,6 +132,16 @@ def test_lte_carrier_is_consistent_with_band_31():
     assert dl_mhz - ul_mhz == pytest.approx(10.0)
 
 
+def test_cpe_antenna_is_declared_in_the_rendered_scenario(scenario):
+    params = {
+        line.split()[1]: line.split()[2]
+        for line in scenario.render().splitlines()
+        if line.startswith("param ")
+    }
+    assert float(params["cpe_antenna_max_gain_dbi"]) > 0
+    assert 0 < float(params["cpe_antenna_beamwidth_deg"]) < 360
+
+
 def test_a_topology_without_a_control_centre_is_rejected(topology):
     from aisg.domain.topology import Topology
 

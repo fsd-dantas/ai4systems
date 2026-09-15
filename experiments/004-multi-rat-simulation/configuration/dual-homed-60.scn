@@ -9,6 +9,8 @@ aisg-ns3-scenario 1
 # dropped LTE relay backhaul RELAY_3-eNB_B: replaced by the EPC S1 interface
 # dropped LTE relay backhaul RELAY_4-RELAY_3: replaced by the EPC S1 interface
 # dropped LTE relay backhaul RELAY_5-RELAY_1: replaced by the EPC S1 interface
+param cpe_antenna_beamwidth_deg 65
+param cpe_antenna_max_gain_dbi 12
 param enb_tx_power_dbm 46
 param fibre_rate 1Gbps
 param lte_bandwidth_rb 25
