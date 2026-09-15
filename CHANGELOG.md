@@ -3,6 +3,16 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); o projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project follows [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `aisg ns3-export` and the ns-3 dual-homed backhaul program ([experiment 004](experiments/004-multi-rat-simulation/)): private LTE in band 31 with EPC and directional CPE antennas, 900 MHz store-and-forward hops, NOC–CPE tunnels, SCADA and telemetry traffic.
+- Fault injection from the blackboard scenarios, with no, local or central failover; results for all nine combinations.
+- Patch adding E-UTRA band 31 to the ns-3.48 LTE module.
+
+### Changed
+- The multi-RAT arbiter holds a congested nominal medium when the only alternative crosses a degraded node. Simulation showed the earlier switch raised a site's loss from 14.3% to 57.1%.
+
 ## [0.10.0] — 2026-09-14
 
 ### Added

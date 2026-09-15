@@ -201,6 +201,23 @@ def test_a_degraded_node_is_avoided_when_possible_and_flagged_when_not(runs):
     assert routes["ER_04"].data["crosses_degraded"] == []
     decision = board.entries(Level.ACCESS, subject="ER_07", key="decision")[0]
     assert decision.data["degraded_via"] == ["RM_07"]
+
+
+def test_congestion_is_not_traded_for_a_degraded_path(runs):
+    """
+    Found in simulation: moving ER_07 off congested LTE onto the interfered
+    RM_07 raised its loss from 14% to 57%. A congested medium still works, so the
+    site holds it; sites whose alternative is clean still switch.
+    """
+    board = runs["independent-faults"].board
+    decisions = {e.subject: e for e in board.entries(Level.ACCESS, key="decision")}
+    assert decisions["ER_07"].value == "hold"
+    assert decisions["ER_07"].data["stay_on"] == "plte"
+    assert decisions["ER_03"].value == "switch_medium"
+    assert decisions["ER_04"].value == "switch_medium"
+    # an outage is never held, even when the alternative is degraded
+    for run in (runs["saf-chain-outage"], runs["dual-outage"]):
+        assert "hold" not in {e.value for e in run.board.entries(Level.ACCESS, key="decision")}
     for route in runs["saf-chain-outage"].board.entries(Level.ACCESS, key="route"):
         assert route.data["crosses_degraded"] == []
 

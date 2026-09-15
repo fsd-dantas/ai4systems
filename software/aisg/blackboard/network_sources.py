@@ -280,6 +280,9 @@ class AccessRouter(KnowledgeSource):
             e.subject for e in incidents
             if e.value in DEGRADING_DIAGNOSES and e.cf > FIRING_THRESHOLD
         })
+        diagnosis_by_node = {
+            e.subject: str(e.value) for e in incidents if e.subject in set(impaired)
+        }
         impaired_set = set(impaired)
         new: List[Entry] = []
         sites = sorted(n.id for n in self.topology.nodes.values() if n.stub)
@@ -326,6 +329,7 @@ class AccessRouter(KnowledgeSource):
                     "expanded": result.expanded,
                     "avoid": list(avoid),
                     "crosses_degraded": crosses,
+                    "blocker_diagnoses": {b: diagnosis_by_node.get(b, "") for b in blockers},
                 },
                 rationale_pt=(
                     "Rota calculada por A* com heuristica de linha reta (admissivel), "
@@ -348,14 +352,22 @@ class MultiRatArbiter(KnowledgeSource):
     """
     Decide, per site, what the loss of an access medium means.
 
-    PT-BR: Tres regras de politica, na ordem em que sao testadas:
-           1. sem rota restante            -> site ISOLADO (so o reparo resolve);
-           2. o meio NOMINAL foi perdido   -> TROCAR de meio;
-           3. so o meio de reserva caiu    -> REDUNDANCIA PERDIDA (nada muda agora).
-    EN:    Three policy rules, in the order they are tested:
-           1. no route left                -> site ISOLATED (only repair helps);
-           2. the NOMINAL medium was lost  -> SWITCH medium;
-           3. only the backup medium fell  -> REDUNDANCY LOST (nothing changes now).
+    PT-BR: Quatro regras de politica, na ordem em que sao testadas:
+           1. sem rota restante                           -> site ISOLADO (so o reparo resolve);
+           2. o meio NOMINAL so esta congestionado e a
+              alternativa passa por no degradado          -> MANTER o meio nominal;
+           3. o meio NOMINAL foi perdido                  -> TROCAR de meio;
+           4. so o meio de reserva caiu                   -> REDUNDANCIA PERDIDA (nada muda agora).
+           A regra 2 veio da simulacao: trocar congestionamento por um radio
+           interferido elevou a perda de ER_07 de 14% para 57%.
+    EN:    Four policy rules, in the order they are tested:
+           1. no route left                               -> site ISOLATED (only repair helps);
+           2. the NOMINAL medium is only congested and
+              the alternative crosses a degraded node     -> HOLD the nominal medium;
+           3. the NOMINAL medium was lost                 -> SWITCH medium;
+           4. only the backup medium fell                 -> REDUNDANCY LOST (nothing changes now).
+           Rule 2 came from simulation: trading congestion for an interfered
+           radio raised ER_07's loss from 14% to 57%.
     """
 
     name = "arbiter"
@@ -382,6 +394,23 @@ class MultiRatArbiter(KnowledgeSource):
                       f"perdidos. So o reparo de {', '.join(blockers)} restaura o site.")
                 en = (f"No route left: {', '.join(medium_label(m, 'en') for m in lost)} "
                       f"lost. Only repairing {', '.join(blockers)} restores the site.")
+            elif (
+                nominal in data["media_down"]
+                and data.get("crosses_degraded")
+                and all(
+                    data.get("blocker_diagnoses", {}).get(b) == "congestion"
+                    for b in data["media_down"][nominal]
+                )
+            ):
+                decision = "hold"
+                detail = {"stay_on": nominal, "degraded_via": data["crosses_degraded"]}
+                via = ", ".join(data["crosses_degraded"])
+                pt = (f"O meio nominal ({medium_label(nominal, 'pt')}) esta congestionado, mas "
+                      f"a alternativa passa por {via}, ja degradado: o site permanece no meio "
+                      f"nominal.")
+                en = (f"The nominal medium ({medium_label(nominal, 'en')}) is congested, but the "
+                      f"alternative crosses {via}, already degraded: the site stays on the "
+                      f"nominal medium.")
             elif nominal in data["media_down"]:
                 decision = "switch_medium"
                 detail = {"from": nominal, "to": data["medium"]}
@@ -396,7 +425,7 @@ class MultiRatArbiter(KnowledgeSource):
                       f"{medium_label(data['medium'], 'pt')}, sem redundancia.")
                 en = (f"Only the backup medium is down; the site stays on "
                       f"{medium_label(data['medium'], 'en')}, without redundancy.")
-            if data.get("crosses_degraded"):
+            if data.get("crosses_degraded") and decision != "hold":
                 via = ", ".join(data["crosses_degraded"])
                 detail = {**detail, "degraded_via": data["crosses_degraded"]}
                 pt += f" A rota passa por {via}, ja degradado: servico com qualidade reduzida."

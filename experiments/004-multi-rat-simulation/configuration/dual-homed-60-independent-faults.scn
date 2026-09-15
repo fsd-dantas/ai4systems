@@ -369,4 +369,3 @@ fault 10 flood RELAY_5 20Mbps
 fault 10 radio_per L014 0.6
 failover 13 ER_03 radio900
 failover 13 ER_04 radio900
-failover 13 ER_07 radio900

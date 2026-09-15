@@ -5,7 +5,7 @@ index,site,primary,scada_sent,scada_received,scada_loss_pct,rtt_mean_ms,rtt_max_
 4,ER_04,plte,14,13,7.14,128.78,195.19,27,27,radio900,radio900
 5,ER_05,radio900,14,14,0.00,36.76,36.76,27,27,radio900,radio900
 6,ER_06,radio900,14,14,0.00,106.43,112.26,27,27,radio900,radio900
-7,ER_07,plte,14,9,35.71,90.33,222.47,27,15,radio900,radio900
+7,ER_07,plte,14,13,7.14,30.01,34.93,27,27,plte,plte
 8,ER_08,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
 9,ER_09,plte,14,14,0.00,18.93,18.93,27,27,plte,plte
 10,ER_10,radio900,14,14,0.00,36.80,36.80,27,27,radio900,radio900

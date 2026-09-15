@@ -5,5 +5,3 @@ time_s,subject,event,detail
 13,ER_03,switch-er,"plte -> radio900 (central: blackboard plan)"
 13,ER_04,switch-noc,"plte -> radio900 (central: blackboard plan)"
 13,ER_04,switch-er,"plte -> radio900 (central: blackboard plan)"
-13,ER_07,switch-noc,"plte -> radio900 (central: blackboard plan)"
-13,ER_07,switch-er,"plte -> radio900 (central: blackboard plan)"

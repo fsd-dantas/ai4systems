@@ -36,6 +36,44 @@ A topologia é a única fonte de verdade; o arquivo de cenário é derivado e re
 - **Rádio 900 MHz abstrato e declarado.** Não há modelo do rádio proprietário; cada salto é ponto a ponto com taxa, atraso e erro de pacote nominais. / **Abstract, declared 900 MHz radio.** No model of the proprietary radio exists; every hop is point-to-point with nominal rate, delay and packet error.
 - **Meio primário = rota nominal de menor custo.** A rota pela malha de 900 MHz fica sempre instalada; o failover só muda as extremidades. / **Primary medium = nominal least-cost route.** The 900 MHz route is always installed; failover only changes the ends.
 
+## Falhas e failover / Faults and failover
+
+As falhas são as comandadas nos cenários do [experimento 002](../002-multi-expert-blackboard/); o plano central é a decisão de troca de meio do próprio quadro-negro, aplicada 3 s após a falha. / The faults are those commanded by the [experiment 002](../002-multi-expert-blackboard/) scenarios; the central plan is the blackboard's own medium-switch decision, applied 3 s after the fault.
+
+```bash
+aisg ns3-export --fault-scenario saf-chain-outage --out configuration/dual-homed-60-saf-chain-outage.scn
+./ns3 run "dual-homed-backhaul --scenario=.../dual-homed-60-saf-chain-outage.scn --outDir=... --failover=none|local|central"
+```
+
+| Modo / Mode | Comportamento / Behaviour |
+|---|---|
+| `none` | rotas estáticas nominais / nominal static routes |
+| `local` | o NOC troca o downlink após 3 respostas perdidas; o roteador de borda troca o uplink após 3 intervalos sem consulta / the NOC switches the downlink after 3 missed replies; the edge router switches the uplink after 3 intervals without a poll |
+| `central` | ambas as extremidades trocam conforme o plano do quadro-negro / both ends switch as the blackboard plans |
+
+## Resultados / Results
+
+Falha aos 10 s; perda = consultas SCADA enviadas entre 16 e 29 s sem resposta em 2 s. Arquivos em [`results/`](results/). / Fault at 10 s; loss = SCADA polls sent between 16 and 29 s with no reply within 2 s. Files under [`results/`](results/).
+
+| Cenário / Scenario | Sem failover / No failover | Local | Central (plano do quadro-negro / blackboard plan) |
+|---|---|---|---|
+| SAF_02 parado / down | ER_06: 100% | ER_06: 0% (troca aos / switch at 16,0 s) | ER_06: 0% (troca aos / switch at 13,0 s) |
+| SAF_02 + RELAY_5 parados / down | ER_03, ER_04, ER_06, ER_07: 100% | 100%, **20 trocas / switches** | 100%, nenhuma troca / no switch |
+| Interferência RM_07 + congestionamento RELAY_5 / Interference RM_07 + congestion RELAY_5 | ER_04, ER_07: 14,3% | 14,3%, nenhuma troca / no switch | ER_03, ER_04: 0%; ER_07: 14,3% (mantido / held) |
+
+### Achados / Findings
+
+1. **O simulador reproduz as previsões do quadro-negro**: o site afetado pela queda de SAF_02 e exatamente os quatro sites isolados na queda dupla. / **The simulator reproduces the blackboard's predictions**: the site affected by SAF_02 and exactly the four sites isolated by the dual outage.
+2. **O failover central é mais rápido quando o plano é correto**: 3 s de decisão contra a detecção de 3 consultas perdidas. / **Central failover is faster when the plan is right**: 3 s to decide against detecting 3 missed polls.
+3. **O failover local oscila quando os dois meios caem e não reage a perda parcial.** É mantido como resultado, e não corrigido com temporizador: é o problema de coordenação que o experimento 003 (eco-resolução) trata. / **Local failover flaps when both media are down and does not react to partial loss.** It is kept as a result, not patched with a timer: it is the coordination problem experiment 003 (eco-resolution) addresses.
+4. **A verificação corrigiu o quadro-negro.** Na primeira versão, o árbitro trocou ER_07 do LTE congestionado para o rádio interferido de RM_07, e a perda subiu de 14,3% para 57,1% (commit `f88db83`). O árbitro ganhou a regra de manutenção; na nova execução, ER_07 permanece em 14,3%. / **Verification corrected the blackboard.** In the first version, the arbiter moved ER_07 off congested LTE onto RM_07's interfered radio, and loss rose from 14.3% to 57.1% (commit `f88db83`). The arbiter gained the hold rule; in the new run, ER_07 stays at 14.3%.
+
+### Limites / Limits
+
+- Uma execução determinística por caso; sem sementes múltiplas nem intervalos de confiança. / One deterministic run per case; no multiple seeds or confidence intervals.
+- Sete consultas por site na janela de medição: uma consulta perdida vale 14,3%. / Seven polls per site in the measurement window: one lost poll is 14.3%.
+- Congestionamento modelado como inundação UDP de 20 Mbps por CPE; interferência como taxa de erro de pacote de 0,6 nos enlaces de RM_07. / Congestion modelled as a 20 Mbps UDP flood per CPE; interference as a 0.6 packet error rate on RM_07's links.
+
 ## Próximas etapas / Next steps
 
-Injeção de falhas, failover local e central, exportação de telemetria para registros de observação, e verificação das recomendações dos experimentos 001–003. / Fault injection, local and central failover, telemetry export to observation records, and verification of the recommendations from experiments 001–003.
+Exportar a telemetria simulada como registros de observação para o quadro-negro, fechando o ciclo diagnóstico → plano → verificação; execuções mais longas com várias sementes. / Export simulated telemetry as observation records for the blackboard, closing the diagnosis → plan → verification loop; longer runs with several seeds.

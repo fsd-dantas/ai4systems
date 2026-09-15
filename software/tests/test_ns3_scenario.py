@@ -186,8 +186,9 @@ def test_central_failover_is_the_blackboard_plan(topology):
     assert not isolated & {er for _, er, _ in dual.failovers}
 
     independent = build_ns3_scenario(topology, fault_scenario="independent-faults")
+    # ER_07 holds congested LTE rather than moving onto the interfered RM_07
     assert {(er, m) for _, er, m in independent.failovers} == {
-        ("ER_03", "radio900"), ("ER_04", "radio900"), ("ER_07", "radio900"),
+        ("ER_03", "radio900"), ("ER_04", "radio900"),
     }
     fault_time = float(NS3_PARAMETERS["fault_time_s"])
     assert all(t > fault_time for t, _, _ in independent.failovers)

@@ -42,7 +42,7 @@ The architecture follows the Hearsay-II blackboard model: a board with **levels 
 | action | L2 → L2 | Ação recomendada e janela autorizada (S27–S42) / Recommended action and authorised window |
 | correlator | L2 → L3 | Agrupa interrupções simultâneas no nó mais profundo comum às suas rotas / Groups simultaneous outages at the deepest node common to their routes |
 | router | L3 → L4 | Meios perdidos por site e rota A\* evitando nós comprometidos e, se possível, degradados / Lost media per site and an A\* route avoiding impaired and, when possible, degraded nodes |
-| arbiter | L4 → L4 | Troca de meio, redundância perdida ou site isolado / Medium switch, lost redundancy or isolated site |
+| arbiter | L4 → L4 | Troca de meio, manutenção do meio congestionado quando a alternativa é degradada, redundância perdida ou site isolado / Medium switch, holding a congested medium when the alternative is degraded, lost redundancy or isolated site |
 | planner | L3, L4 → L5 | Plano STRIPS por incidente, priorizado por sites isolados, sites afetados, interrupções explicadas e certeza / A STRIPS plan per incident, ranked by isolated sites, affected sites, explained outages and certainty |
 
 Os sete especialistas de regras **não têm regras próprias**: são subconjuntos das 41 regras da base simulada do [experimento 001](../001-symbolic-restoration-chain/), com os mesmos identificadores.
@@ -56,7 +56,9 @@ Cenário de 60 nós com 15 sites em duplo acesso (LTE privativo + 900 MHz). / 60
 |---|---|---|
 | `saf-chain-outage` | SAF_02 parado / stopped | 1 incidente explica 16 interrupções; 12 sites perdem o 900 MHz e seguem em LTE privativo / 1 incident explains 16 outages; 12 sites lose 900 MHz and stay on private LTE |
 | `dual-outage` | SAF_02 e / and RELAY_5 | 2 causas separadas; exatamente ER_03, ER_04, ER_06 e ER_07 isolados; SAF_02 priorizado / 2 separate causes; exactly ER_03, ER_04, ER_06 and ER_07 isolated; SAF_02 ranked first |
-| `independent-faults` | interferência em RM_07, congestionamento em RELAY_5 / interference at RM_07, congestion at RELAY_5 | nada é fundido; RELAY_5 priorizado por afetar 4 sites; a rota de ER_07 é sinalizada por atravessar RM_07 degradado / nothing merged; RELAY_5 ranked first for affecting 4 sites; ER_07's route is flagged for crossing the degraded RM_07 |
+| `independent-faults` | interferência em RM_07, congestionamento em RELAY_5 / interference at RM_07, congestion at RELAY_5 | nada é fundido; RELAY_5 priorizado por afetar 4 sites; ER_03 e ER_04 trocam para 900 MHz; ER_07 permanece no LTE congestionado, porque sua alternativa atravessa RM_07 degradado / nothing merged; RELAY_5 ranked first for affecting 4 sites; ER_03 and ER_04 switch to 900 MHz; ER_07 holds congested LTE, because its alternative crosses the degraded RM_07 |
+
+A regra de manutenção veio da verificação por simulação no [experimento 004](../004-multi-rat-simulation/): na primeira versão, o quadro-negro trocava ER_07 para o rádio interferido e a perda subia de 14% para 57%. / The hold rule came from simulation-based verification in [experiment 004](../004-multi-rat-simulation/): in the first version, the blackboard moved ER_07 onto the interfered radio and its loss rose from 14% to 57%.
 
 Todos os cenários chegam à quiescência em 11 ciclos. / Every scenario reaches quiescence in 11 cycles.
 
